@@ -200,7 +200,7 @@ export default async function initGame() {
 
       // Determina la direzione di avvicinamento del giocatore e imposta l'animazione/testo dell'NPC
       if (playerDirection.eq(k.vec2(0, -1))) { // Giocatore si muove in ALTO verso l'NPC
-        store.set(textBoxContentAtom, "Questa GUI è stabile come un tavolino con tre gambe. Trovane almeno una che regge.");
+        store.set(textBoxContentAtom, "Questa GUI e' stabile come un tavolino con tre gambe. Trovane almeno una che regge.");
         npc2.play("npc-down"); // L'NPC guarda in basso (verso il giocatore)
       } 
     } else {
