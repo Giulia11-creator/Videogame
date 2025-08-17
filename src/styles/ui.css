@@ -1,0 +1,17 @@
+/* Vale solo quando il <body> ha la classe .ui-screen */
+.ui-screen body {
+  background: #fafafa;
+  overflow: auto;
+}
+
+/* Centra e rende cliccabile il root UI nelle schermate non di gioco */
+.ui-screen #ui {
+  width: 800px;
+  height: 600px;
+  margin: 0 auto;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: auto;
+  color: var(--font-color);
+}

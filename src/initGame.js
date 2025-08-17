@@ -164,27 +164,6 @@ export default async function initGame() {
     k.pos(1500, 500),
   ]);
 
-  // Gestisci la collisione tra NPC e giocatore
-  npc.onCollide("player", (playerCollided) => {
-    // Assicurati che playerCollided e la sua proprietà 'direction' siano valide
-    if (playerCollided && playerCollided.direction && typeof playerCollided.direction.x === 'number') {
-      const playerDirection = playerCollided.direction; // Usa una variabile locale per chiarezza
-
-      // Determina la direzione di avvicinamento del giocatore e imposta l'animazione/testo dell'NPC
-      if (playerDirection.eq(k.vec2(0, -1))) { // Giocatore si muove in ALTO verso l'NPC
-        store.set(textBoxContentAtom, "Solo chi sa dove guardare vede l’inganno. Gli altri? Si limitano a cliccare e sperare.");
-        npc.play("npc-down"); // L'NPC guarda in basso (verso il giocatore)
-      } 
-    } else {
-      // Messaggio di fallback se player.direction è inaspettatamente invalido
-      console.warn("Collision detected, but player.direction is invalid!", playerCollided);
-      store.set(textBoxContentAtom, "Hello there! (Error in direction detection)");
-    }
-
-    // Mostra sempre la casella di testo alla collisione
-    store.set(isTextBoxVisibleAtom, true);
-  });
-
   const npc2 = k.add([
     k.sprite("npc2", { anim: "npc-left" }),
     k.area(),
@@ -193,26 +172,6 @@ export default async function initGame() {
     k.scale(0.55),
     k.pos(1000, 500),
   ]);
-  npc2.onCollide("player", (playerCollided) => {
-    // Assicurati che playerCollided e la sua proprietà 'direction' siano valide
-    if (playerCollided && playerCollided.direction && typeof playerCollided.direction.x === 'number') {
-      const playerDirection = playerCollided.direction; // Usa una variabile locale per chiarezza
-
-      // Determina la direzione di avvicinamento del giocatore e imposta l'animazione/testo dell'NPC
-      if (playerDirection.eq(k.vec2(0, -1))) { // Giocatore si muove in ALTO verso l'NPC
-        store.set(textBoxContentAtom, "Questa GUI e' stabile come un tavolino con tre gambe. Trovane almeno una che regge.");
-        npc2.play("npc-down"); // L'NPC guarda in basso (verso il giocatore)
-      } 
-    } else {
-      // Messaggio di fallback se player.direction è inaspettatamente invalido
-      console.warn("Collision detected, but player.direction is invalid!", playerCollided);
-      store.set(textBoxContentAtom, "Hello there! (Error in direction detection)");
-    }
-
-    // Mostra sempre la casella di testo alla collisione
-    store.set(isTextBoxVisibleAtom, true);
-  });
-
 
   const npc3 = k.add([
     k.sprite("npc3", { anim: "npc-left" }),
@@ -222,23 +181,19 @@ export default async function initGame() {
     k.scale(0.55),
     k.pos(500, 500),
   ]);
-  npc3.onCollide("player", (playerCollided) => {
-    // Assicurati che playerCollided e la sua proprietà 'direction' siano valide
-    if (playerCollided && playerCollided.direction && typeof playerCollided.direction.x === 'number') {
-      const playerDirection = playerCollided.direction; // Usa una variabile locale per chiarezza
+  npc.onCollide("player", () => {
+  store.set(textBoxContentAtom, "Messaggio NPC 1");
+  store.set(isTextBoxVisibleAtom, true);
+});
 
-      // Determina la direzione di avvicinamento del giocatore e imposta l'animazione/testo dell'NPC
-      if (playerDirection.eq(k.vec2(0, -1))) { // Giocatore si muove in ALTO verso l'NPC
-        store.set(textBoxContentAtom, "Clicca con fiducia! Alcuni elementi rispondono, altri fanno ghosting");
-        npc3.play("npc-down"); // L'NPC guarda in basso (verso il giocatore)
-      } 
-    } else {
-      // Messaggio di fallback se player.direction è inaspettatamente invalido
-      console.warn("Collision detected, but player.direction is invalid!", playerCollided);
-      store.set(textBoxContentAtom, "Hello there! (Error in direction detection)");
-    }
+npc2.onCollide("player", () => {
+  store.set(textBoxContentAtom, "Messaggio NPC 2");
+  store.set(isTextBoxVisibleAtom, true);
+});
 
-    // Mostra sempre la casella di testo alla collisione
-    store.set(isTextBoxVisibleAtom, true);
-  });
+npc3.onCollide("player", () => {
+  store.set(textBoxContentAtom, "Solo chi sa dove guardare vede l’inganno. Gli altri? Si limitano a cliccare e sperare.");
+  store.set(isTextBoxVisibleAtom, true);
+});
+
 }

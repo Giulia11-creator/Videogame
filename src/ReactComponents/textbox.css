@@ -1,20 +1,19 @@
-.text-box {
+.textbox {
   position: relative;
-  top: 700px;
-  left: 60px;
-  width: 1800px;
-  height: 360px;
-  background-color: black;
-  overflow: hidden;
+  padding: 16px 24px;
+  background: #fff;              /* bianca */
+  color: #111;
   border-radius: 12px;
-  font-family: "gameboy";
+  border: 2px solid #000;
+  max-width: 90%;
+  line-height: 1.35;
+  font-family: "gameboy", system-ui, sans-serif; /* usa il font */
 }
 
-.text-box > p {
-  margin-top: 64px;
-  margin-bottom: 12px;
-  margin-left: 64px;
-  margin-right: 64px;
-  font-size: 50px;
-  color: var(--font-color);
+/* se la textbox è in basso stile “dialogo” */
+.textbox--dock-bottom {
+  position: absolute;
+  left: 40px;
+  right: 40px;
+  bottom: 40px;
 }

@@ -1,0 +1,45 @@
+/* Vale solo quando il <body> ha la classe .in-game */
+.in-game html,
+.in-game body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  background: #00000000;
+}
+
+/* Canvas full-viewport */
+.in-game #game {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  display: block;
+  z-index: 0;
+  background: #ffffff;
+}
+
+/* Overlay React sopra al canvas, di default NON cattura eventi */
+.in-game #ui {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none; /* il gioco riceve input */
+  z-index: 10;
+}
+
+/* Viewport logica 1920×1080 scalata e centrata */
+.in-game #ui .ui-viewport {
+  width: 1920px;
+  height: 1080px;
+  transform: scale(var(--scale, 1));
+  transform-origin: center;
+  position: relative;
+  color: var(--font-color);
+}
+
+/* Blocchi della UI che DEVONO essere cliccabili in game */
+.ui-clickable {
+  pointer-events: auto;
+}
