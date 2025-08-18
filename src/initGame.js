@@ -1,6 +1,6 @@
 import initKaplay from "./kaplayCtx";
-import { isTextBoxVisibleAtom, store, textBoxContentAtom } from "./store";
-import backgroundImageUrl from "/background5.png";
+import { isTextBoxVisibleAtom, nextpage, store, textBoxContentAtom } from "./store";
+import backgroundImageUrl from "/bg3.png";
 import charactersImageUrl from "/walk.png";
 import npcImageUrl from "/npc.png";
 
@@ -11,7 +11,7 @@ export default async function initGame() {
   // ✅ Attendi il caricamento delle sprite
   await k.loadSprite("background", backgroundImageUrl);
   await k.loadSprite("npc1", npcImageUrl, {
-    sliceY: 3,
+    sliceY: 2,
     sliceX: 2,
     anims: {
       "npc-down": 0,
@@ -21,7 +21,7 @@ export default async function initGame() {
     },
   });
    await k.loadSprite("npc2", npcImageUrl, {
-    sliceY: 3,
+    sliceY: 2,
     sliceX: 2,
     anims: {
       "npc-down": 1,
@@ -31,13 +31,13 @@ export default async function initGame() {
     },
   });
   await k.loadSprite("npc3", npcImageUrl, {
-    sliceY: 3,
+    sliceY: 2,
     sliceX: 2,
     anims: {
-      "npc-down": 0,
-      "npc-up": 0,
-      "npc-right": 0,
-      "npc-left": 0,
+      "npc-down": 3,
+      "npc-up": 3,
+      "npc-right": 3,
+      "npc-left": 3,
     },
   });
   await k.loadSprite("characters", charactersImageUrl, {
@@ -170,7 +170,7 @@ export default async function initGame() {
     k.body({ isStatic: true }), // L'NPC è statico e non si muove a causa della fisica
     k.anchor("center"),
     k.scale(0.55),
-    k.pos(1000, 500),
+    k.pos(1000, 520),
   ]);
 
   const npc3 = k.add([
@@ -184,16 +184,20 @@ export default async function initGame() {
   npc.onCollide("player", () => {
   store.set(textBoxContentAtom, "Messaggio NPC 1");
   store.set(isTextBoxVisibleAtom, true);
+  store.set(nextpage, "/");
+
 });
 
 npc2.onCollide("player", () => {
   store.set(textBoxContentAtom, "Messaggio NPC 2");
   store.set(isTextBoxVisibleAtom, true);
+  store.set(nextpage, "/");
 });
 
 npc3.onCollide("player", () => {
   store.set(textBoxContentAtom, "Solo chi sa dove guardare vede l’inganno. Gli altri? Si limitano a cliccare e sperare.");
   store.set(isTextBoxVisibleAtom, true);
+  store.set(nextpage, "/");
 });
 
 }

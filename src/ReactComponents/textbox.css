@@ -1,19 +1,28 @@
+/* overlay a piena larghezza, centra la box in alto */
+.textbox-overlay {
+  position: fixed;
+  inset: 0;                 /* top/right/bottom/left: 0 */
+  display: flex;
+  justify-content: center;  /* centro orizzontale */
+  align-items: flex-start;   /* in alto */
+  padding-top: 20px;         /* distanza dal bordo superiore */
+  pointer-events: none;      /* lascia passare i click */
+  z-index: 9999;
+}
+
+/* la box prende di nuovo i click */
 .textbox {
-  position: relative;
+  pointer-events: auto;
+
   padding: 16px 24px;
-  background: #fff;              /* bianca */
+  background: #fff;
   color: #111;
   border-radius: 12px;
   border: 2px solid #000;
-  max-width: 90%;
+  max-width: 600px;       /* o quello che preferisci */
+  width: fit-content;
   line-height: 1.35;
-  font-family: "gameboy", system-ui, sans-serif; /* usa il font */
-}
-
-/* se la textbox è in basso stile “dialogo” */
-.textbox--dock-bottom {
-  position: absolute;
-  left: 40px;
-  right: 40px;
-  bottom: 40px;
+  font-family: "gameboy", system-ui, sans-serif;
+  text-align: center;
+  box-sizing: border-box;
 }
