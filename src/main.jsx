@@ -6,21 +6,25 @@ import { store } from "./store.js";
 import LoginPage from "./pages/LoginPage.jsx";
 import StartPage from "./pages/StartPage.jsx";
 import GamePage from "./pages/GamePage.jsx";
-
+import SignupPage from "./pages/SignupPage.jsx";
+import { AuthContextProvider } from "./context/AuthContext";
 /** CSS globale: font + reset viewport*/
 import "./styles/base.css";
 
 createRoot(document.getElementById("ui")).render(
   <StrictMode>
     <Provider store={store}>
-      <HashRouter>
-        <Routes>
-          <Route path="/" element={<StartPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/game" element={<GamePage />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </HashRouter>
+      <AuthContextProvider>
+        <HashRouter>
+          <Routes>
+            <Route path="/" element={<StartPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/game" element={<GamePage />} />
+            <Route path="/signup" element={<SignupPage />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </HashRouter>
+      </AuthContextProvider>
     </Provider>
   </StrictMode>
 );

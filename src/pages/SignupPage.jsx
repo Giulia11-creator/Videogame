@@ -3,18 +3,19 @@ import { useNavigate, Link} from "react-router-dom";
 import "../styles/ui.css";
 import {UserAuth} from '../context/AuthContext';
 
-export default function LoginPage() {
+const SignupPage = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const {login} = UserAuth();
+  const {createUser} = UserAuth();
 
   const handleSubmit = async (e) =>{
     e.preventDefault();
     try {
 
-      await login(email, password);
-      navigate('/game');
+      await createUser(email, password);
+      navigate("/game");
+
       
     } catch (e) {
 
@@ -33,9 +34,8 @@ export default function LoginPage() {
       <div className="signin-page">
         <div className="signin-card">
           <div className="signin-header">
-            <h2 className="signin-title">Login</h2>
+            <h2 className="signin-title">Iscriviti</h2>
           </div>
-
           <div className="signin-body">
             <form className="signin-form" onSubmit={handleSubmit}>
               <div className="form-field">
@@ -71,13 +71,13 @@ export default function LoginPage() {
               </div>
 
               <div className="actions">
-                <button type="submit" className="btn-primary">Sign in</button>
+                <button type="submit" className="btn-primary">Sign up</button>
               </div>
             </form>
 
             <p className="bottom-note">
-              Non hai un account?{" "}
-              <Link to="/signup" className="link-cta">Iscriviti</Link>
+              Possiedi un account?{" "}
+              <Link to="/login" className="link-cta">Accedi</Link>
             </p>
           </div>
         </div>
@@ -85,3 +85,5 @@ export default function LoginPage() {
     </div>
   );
 }
+
+export default SignupPage;
