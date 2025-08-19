@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link} from "react-router-dom";
 import "../styles/ui.css";
 
 export default function LoginPage() {
@@ -16,9 +16,57 @@ export default function LoginPage() {
   };
 
   return (
-    <div style={{ textAlign: "center", marginTop: 200 }}>
-      <h1>Login</h1>
-      <button onClick={handleLogin}>Entra nel gioco</button>
+    <div className="signin-wrapper">
+      <div className="signin-page">
+        <div className="signin-card">
+          <div className="signin-header">
+            <h2 className="signin-title">Login</h2>
+          </div>
+
+          <div className="signin-body">
+            <form className="signin-form" onSubmit={handleLogin}>
+              <div className="form-field">
+                <label htmlFor="email" className="label">Email</label>
+                <div className="input-wrap">
+                  <input
+                    id="email"
+                    type="email"
+                    placeholder="la_tua_email@esempio.com"
+                    autoComplete="email"
+                    required
+                    className="input"
+                  />
+                </div>
+              </div>
+
+              <div className="form-field">
+                <div className="field-top">
+                  <label htmlFor="password" className="label">Password</label>
+                </div>
+                <div className="input-wrap">
+                  <input
+                    id="password"
+                    type="password"
+                    placeholder="La tua password"
+                    autoComplete="current-password"
+                    required
+                    className="input"
+                  />
+                </div>
+              </div>
+
+              <div className="actions">
+                <button type="submit" className="btn-primary">Sign in</button>
+              </div>
+            </form>
+
+            <p className="bottom-note">
+              Non hai un account?{" "}
+              <Link to="/game" className="link-cta">Iscriviti</Link>
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

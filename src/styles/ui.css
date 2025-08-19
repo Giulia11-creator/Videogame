@@ -1,17 +1,147 @@
-/* Vale solo quando il <body> ha la classe .ui-screen */
-.ui-screen body {
+/* Vale quando il body ha la classe .ui-screen */
+body.ui-screen {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
   background: #fafafa;
-  overflow: auto;
 }
 
-/* Centra e rende cliccabile il root UI nelle schermate non di gioco */
-.ui-screen #ui {
+
+body.ui-screen #ui {
   width: 800px;
-  height: 600px;
-  margin: 0 auto;
-  position: relative;
-  top: 50%;
-  transform: translateY(-50%);
-  pointer-events: auto;
-  color: var(--font-color);
+  display: flex;              /* aggiunto */
+  align-items: center;        /* centra verticalmente se serve */
+  justify-content: center;    /* centra orizzontalmente */
+}
+
+
+/* La pagina di signin non deve ricentrare tutto di nuovo */
+.signin-page {
+  min-height: auto;            /* niente 100vh qui */
+  background: #fafafa;
+  padding: 2rem 1rem;
+}
+
+
+/* Card */
+.signin-card {
+  width: 100%;
+  max-width: 28rem;                  /* max-w-md ~ 448px */
+  background: #fafafa;              /* bg-white */
+  border-radius: 0.75rem;            /* rounded-xl */
+  box-shadow: 0 10px 15px rgba(0,0,0,.10), 0 4px 6px rgba(0,0,0,.06); /* shadow-lg */
+  overflow: hidden;                  /* overflow-hidden */
+}
+
+/* Header */
+.signin-header {
+  background: #9c3aed;              /* bg-purple-600 */
+  padding: 1rem 1.5rem;              /* py-4 px-6 */
+}
+
+.signin-title {
+  margin: 0.5rem 0 0;                /* mt-2 */
+  color: #fafafa;                       /* text-white */
+  font-weight: 600;                  /* font-semibold */
+  font-size: 1.25rem;                /* text-xl */
+  text-align: center;                /* text-center */
+  letter-spacing: 0.01em;            /* tracking-tight approx */
+}
+
+/* Body */
+.signin-body {
+  padding: 1.5rem;                   /* p-6 */
+}
+
+.signin-form {
+  display: grid;
+  gap: 1.5rem;                       /* space-y-6 */
+}
+
+/* Campi */
+.form-field .label {
+  display: block;
+  font-size: 0.875rem;               /* text-sm */
+  font-weight: 500;                  /* font-medium */
+  color: #111827;                    /* text-gray-900 */
+}
+
+.field-top {
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between;
+}
+
+.input-wrap { margin-top: 0.25rem; } /* mt-1 */
+
+.input {
+  appearance: none;
+  display: block;
+  width: calc(100% - 0.5rem);
+  padding: 0.5rem 0.75rem;           /* px-3 py-2 */
+  border: 1px solid #d1d5db;         /* border-gray-300 */
+  border-radius: 0.375rem;           /* rounded-md */
+  box-shadow: 0 1px 2px rgba(0,0,0,.05); /* shadow-sm */
+  font-size: 0.875rem;               /* sm:text-sm */
+  color: #111827;
+}
+
+.input::placeholder { color: #9ca3af; } /* placeholder-gray-400 */
+
+.input:focus {
+  outline: none;                     /* focus:outline-none */
+  border-color: #6366f1;             /* focus:border-indigo-500 */
+  box-shadow: 0 0 0 2px rgba(99,102,241,.5); /* focus:ring-indigo-500 */
+}
+
+/* Azioni */
+.actions { }
+
+.btn-primary {
+  width: 100%;
+  display: inline-flex; 
+  justify-content: center; 
+  padding: 0.5rem 1rem;              /* py-2 px-4 */
+  border: 1px solid transparent;
+  border-radius: 0.375rem;           /* rounded-md */
+  font-size: 0.875rem;               /* text-sm */
+  font-weight: 500;                  /* font-medium */
+  color: #fff;                       /* text-white */
+  background: #9c3aed;               /* bg-purple-600 */
+  cursor: pointer;
+  transition: filter .15s ease, transform .02s ease;
+}
+
+.btn-primary:hover {                 /* hover:bg-purple-700 */
+  filter: brightness(0.95);
+  background: #6d28d9;
+}
+
+.btn-primary:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px #fafafa, 0 0 0 4px rgba(124, 58, 237, 0.6); /* focus ring */
+}
+
+/* Nota in basso */
+.bottom-note {
+  margin-top: 1.5rem;                /* mt-6 */
+  text-align: center;
+  font-size: 0.875rem;               /* text-sm */
+  color: #6b7280;                    /* text-gray-500 */
+}
+
+.link-cta {
+  color: #4f46e5;                    /* text-indigo-600 */
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.link-cta:hover { color: #4338ca; }  /* hover:text-indigo-500 */
+
+/* Responsive (px-4 sm:px-6 lg:px-8) */
+@media (min-width: 640px) {
+  .signin-page { padding-left: 1.5rem; padding-right: 1.5rem; } /* sm:px-6 */
+}
+@media (min-width: 1024px) {
+  .signin-page { padding-left: 2rem; padding-right: 2rem; }     /* lg:px-8 */
 }

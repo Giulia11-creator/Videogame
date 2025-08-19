@@ -1,7 +1,7 @@
 import initKaplay from "./kaplayCtx";
 import { isTextBoxVisibleAtom, nextpage, store, textBoxContentAtom } from "./store";
-import backgroundImageUrl from "/bg3.png";
-import charactersImageUrl from "/walk.png";
+import backgroundImageUrl from "/bg5.png";
+import charactersImageUrl from "/walk3.png";
 import npcImageUrl from "/npc.png";
 
 export default async function initGame() {
@@ -170,7 +170,7 @@ export default async function initGame() {
     k.body({ isStatic: true }), // L'NPC è statico e non si muove a causa della fisica
     k.anchor("center"),
     k.scale(0.55),
-    k.pos(1000, 520),
+    k.pos(1000, 500),
   ]);
 
   const npc3 = k.add([
