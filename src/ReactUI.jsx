@@ -9,13 +9,44 @@ import TextBox from "./ReactComponents/TextBox";
 function Overlay({ score }) {
   const navigate = useNavigate();
   return createPortal(
-    <div style={{ position:"fixed", top:20, right:28, zIndex:2147483647, background:"rgba(255,255,255,.95)", padding:"14px 22px", borderRadius:12, fontWeight:"bold" }}>
-      <span>Punteggio: {score}</span>
-      <button onClick={() => navigate("/leader")}>🏆 Classifica</button>
+    <div
+      style={{
+        position: "fixed",
+        top: 20,
+        right: 28,
+        zIndex: 2147483647,
+        background: "rgba(255,255,255,0.95)",
+        padding: "12px 18px",
+        borderRadius: 12,
+        fontWeight: "bold",
+        display: "flex",
+        alignItems: "center",
+        gap: "12px",
+        boxShadow: "0 2px 8px rgba(0,0,0,0.2)"
+      }}
+    >
+      <span style={{ fontSize: "16px" }}>
+        Punteggio: <span style={{ color: "#333" }}>{score}</span>
+      </span>
+      <button
+        onClick={() => navigate("/leader")}
+        style={{
+          background: "#ffcc00",
+          border: "none",
+          borderRadius: 8,
+          padding: "6px 12px",
+          cursor: "pointer",
+          fontWeight: "bold"
+          
+        }}
+      >
+        🏆 Classifica
+      </button>
     </div>,
     document.body
   );
 }
+
 
 export default function ReactUI() {
   const [points, setPoints] = useState(0);

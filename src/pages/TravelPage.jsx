@@ -56,7 +56,7 @@ const TravelPage = () => {
     }, [nAdults]);
 
     useEffect(() => {
-        if (nchildren==-1) {
+        if (nchildren == -1) {
             setbugNegativeChildren(true);
         }
     }, [nchildren]);
@@ -85,11 +85,11 @@ const TravelPage = () => {
         }
     }, [score]);
 
-    function BackToGame(){
+    function BackToGame() {
         navigate('/game');
     }
 
-    function saveData(adults,children,price,name){
+    function saveData(adults, children, price, name) {
         const hotel = {
 
             hotel: document.getElementById(name).textContent,
@@ -100,15 +100,15 @@ const TravelPage = () => {
         };
 
         let hotels = sessionStorage.getItem("hotels");
-    hotels = hotels ? JSON.parse(hotels) : [];
+        hotels = hotels ? JSON.parse(hotels) : [];
 
-    hotels.push(hotel);
+        hotels.push(hotel);
 
-    sessionStorage.setItem("hotels", JSON.stringify(hotels));
+        sessionStorage.setItem("hotels", JSON.stringify(hotels));
 
-    console.log("saved hotel");
+        console.log("saved hotel");
 
-    navigate('/checkout');
+        navigate('/checkout');
 
     }
 
@@ -131,7 +131,7 @@ const TravelPage = () => {
                 await setDoc(userRef, {
                     id: user.uid,
                     nick: user.email,
-                    points : Number(score),
+                    points: Number(score),
                     createdAt: serverTimestamp(),
                     lastUpdate: serverTimestamp(),
                 });
@@ -154,10 +154,15 @@ const TravelPage = () => {
 
     return (
         <div className="container">
-            <button className="btn-buy" onClick={BackToGame}>Esci</button>
-            <div className="score-board">
-                <span>Punteggio: {score}</span>
+            <div className="topbar">
+                <button className="btn-exit" onClick={BackToGame}>Esci</button>
+
+                <div className="score-chip" aria-live="polite" title="Punteggio">
+                    <span className="score-label">Punteggio</span>
+                    <span className="score-value">{score}</span>
+                </div>
             </div>
+
 
             <header className="header">
                 <h1 className="page-title">Trova e prenota il tuo soggiorno✈️🏨</h1>
@@ -175,11 +180,11 @@ const TravelPage = () => {
                     </label>
                     <label className="field">
                         <span>Adulti</span>
-                        <input id ="adults" type="text"  onChange={(e) => setnAdults(Number(e.target.value))}/>
+                        <input id="adults" type="text" onChange={(e) => setnAdults(Number(e.target.value))} />
                     </label>
                     <label className="field">
                         <span>Bambini</span>
-                        <input id ="children" type="text" onChange={(e) => setnchildren(Number(e.target.value))}/>
+                        <input id="children" type="text" onChange={(e) => setnchildren(Number(e.target.value))} />
                     </label>
 
 

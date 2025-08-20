@@ -10,7 +10,7 @@ export default function LeaderboardPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Legge dai documenti di TravelLevel, ordina per campo numerico "pointsNum" (disc), prende 20
+    // Legge dai documenti di TravelLevel, ordina per campo numerico "points" (disc), prende 20
     const q = query(
       collection(db, "TravelLevel"),
       orderBy("points", "desc"),
@@ -22,7 +22,6 @@ export default function LeaderboardPage() {
       (snap) => {
         const rows = snap.docs.map((d) => {
           const data = d.data();
-          // fallback se hai solo "points" come stringa
           const points =
             typeof data.points === "number"
               ? data.points
@@ -64,7 +63,7 @@ export default function LeaderboardPage() {
           display: "grid",
           gridTemplateColumns: "64px 1fr 120px 200px",
           padding: "12px 16px",
-          background: "#f9fafb",
+          background: "#9c3aed",
           fontWeight: 600
         }}>
           <div>#</div>
@@ -89,7 +88,24 @@ export default function LeaderboardPage() {
         ))}
       </div>
 
-      <button onClick={() => navigate("/game")}>Torna al gioco</button>
+     <div style={{ display: "flex", justifyContent: "center", marginTop: 28 }}>
+        <button
+          onClick={() => navigate("/game")}
+          style={{
+            background: "#9c3aed", // viola
+            color: "white",
+            border: "none",
+            borderRadius: 8,
+            padding: "10px 18px",
+            cursor: "pointer",
+            fontWeight: "600",
+            fontSize: "15px",
+            boxShadow: "0 2px 6px rgba(0,0,0,0.15)"
+          }}
+        >
+          Torna al gioco
+        </button>
+      </div>
     </div>
   );
 }
