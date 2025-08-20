@@ -197,7 +197,7 @@ npc2.onCollide("player", () => {
 npc3.onCollide("player", () => {
   store.set(textBoxContentAtom, "Solo chi sa dove guardare vede l’inganno. Gli altri? Si limitano a cliccare e sperare.");
   store.set(isTextBoxVisibleAtom, true);
-  store.set(nextpage, "/");
+  store.set(nextpage, "/travel");
 });
 
 }

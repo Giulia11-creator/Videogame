@@ -174,3 +174,18 @@ input, select, button {
 .btn-buy:hover {
   background: #16a34a;
 }
+
+.score-board {
+  position: fixed;       /* resta in alto a dx anche scrollando */
+  top: 32px;             /* distanza dal bordo alto */
+  right: 60px;           /* distanza dal bordo destro */
+  background: rgba(255, 255, 255, 0.9);
+  padding: 14px 22px;    /* spazio interno del box */
+  border-radius: 12px;
+  font-weight: bold;
+  font-size: 18px;
+  color: #333;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  z-index: 1000;         /* sopra al resto */
+}
+
