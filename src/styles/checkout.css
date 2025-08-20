@@ -1,0 +1,60 @@
+/* Layout base */
+.checkout{max-width:1100px;margin:24px auto;padding:0 16px;font-family:system-ui, Arial, sans-serif;color:#1f2937}
+.head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.head h1{margin:0;font-size:22px}
+.secure{font-size:13px;color:#059669}
+
+.wrap{display:grid;grid-template-columns:1fr;gap:16px}
+@media (min-width:960px){.wrap{grid-template-columns:1fr 340px}}
+
+.card{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:16px}
+
+/* Colonne */
+.main{display:flex;flex-direction:column;gap:16px}
+.side{height:max-content}
+
+.desktop-only{display:none}
+.mobile-only{display:block}
+@media (min-width:960px){
+  .desktop-only{display:block}
+  .mobile-only{display:none}
+}
+
+/* Hotel + riepilogo */
+.hotel{display:flex;gap:12px;align-items:center}
+.thumb{width:96px;height:76px;background:#f3f4f6;border:1px solid #e5e7eb;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:#6b7280}
+.hotel-name{margin:0 0 6px 0;font-size:16px}
+.perk-list{display:flex;flex-wrap:wrap;gap:6px}
+.perk{font-size:12px;background:#f3f4f6;border:1px solid #e5e7eb;padding:2px 8px;border-radius:999px}
+
+.stay{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.stay div{display:flex;justify-content:space-between;font-size:14px}
+.stay span{color:#6b7280}
+
+/* Form */
+h3{margin:0 0 10px 0;font-size:18px}
+.grid2{display:grid;grid-template-columns:1fr;gap:10px}
+.grid3{display:grid;grid-template-columns:1fr;gap:10px}
+@media (min-width:720px){
+  .grid2{grid-template-columns:1fr 1fr}
+  .grid3{grid-template-columns:2fr 1fr 1fr}
+}
+.field{display:flex;flex-direction:column;gap:6px}
+.field span{font-size:13px;color:#6b7280}
+.field input{height:42px;padding:0 10px;border:1px solid #e5e7eb;border-radius:8px}
+
+.check{display:flex;align-items:center;gap:8px;margin:12px 0}
+.btn{width:100%;height:46px;border:0;border-radius:10px;background: #22c55e;color:#fff;font-weight:600;cursor:pointer}
+.btn:hover{background: #21a752;}
+.mini{margin:8px 0 0;color:#6b7280;font-size:12px}
+.hint{display:flex;align-items:center;color:#6b7280;font-size:13px}
+
+/* Totali */
+.total-box{display:flex;flex-direction:column;gap:6px;margin-top:12px}
+.total-box .row{display:flex;justify-content:space-between}
+.total-box .total strong{font-size:18px}
+
+/* Extra */
+.bullets{margin:12px 0 0 18px;padding:0}
+.bullets li{margin:4px 0}
+hr{border:0;border-top:1px solid #e5e7eb;margin:12px 0}
