@@ -10,56 +10,50 @@ const CheckoutPage = () => {
 
   const storedhotel = sessionStorage.getItem('hotels');
   const hotel = storedhotel ? JSON.parse(storedhotel) : [];
-  const navigate =useNavigate();
-  function BackToTravels(){
-        sessionStorage.setItem("hotels", JSON.stringify([]));
-        navigate('/travel');
+  const navigate = useNavigate();
+  const today = new Date();
+  const tomorrow = new Date();
+  tomorrow.setDate(today.getDate() + 1);
+  function BackToTravels() {
+    sessionStorage.setItem("hotels", JSON.stringify([]));
+    navigate('/travel');
   }
 
   return (<div className="checkout">
-    <header classNam="head">
+    <header className="head">
       <h1>Checkout</h1>
-      <span className="secure">Pagamento sicuro</span>
     </header>
 
-    <div classNam="wrap">
+    <div className="wrap">
       <main className="main">
 
         <section className="card mobile-only">
           <div className
             ="hotel">
             <div className
-              ="thumb">HOTEL • COVER</div>
-            <div className
               ="hotel-info">
               <h2 className
-                ="hotel-name">{hotel[0].hotel}</h2>
-              <div className
-                ="perk-list">
-                <span className
-                  ="perk">50 m dal mare</span>
-                <span className
-                  ="perk">Colazione inclusa</span>
-                <span className
-                  ="perk">Wi-Fi</span>
-              </div>
+                ="hotel-name">{hotel[0]?.hotel}</h2>
+
             </div>
           </div>
-          <div className
-            ="stay">
-            <div><span>Check-in</span><strong>12/09/2025</strong></div>
-            <div><span>Check-out</span><strong>15/09/2025</strong></div>
-            <div><span>Pernotti</span><strong>3</strong></div>
-            <div><span>Ospiti</span><strong>2 adulti • 1 camera</strong></div>
-          </div>
-          <div className
-            ="total-box">
-            <div className
-              ="row"><span>{hotel[0].price} × 3 notti</span><span>{(Number(hotel[0].price)*3)}</span></div>
-            <div className
-              ="row"><span>Tasse (10%)</span><span>€38,70</span></div>
-            <div className
-              ="row total"><span>Totale</span><strong>€425,70</strong></div>
+          <div className="stay">
+            <div>
+              <span>Check-in</span>
+              <strong>{hotel[0]?.date1 || today.toLocaleDateString()}</strong>
+            </div>
+            <div>
+              <span>Check-out</span>
+              <strong>{hotel[0]?.date2 || tomorrow.toLocaleDateString()}</strong>
+            </div>
+            <div>
+              <span>Ospiti</span>
+              <strong>{hotel[0]?.adults || 1} adulti • 1 camera</strong>
+            </div>
+            <div>
+              <span>Prezzo </span>
+              <strong>{hotel[0]?.price}</strong>
+            </div>
           </div>
         </section>
 
@@ -138,68 +132,12 @@ const CheckoutPage = () => {
             <div className
               ="hint">Se valido, lo sconto verrà applicato al totale.</div>
           </div>
-
-          <label className
-            ="check">
-            <input type="checkbox" />
-            <span>Accetto termini e privacy.</span>
-          </label>
-
           <button className
-            ="btn" onClick={BackToTravels}>Paga €425,70 </button>
+            ="btn" onClick={BackToTravels}>Paga</button>
           <p className
             ="mini">Cancellazione gratuita fino a 48h prima (esempio).</p>
         </section>
       </main>
-
-      <aside className="side card desktop-only">
-        <div className
-          ="hotel">
-          <div className
-            ="thumb">HOTEL • COVER</div>
-          <div className
-            ="hotel-info">
-            <h2 className
-              ="hotel-name">Hotel Mare Azzurro</h2>
-            <div className
-              ="perk-list">
-              <span className
-                ="perk">50 m dal mare</span>
-              <span className
-                ="perk">Colazione inclusa</span>
-              <span className
-                ="perk">Wi-Fi</span>
-            </div>
-          </div>
-        </div>
-
-        <div className
-          ="stay">
-          <div><span>Check-in</span><strong>12/09/2025</strong></div>
-          <div><span>Check-out</span><strong>15/09/2025</strong></div>
-          <div><span>Pernotti</span><strong>3</strong></div>
-          <div><span>Ospiti</span><strong>2 adulti • 1 camera</strong></div>
-        </div>
-
-        <hr />
-
-        <div className
-          ="total-box">
-          <div className
-            ="row"><span>€129 × 3 notti</span><span>€387,00</span></div>
-          <div className
-            ="row"><span>Tasse (10%)</span><span>€38,70</span></div>
-          <div className
-            ="row total"><span>Totale</span><strong>€425,70</strong></div>
-        </div>
-
-        <ul className
-          ="bullets">
-          <li>Cancellazione gratuita</li>
-          <li>Conferma via email</li>
-          <li>Wi-Fi incluso</li>
-        </ul>
-      </aside>
     </div>
   </div>
   );

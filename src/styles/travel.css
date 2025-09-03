@@ -4,7 +4,8 @@
   margin: 0 auto;
   padding: 32px 20px;
   font-family: system-ui, sans-serif;
-  background-color: #f8fafc; /* grigio chiaro */
+  background-color: #f8fafc;
+  /* grigio chiaro */
   color: #1e293b;
 }
 
@@ -25,9 +26,10 @@
   font-size: 0.75rem;
   padding: 4px 8px;
   border-radius: 999px;
-  background: #9c3aed; 
-  color: #8700f5; ;
-  border: 1px solid #9c3aed; 
+  background: #9c3aed;
+  color: #8700f5;
+  ;
+  border: 1px solid #9c3aed;
 }
 
 /* Barra di ricerca */
@@ -37,7 +39,7 @@
   border-radius: 12px;
   padding: 16px;
   margin-bottom: 32px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
 .form-grid {
@@ -53,7 +55,9 @@
   font-size: 0.85rem;
 }
 
-input, select, button {
+input,
+select,
+button {
   height: 40px;
   padding: 0 10px;
   border-radius: 8px;
@@ -88,23 +92,35 @@ input, select, button {
   border-radius: 16px;
   background: #fff;
   overflow: hidden;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 8px 18px rgba(0,0,0,0.1);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.1);
 }
 
 .media {
-  background: #deb6ff; 
-  height: 140px;
+  height: 160px;
+  /* o 140px se preferisci */
+  background: #f1f5f9;
+  /* colore di fallback quando non c’è immagine */
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #8c00ff; 
-  font-weight: 600;
+  overflow: hidden;
+  /* <<< taglia l'immagine oltre il box */
+  /* il border-radius top viene già clippato da .card { overflow:hidden } */
+}
+
+/* L’immagine riempie il box senza deformarsi */
+.media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* ritaglio “cover” dentro al box */
+  display: block;
 }
 
 .card-body {
@@ -126,7 +142,8 @@ input, select, button {
 }
 
 .stars {
-  color: #f59e0b; /* giallo stelle */
+  color: #f59e0b;
+  /* giallo stelle */
   font-size: 0.9rem;
 }
 
@@ -176,22 +193,28 @@ input, select, button {
 }
 
 .score-board {
-  position: fixed;       /* resta in alto a dx anche scrollando */
-  top: 32px;             /* distanza dal bordo alto */
-  right: 60px;           /* distanza dal bordo destro */
+  position: fixed;
+  /* resta in alto a dx anche scrollando */
+  top: 32px;
+  /* distanza dal bordo alto */
+  right: 60px;
+  /* distanza dal bordo destro */
   background: rgba(255, 255, 255, 0.9);
-  padding: 14px 22px;    /* spazio interno del box */
+  padding: 14px 22px;
+  /* spazio interno del box */
   border-radius: 12px;
   font-weight: bold;
   font-size: 18px;
   color: #333;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-  z-index: 1000;         /* sopra al resto */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  /* sopra al resto */
 }
 
 /* --- Top bar layout --- */
-.topbar{
-  position: sticky;       /* resta visibile mentre scrolli la pagina */
+.topbar {
+  position: sticky;
+  /* resta visibile mentre scrolli la pagina */
   top: 16px;
   display: flex;
   align-items: center;
@@ -202,22 +225,29 @@ input, select, button {
 }
 
 /* --- Pulsante Esci (coerente con stile “btn-buy” ma neutro) --- */
-.btn-exit{
-  background: #10b981;           /* verde “success” */
+.btn-exit {
+  background: #10b981;
+  /* verde “success” */
   color: #fff;
   border: none;
   border-radius: 10px;
   padding: 8px 14px;
   font-weight: 600;
   cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0,0,0,.12);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, .12);
   transition: transform .06s ease, filter .15s ease;
 }
-.btn-exit:hover{ filter: brightness(0.95); }
-.btn-exit:active{ transform: translateY(1px); }
+
+.btn-exit:hover {
+  filter: brightness(0.95);
+}
+
+.btn-exit:active {
+  transform: translateY(1px);
+}
 
 /* --- Chip Punteggio --- */
-.score-chip{
+.score-chip {
   background: #fff;
   border: 1px solid #e5e7eb;
   border-radius: 12px;
@@ -225,14 +255,18 @@ input, select, button {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  box-shadow: 0 4px 12px rgba(0,0,0,.06);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, .06);
   font-weight: 700;
 }
-.score-label{
+
+.score-label {
   font-weight: 600;
-  color: #6b7280;   /* grigio soft */
+  color: #6b7280;
+  /* grigio soft */
 }
-.score-value{
+
+.score-value {
   font-variant-numeric: tabular-nums;
-  color: #111827;   /* quasi-nero */
+  color: #111827;
+  /* quasi-nero */
 }

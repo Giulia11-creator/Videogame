@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
-import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
+import { doc, getDoc, setDoc, serverTimestamp, documentId } from "firebase/firestore";
 import { db } from '../firebase';
 import { UserAuth } from "../context/AuthContext";
-import { useRef } from "react";
 import "../styles/travel.css";
-import { use } from "react";
+import h1 from "/public/h1.jpg";
+import h2 from "/public/h2.jpg";
+import h3 from "/public/h3.jpg";
+import h4 from "/public/h4.jpg";
+
 
 const TravelPage = () => {
     const navigate = useNavigate();
@@ -14,6 +17,8 @@ const TravelPage = () => {
     const [popVisible, setpopVisible] = useState(false);
     const [nAdults, setnAdults] = useState(0);
     const [nchildren, setnchildren] = useState(0);
+    const [dateIn, setDateIn] = useState("");
+    const [dateOut, setDateOut] = useState("");
     const [bugNegativePeople, setbugNegativePeople] = useState(() => {
         const saved = sessionStorage.getItem('bugNegativePeople');
         return saved ? JSON.parse(saved) : false;
@@ -26,12 +31,38 @@ const TravelPage = () => {
         const saved = sessionStorage.getItem('bugCoupon');
         return saved ? JSON.parse(saved) : false;
     });
+
+    const [bugDate1, setbugDate1] = useState(() => {
+        const saved = sessionStorage.getItem('bugDate1');
+        return saved ? JSON.parse(saved) : false;
+    });
     const [score, setscore] = useState(() => {
         const saved = sessionStorage.getItem('score');
         return saved ? JSON.parse(saved) : 0;
     });
 
     const { user } = UserAuth();
+
+    useEffect(() => {
+        const dIn = new Date(dateIn);
+        const dOut = new Date(dateOut);
+        if (dIn > dOut)
+            setbugDate1(true);
+    }, [dateIn,dateOut]);
+
+    useEffect(() => {
+        if (bugDate1) {
+            const scoreSetForWrongDate1 = sessionStorage.getItem('scoreSetForWrongDate1');
+            if (!scoreSetForWrongDate1) {
+                const newScore = score + 33;
+                setscore(newScore);
+                sessionStorage.setItem('score', JSON.stringify(newScore));
+                sessionStorage.setItem('scoreSetForWrongDate1', 'true');
+            }
+        }
+
+    }, [bugDate1]);
+
 
     useEffect(() => {
         if (bugNegativePeople) {
@@ -47,16 +78,15 @@ const TravelPage = () => {
     }, [bugNegativePeople]);
 
 
-
     useEffect(() => {
-        if (nAdults == -1) {
+        if (nAdults <= -1) {
             setbugNegativePeople(true);
 
         }
     }, [nAdults]);
 
     useEffect(() => {
-        if (nchildren == -1) {
+        if (nchildren <= -1) {
             setbugNegativeChildren(true);
         }
     }, [nchildren]);
@@ -89,14 +119,15 @@ const TravelPage = () => {
         navigate('/game');
     }
 
-    function saveData(adults, children, price, name) {
+    function saveData(price, name) {
         const hotel = {
 
             hotel: document.getElementById(name).textContent,
             price: document.getElementById(price).textContent,
-            adults: document.getElementById(adults).textContent,
-            children: document.getElementById(children).textContent
-
+            adults:nAdults,
+            children: nchildren,
+            date1: dateIn,
+            date2: dateOut
         };
 
         let hotels = sessionStorage.getItem("hotels");
@@ -172,11 +203,11 @@ const TravelPage = () => {
                 <form className="form-grid">
                     <label className="field">
                         <span>Check-in</span>
-                        <input type="date" />
+                        <input id="DIn" type="date" onChange={(e) => setDateIn(e.target.value)} />
                     </label>
                     <label className="field">
                         <span>Check-out</span>
-                        <input type="date" />
+                        <input id="DOut" type="date" onChange={(e) => setDateOut(e.target.value)} />
                     </label>
                     <label className="field">
                         <span>Adulti</span>
@@ -194,7 +225,7 @@ const TravelPage = () => {
             <section aria-label="Risultati hotel">
                 <div className="cards">
                     <article className="card">
-                        <div className="media">HOTEL • COVER</div>
+                        <div className="media"><img src={h1} /></div>
                         <div className="card-body">
                             <div className="title-row">
                                 <h2 className="title" id="MareAzzurro">Hotel Mare Azzurro</h2>
@@ -211,17 +242,17 @@ const TravelPage = () => {
                                     <div className="small">Cancellazione gratuita</div>
                                 </div>
                                 <div className="cta">
-                                    <button className="btn-buy" onClick={() => saveData("adults", "children", "priceMa", "MareAzzurro")}>Acquista</button>
+                                    <button className="btn-buy" onClick={() => saveData("priceMa", "MareAzzurro")}>Acquista</button>
                                 </div>
                             </div>
                         </div>
                     </article>
 
                     <article className="card">
-                        <div className="media">HOTEL • COVER</div>
+                        <div className="media"><img src={h2} /></div>
                         <div className="card-body">
                             <div className="title-row">
-                                <h2 className="title">Boutique Centro Storico</h2>
+                                <h2 className="title" id="Boutique Centro Storico">Boutique Centro Storico</h2>
                                 <div className="stars">★★★★★</div>
                             </div>
                             <div className="meta">
@@ -231,21 +262,21 @@ const TravelPage = () => {
                             </div>
                             <div className="price-row">
                                 <div>
-                                    <div className="price">€ 189<span className="small"> / notte</span></div>
+                                    <div className="price" id="priceB">€ 189<span className="small"> / notte</span></div>
                                     <div className="small">Pagamento in struttura</div>
                                 </div>
                                 <div className="cta">
-                                    <button className="btn-buy">Acquista</button>
+                                    <button className="btn-buy" onClick={() => saveData("priceB", "Boutique Centro Storico")}>Acquista</button>
                                 </div>
                             </div>
                         </div>
                     </article>
 
                     <article className="card">
-                        <div className="media">HOTEL • COVER</div>
+                        <div className="media"><img src={h3} /></div>
                         <div className="card-body">
                             <div className="title-row">
-                                <h2 className="title">Eco Lodge Collina</h2>
+                                <h2 className="title" id="Eco Lodge Collina">Eco Lodge Collina</h2>
                                 <div className="stars">★★★★☆</div>
                             </div>
                             <div className="meta">
@@ -255,21 +286,21 @@ const TravelPage = () => {
                             </div>
                             <div className="price-row">
                                 <div>
-                                    <div className="price">€ 99<span className="small"> / notte</span></div>
+                                    <div className="price" id="priceEco">€ 99<span className="small"> / notte</span></div>
                                     <div className="small">Offerta limitata</div>
                                 </div>
                                 <div className="cta">
-                                    <button className="btn-buy">Acquista</button>
+                                    <button className="btn-buy" onClick={() => saveData("priceEco", "Eco Lodge Collina")}>Acquista</button>
                                 </div>
                             </div>
                         </div>
                     </article>
 
                     <article className="card">
-                        <div className="media">HOTEL • COVER</div>
+                        <div className="media"><img src={h4} /></div>
                         <div className="card-body">
                             <div className="title-row">
-                                <h2 className="title">Resort Lago Sereno</h2>
+                                <h2 className="title" id="Resort Lago Sereno">Resort Lago Sereno</h2>
                                 <div className="stars">★★★★☆</div>
                             </div>
                             <div className="meta">
@@ -279,11 +310,11 @@ const TravelPage = () => {
                             </div>
                             <div className="price-row">
                                 <div>
-                                    <div className="price">€ 149<span className="small"> / notte</span></div>
+                                    <div className="price" id="pricer">€ 149<span className="small"> / notte</span></div>
                                     <div className="small">Cancellazione gratuita</div>
                                 </div>
                                 <div className="cta">
-                                    <button className="btn-buy">Acquista</button>
+                                    <button className="btn-buy" onClick={() => saveData("pricer", "Resort Lago Sereno")}>Acquista</button>
                                 </div>
                             </div>
                         </div>
