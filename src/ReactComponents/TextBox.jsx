@@ -14,6 +14,7 @@ const variants = {
 export default function TextBox() {
   const [isVisible, setIsVisible] = useAtom(isTextBoxVisibleAtom);
   const [isCloseRequest, setIsCloseRequest] = useState(false);
+  const [changePage, setChangePage] = useState(false);
   const content = useAtomValue(textBoxContentAtom);
   const nextPage = useAtomValue(nextpage);
   const navigate = useNavigate();
@@ -21,14 +22,19 @@ export default function TextBox() {
     if (isCloseRequest) {
       setIsVisible(false);
       setIsCloseRequest(false);
-      navigate(nextPage);
+      if (changePage) {
+        navigate(nextPage);
+        setChangePage(false);
+      }
+
     }
   };
 
   useEffect(() => {
     const closeHandler = (e) => {
       if (!isVisible) return;
-      if (e.code === "Space") setIsCloseRequest(true);
+      if (e.code === "Space") { setIsCloseRequest(true); setChangePage(true) };
+      if (e.code === "Escape") { setIsCloseRequest(true); setChangePage(false); };
     };
     window.addEventListener("keydown", closeHandler);
     return () => window.removeEventListener("keydown", closeHandler);
