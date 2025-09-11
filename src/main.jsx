@@ -11,6 +11,7 @@ import TravelPage from "./pages/TravelPage.jsx";
 import CheckoutPage from "./pages/CheckoutPage.jsx";
 import LeaderboardPage from "./pages/LeaderboardPage.jsx";
 import { AuthContextProvider } from "./context/AuthContext";
+import Test from "./pages/test.jsx";
 /** CSS globale: font + reset viewport*/
 import "./styles/base.css";
 
@@ -26,6 +27,7 @@ createRoot(document.getElementById("ui")).render(
             <Route path="/signup" element={<SignupPage />} />
             <Route path="/travel" element={<TravelPage />} />
              <Route path="/checkout" element={<CheckoutPage />} />
+             <Route path="/test" element={<Test />} />
               <Route path="/leader" element={<LeaderboardPage />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>

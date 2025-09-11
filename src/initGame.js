@@ -191,7 +191,7 @@ export default async function initGame() {
 npc2.onCollide("player", () => {
   store.set(textBoxContentAtom, "Messaggio NPC 2");
   store.set(isTextBoxVisibleAtom, true);
-  store.set(nextpage, "/");
+  store.set(nextpage, "/test");
 });
 
 npc3.onCollide("player", () => {
