@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
-import { doc, getDoc, setDoc, serverTimestamp, documentId } from "firebase/firestore";
+import { doc, setDoc, updateDoc, getDoc, increment, serverTimestamp } from "firebase/firestore";
 import { db } from '../firebase';
 import { UserAuth } from "../context/AuthContext";
 import confetti from "canvas-confetti";
@@ -76,6 +76,7 @@ const TravelPage = () => {
             const scoreSetForWrongDate1 = sessionStorage.getItem('scoreSetForWrongDate1');
             if (!scoreSetForWrongDate1) {
                 const newScore = score + 33;
+                addPoints(33);
                 (async () => {
                     await shootConfetti(1200);         //animazione
                     setscore(newScore);
@@ -92,7 +93,8 @@ const TravelPage = () => {
         if (bugNegativePeople) {
             const scoreSetForbugNegativePeople = sessionStorage.getItem('scoreSetForbugNegativePeople');
             if (!scoreSetForbugNegativePeople) {
-                const newScore = score + 33; // il valore che vuoi settare
+                const newScore = score + 33;
+                addPoints(33);
                 (async () => {
                     await shootConfetti(1200);         //animazione
                     setscore(newScore);
@@ -123,7 +125,8 @@ const TravelPage = () => {
         if (bugNegativeChildren) {
             const scoreSetForbugNegativeChildren = sessionStorage.getItem('scoreSetForbugNegativeChildren');
             if (!scoreSetForbugNegativeChildren) {
-                const newScore = score + 33; // il valore che vuoi settare
+                const newScore = score + 33;
+                addPoints(33);
                 (async () => {
                     await shootConfetti(1200);         //animazione
                     setscore(newScore);
@@ -171,6 +174,26 @@ const TravelPage = () => {
 
         navigate('/checkout');
 
+    }
+
+
+
+    async function addPoints(delta) {
+        const ref = doc(db, "Leaderboard", user.uid);
+        const docSnap = await getDoc(ref);
+        if (docSnap.exists()) {
+            await updateDoc(ref, {
+                totalPoints: increment(delta),
+            })
+        }
+        else {
+            await setDoc(ref, {
+                id: user.uid,
+                nick:user.email,
+                totalPoints: increment(delta),
+            });
+
+        }
     }
 
 

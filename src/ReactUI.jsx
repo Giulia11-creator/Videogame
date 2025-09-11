@@ -57,8 +57,8 @@ export default function ReactUI() {
     const run = async () => {
       if (!user) { setLoading(false); return; }
       try {
-        const snap = await getDoc(doc(db, "TravelLevel", user.uid));
-        setPoints(snap.exists() ? (snap.data().points ?? 0) : 0); // points è NUMBER
+        const snap = await getDoc(doc(db, "Leaderboard", user.uid));
+        setPoints(snap.exists() ? (snap.data().totalPoints ?? 0) : 0); // points è NUMBER
       } catch (e) {
         console.error("getDoc error:", e);
       } finally {

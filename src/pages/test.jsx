@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { doc, setDoc, updateDoc, getDoc, increment, serverTimestamp } from "firebase/firestore";
 import { db } from "../firebase";
 import { UserAuth } from "../context/AuthContext";
 import "../styles/Event.css"; // importa lo stile
@@ -24,7 +24,7 @@ export default function EventFormBug() {
   const [awardedbugPastDate, setawardedbugPastDate] = useState(false);
   const [awardedbugNegativePeople, setawardedbugNegativePeople] = useState(false);
   const { user } = UserAuth();
-  const navigate =useNavigate()
+  const navigate = useNavigate()
 
   async function addUser() {
     if (!user?.uid) return;
@@ -42,6 +42,24 @@ export default function EventFormBug() {
       }
     } catch (error) {
       console.error("Errore durante il salvataggio:", error);
+    }
+  }
+
+  async function addPoints(delta) {
+    const ref = doc(db, "Leaderboard", user.uid);
+    const docSnap = await getDoc(ref);
+    if (docSnap.exists()) {
+      await updateDoc(ref, {
+        totalPoints: increment(delta),
+      })
+    }
+    else {
+      await setDoc(ref, {
+        id: user.uid,
+        nick: user.email,
+        totalPoints: increment(delta),
+      });
+
     }
   }
 
@@ -111,28 +129,33 @@ export default function EventFormBug() {
     let inc = 0;
     if (bugNoLocation && !awardedbugNoLocation) {
       inc += 20;
+      addPoints(20);
       setawardedbugNoLocation(true);
     }
     if (bugNoTitle && !awardedbugNoTitle) {
       inc += 20;
+      addPoints(20);
       setawardedbugNoTitle(true);
     }
     if (bugWrongDate && !awardedbugWrongDate) {
       inc += 20;
+      addPoints(20);
       setawardedbugWrongDate(true);
     }
     if (bugPastDate && !awardedbugPastDate) {
       inc += 20;
+      addPoints(20);
       setawardedbugPastDate(true);
     }
     if (bugNegativePeople && !awardedbugNegativePeople) {
       inc += 20;
+      addPoints(20);
       setawardedbugNegativePeople(true);
     }
     if (inc > 0) {
       (async () => {
         await shootConfetti(1200);         //animazione
-        setScore((s) => s + inc);          
+        setScore((s) => s + inc);
       })();
     }
   }, [bugNoLocation, bugNoTitle, bugWrongDate, bugPastDate, bugNegativePeople]);
@@ -141,9 +164,9 @@ export default function EventFormBug() {
     e.preventDefault();
     addEvent();
   }
-    function BackToGame() {
-        navigate('/game');
-    }
+  function BackToGame() {
+    navigate('/game');
+  }
   return (
     <div className="page-container">
       <div className="top-bar">

@@ -12,8 +12,8 @@ export default function LeaderboardPage() {
   useEffect(() => {
     // Legge dai documenti di TravelLevel, ordina per campo numerico "points" (disc), prende 20
     const q = query(
-      collection(db, "TravelLevel"),
-      orderBy("points", "desc"),
+      collection(db, "Leaderboard"),
+      orderBy("totalPoints", "desc"),
       limit(20)
     );
 
@@ -23,9 +23,9 @@ export default function LeaderboardPage() {
         const rows = snap.docs.map((d) => {
           const data = d.data();
           const points =
-            typeof data.points === "number"
-              ? data.points
-              : Number.parseInt(data.points, 10) || 0;
+            typeof data.totalPoints === "number"
+              ? data.totalPoints
+              : Number.parseInt(data.totalPoints, 10) || 0;
 
         return {
             id: d.id,
@@ -69,7 +69,6 @@ export default function LeaderboardPage() {
           <div>#</div>
           <div>Giocatore</div>
           <div>Punti</div>
-          <div>Ultimo aggiornamento</div>
         </div>
 
         {players.map((p, i) => (
@@ -83,7 +82,6 @@ export default function LeaderboardPage() {
             <div style={{ fontWeight: 600 }}>{i + 1}</div>
             <div>{p.name}</div>
             <div style={{ fontVariantNumeric: "tabular-nums" }}>{p.points}</div>
-            <div>{p.lastUpdate ? p.lastUpdate.toLocaleString("it-IT") : "—"}</div>
           </div>
         ))}
       </div>
