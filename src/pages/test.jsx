@@ -3,7 +3,8 @@ import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "../firebase";
 import { UserAuth } from "../context/AuthContext";
 import "../styles/Event.css"; // importa lo stile
-
+import confetti from "canvas-confetti";
+import { useNavigate } from 'react-router-dom';
 export default function EventFormBug() {
   const [title, setTitle] = useState("");
   const [location, setLocation] = useState("");
@@ -16,11 +17,14 @@ export default function EventFormBug() {
   const [bugNoTitle, setbugNoTitle] = useState(false);
   const [bugNoLocation, setbugNoLocation] = useState(false);
   const [bugWrongDate, setbugWrongDate] = useState(false);
+  const [bugNegativePeople, setbugNegativePeople] = useState(false);
   const [awardedbugNoTitle, setawardedbugNoTitle] = useState(false);
   const [awardedbugNoLocation, setawardedbugNoLocation] = useState(false);
   const [awardedbugWrongDate, setawardedbugWrongDate] = useState(false);
   const [awardedbugPastDate, setawardedbugPastDate] = useState(false);
+  const [awardedbugNegativePeople, setawardedbugNegativePeople] = useState(false);
   const { user } = UserAuth();
+  const navigate =useNavigate()
 
   async function addUser() {
     if (!user?.uid) return;
@@ -47,18 +51,38 @@ export default function EventFormBug() {
     }
   }, [score, user?.uid]);
 
+  // Anima i coriandoli per ~1.2s
+  function shootConfetti(duration = 1200) {
+    return new Promise((resolve) => {
+      const end = Date.now() + duration;
+
+      (function frame() {
+        confetti({ particleCount: 4, angle: 60, spread: 60, origin: { x: 0 } });
+        confetti({ particleCount: 4, angle: 120, spread: 60, origin: { x: 1 } });
+
+        if (Date.now() < end) {
+          requestAnimationFrame(frame);
+        } else {
+          resolve();
+        }
+      })();
+    });
+  }
+
+
   function addEvent() {
     const newEvent = {
       title,
       location,
       eventDate: dateEvent,
       eventParticipants: participants,
+      backupDate: dateEvent,
     };
     if ((events.length + 1) % 3 === 0 && events.length > 0) {
       const addDays = Math.floor(Math.random() * 30) + 1;
       const wrongDate = new Date();
       wrongDate.setDate(wrongDate.getDate() + addDays);
-      newEvent.eventDate = wrongDate;
+      newEvent.eventDate = wrongDate.toISOString().split("T")[0];
     }
     if (new Date(newEvent.eventDate) < new Date()) setbugPastDate(true);
 
@@ -71,37 +95,59 @@ export default function EventFormBug() {
     setLocation("");
     setParticipants(0);
   }
+  const ClickDate = (event) => {
+    const dateBackup = event.backupDate;
+    if (event.eventDate != dateBackup) {
+      setbugWrongDate(true);
+    }
+  }
 
+  const CheckParticipants = (event) => {
+    if (event.eventParticipants < 0) {
+      setbugNegativePeople(true);
+    }
+  }
   useEffect(() => {
     let inc = 0;
     if (bugNoLocation && !awardedbugNoLocation) {
-      inc += 33;
+      inc += 20;
       setawardedbugNoLocation(true);
     }
     if (bugNoTitle && !awardedbugNoTitle) {
-      inc += 33;
+      inc += 20;
       setawardedbugNoTitle(true);
     }
     if (bugWrongDate && !awardedbugWrongDate) {
-      inc += 33;
+      inc += 20;
       setawardedbugWrongDate(true);
     }
     if (bugPastDate && !awardedbugPastDate) {
-      inc += 33;
+      inc += 20;
       setawardedbugPastDate(true);
     }
-    if (inc > 0) setScore((s) => s + inc);
-  }, [bugNoLocation, bugNoTitle, bugWrongDate, bugPastDate]);
+    if (bugNegativePeople && !awardedbugNegativePeople) {
+      inc += 20;
+      setawardedbugNegativePeople(true);
+    }
+    if (inc > 0) {
+      (async () => {
+        await shootConfetti(1200);         //animazione
+        setScore((s) => s + inc);          
+      })();
+    }
+  }, [bugNoLocation, bugNoTitle, bugWrongDate, bugPastDate, bugNegativePeople]);
 
   function handleSubmit(e) {
     e.preventDefault();
     addEvent();
   }
-
+    function BackToGame() {
+        navigate('/game');
+    }
   return (
     <div className="page-container">
       <div className="top-bar">
-        <button className="exit-button">⏻ Esci</button>
+        <button className="exit-button" onClick={BackToGame}>⏻ Esci</button>
         <div className="score-display">
           <strong>Punteggio:</strong> {score}
         </div>
@@ -133,14 +179,14 @@ export default function EventFormBug() {
       </form>
 
       <p className="message">{msg}</p>
-      
+
       <div className="events-grid">
         {events.map((ev, i) => (
           <div key={i} className="event-card">
             <h4>{ev.title}</h4>
             <p><strong>Luogo:</strong> {ev.location}</p>
-            <p><strong>Data:</strong> {ev.eventDate.toLocaleString()}</p>
-            <p><strong>Partecipanti:</strong> {ev.eventParticipants}</p>
+            <p onClick={() => ClickDate(ev)}><strong>Data:</strong> {ev.eventDate.toLocaleString()}</p>
+            <p onClick={() => CheckParticipants(ev)}><strong>Partecipanti:</strong> {ev.eventParticipants}</p>
           </div>
         ))}
       </div>

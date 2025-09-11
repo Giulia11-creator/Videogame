@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { doc, getDoc, setDoc, serverTimestamp, documentId } from "firebase/firestore";
 import { db } from '../firebase';
 import { UserAuth } from "../context/AuthContext";
+import confetti from "canvas-confetti";
 import "../styles/travel.css";
 import h1 from "/public/h1.jpg";
 import h2 from "/public/h2.jpg";
@@ -43,19 +44,42 @@ const TravelPage = () => {
 
     const { user } = UserAuth();
 
+
+    // Anima i coriandoli per ~1.2s, ritorna una Promise che si risolve a fine animazione
+    function shootConfetti(duration = 1200) {
+        return new Promise((resolve) => {
+            const end = Date.now() + duration;
+
+            (function frame() {
+                confetti({ particleCount: 4, angle: 60, spread: 60, origin: { x: 0 } });
+                confetti({ particleCount: 4, angle: 120, spread: 60, origin: { x: 1 } });
+
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                } else {
+                    resolve();
+                }
+            })();
+        });
+    }
+
+
     useEffect(() => {
         const dIn = new Date(dateIn);
         const dOut = new Date(dateOut);
         if (dIn > dOut)
             setbugDate1(true);
-    }, [dateIn,dateOut]);
+    }, [dateIn, dateOut]);
 
     useEffect(() => {
         if (bugDate1) {
             const scoreSetForWrongDate1 = sessionStorage.getItem('scoreSetForWrongDate1');
             if (!scoreSetForWrongDate1) {
                 const newScore = score + 33;
-                setscore(newScore);
+                (async () => {
+                    await shootConfetti(1200);         //animazione
+                    setscore(newScore);
+                })();
                 sessionStorage.setItem('score', JSON.stringify(newScore));
                 sessionStorage.setItem('scoreSetForWrongDate1', 'true');
             }
@@ -69,7 +93,10 @@ const TravelPage = () => {
             const scoreSetForbugNegativePeople = sessionStorage.getItem('scoreSetForbugNegativePeople');
             if (!scoreSetForbugNegativePeople) {
                 const newScore = score + 33; // il valore che vuoi settare
-                setscore(newScore);
+                (async () => {
+                    await shootConfetti(1200);         //animazione
+                    setscore(newScore);
+                })();
                 sessionStorage.setItem('score', JSON.stringify(newScore));
                 sessionStorage.setItem('scoreSetForbugNegativePeople', 'true');
             }
@@ -97,7 +124,10 @@ const TravelPage = () => {
             const scoreSetForbugNegativeChildren = sessionStorage.getItem('scoreSetForbugNegativeChildren');
             if (!scoreSetForbugNegativeChildren) {
                 const newScore = score + 33; // il valore che vuoi settare
-                setscore(newScore);
+                (async () => {
+                    await shootConfetti(1200);         //animazione
+                    setscore(newScore);
+                })();
                 sessionStorage.setItem('score', JSON.stringify(newScore));
                 sessionStorage.setItem('scoreSetForbugNegativeChildren', 'true');
             }
@@ -124,7 +154,7 @@ const TravelPage = () => {
 
             hotel: document.getElementById(name).textContent,
             price: document.getElementById(price).textContent,
-            adults:nAdults,
+            adults: nAdults,
             children: nchildren,
             date1: dateIn,
             date2: dateOut
@@ -211,11 +241,11 @@ const TravelPage = () => {
                     </label>
                     <label className="field">
                         <span>Adulti</span>
-                        <input id="adults" type="text" onChange={(e) => setnAdults(Number(e.target.value))} />
+                        <input id="adults" type="number" onChange={(e) => setnAdults(Number(e.target.value))} />
                     </label>
                     <label className="field">
                         <span>Bambini</span>
-                        <input id="children" type="text" onChange={(e) => setnchildren(Number(e.target.value))} />
+                        <input id="children" type="number" onChange={(e) => setnchildren(Number(e.target.value))} />
                     </label>
 
 
