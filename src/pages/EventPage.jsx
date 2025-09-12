@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { doc, setDoc, updateDoc, getDoc, increment, serverTimestamp } from "firebase/firestore";
-import { db } from "../firebase";
+import { useEffect, useState } from "react";
+import { shootConfetti } from "../ReactComponents/confetti.jsx";
+import { addUser, addPoints } from "../ReactComponents/FirestoreFunction.js";
 import { UserAuth } from "../context/AuthContext";
 import "../styles/Event.css"; // importa lo stile
-import confetti from "canvas-confetti";
 import { useNavigate } from 'react-router-dom';
 export default function EventFormBug() {
   const [title, setTitle] = useState("");
@@ -26,67 +25,16 @@ export default function EventFormBug() {
   const { user } = UserAuth();
   const navigate = useNavigate()
 
-  async function addUser() {
-    if (!user?.uid) return;
-    const userRef = doc(db, "EventsLevel", user.uid);
-    try {
-      const docSnap = await getDoc(userRef);
-      if (docSnap.exists()) {
-        await setDoc(userRef, { points: Number(score) }, { merge: true });
-      } else {
-        await setDoc(userRef, {
-          id: user.uid,
-          nick: user.email,
-          points: Number(score),
-        });
-      }
-    } catch (error) {
-      console.error("Errore durante il salvataggio:", error);
-    }
-  }
-
-  async function addPoints(delta) {
-    const ref = doc(db, "Leaderboard", user.uid);
-    const docSnap = await getDoc(ref);
-    if (docSnap.exists()) {
-      await updateDoc(ref, {
-        totalPoints: increment(delta),
-      })
-    }
-    else {
-      await setDoc(ref, {
-        id: user.uid,
-        nick: user.email,
-        totalPoints: increment(delta),
+useEffect(() => {
+  if (user) {
+    (async () => {
+      await addUser("EventsLevel", user.uid, {
+        score,
+        email: user.email,
       });
-
-    }
+    })();
   }
-
-  useEffect(() => {
-    if (user?.uid != null) {
-      addUser();
-    }
-  }, [score, user?.uid]);
-
-  // Anima i coriandoli per ~1.2s
-  function shootConfetti(duration = 1200) {
-    return new Promise((resolve) => {
-      const end = Date.now() + duration;
-
-      (function frame() {
-        confetti({ particleCount: 4, angle: 60, spread: 60, origin: { x: 0 } });
-        confetti({ particleCount: 4, angle: 120, spread: 60, origin: { x: 1 } });
-
-        if (Date.now() < end) {
-          requestAnimationFrame(frame);
-        } else {
-          resolve();
-        }
-      })();
-    });
-  }
-
+}, [score, user]);
 
   function addEvent() {
     const newEvent = {
@@ -129,36 +77,70 @@ export default function EventFormBug() {
     let inc = 0;
     if (bugNoLocation && !awardedbugNoLocation) {
       inc += 20;
-      addPoints(20);
+       (async () => {
+          await shootConfetti();
+          await addPoints("Leaderboard", user.uid, 20, "totalPoints", {
+            nick: user.email,
+          }); //animazione e icremento del punteggio nella classifica
+        })();
       setawardedbugNoLocation(true);
     }
     if (bugNoTitle && !awardedbugNoTitle) {
       inc += 20;
-      addPoints(20);
+       (async () => {
+          await shootConfetti();
+          await addPoints("Leaderboard", user.uid, 20, "totalPoints", {
+            nick: user.email,
+          }); //animazione e icremento del punteggio nella classifica
+        })();
       setawardedbugNoTitle(true);
     }
     if (bugWrongDate && !awardedbugWrongDate) {
       inc += 20;
-      addPoints(20);
+      (async () => {
+          await shootConfetti();
+          await addPoints("Leaderboard", user.uid, 20, "totalPoints", {
+            nick: user.email,
+          }); //animazione e icremento del punteggio nella classifica
+        })();
       setawardedbugWrongDate(true);
     }
     if (bugPastDate && !awardedbugPastDate) {
       inc += 20;
-      addPoints(20);
+       (async () => {
+          await shootConfetti();
+          await addPoints("Leaderboard", user.uid, 20, "totalPoints", {
+            nick: user.email,
+          }); //animazione e icremento del punteggio nella classifica
+        })();
       setawardedbugPastDate(true);
     }
     if (bugNegativePeople && !awardedbugNegativePeople) {
       inc += 20;
-      addPoints(20);
+     (async () => {
+          await shootConfetti();
+          await addPoints("Leaderboard", user.uid, 20, "totalPoints", {
+            nick: user.email,
+          }); //animazione e icremento del punteggio nella classifica
+        })();
       setawardedbugNegativePeople(true);
     }
     if (inc > 0) {
-      (async () => {
-        await shootConfetti(1200);         //animazione
+             //animazione
         setScore((s) => s + inc);
-      })();
     }
-  }, [bugNoLocation, bugNoTitle, bugWrongDate, bugPastDate, bugNegativePeople]);
+  }, [
+  bugNoLocation,
+  bugNoTitle,
+  bugWrongDate,
+  bugPastDate,
+  bugNegativePeople,
+  awardedbugNoLocation,
+  awardedbugNoTitle,
+  awardedbugWrongDate,
+  awardedbugPastDate,
+  awardedbugNegativePeople,user.email,user.uid
+]);
 
   function handleSubmit(e) {
     e.preventDefault();

@@ -1,6 +1,6 @@
 import { createRoot } from "react-dom/client";
-import { HashRouter, Routes, Route, Link, Navigate } from "react-router-dom";
-import { StrictMode, useEffect } from "react";
+import { HashRouter, Routes, Route,Navigate } from "react-router-dom";
+import { StrictMode} from "react";
 import { Provider } from "jotai";
 import { store } from "./store.js";
 import LoginPage from "./pages/LoginPage.jsx";
@@ -11,7 +11,7 @@ import TravelPage from "./pages/TravelPage.jsx";
 import CheckoutPage from "./pages/CheckoutPage.jsx";
 import LeaderboardPage from "./pages/LeaderboardPage.jsx";
 import { AuthContextProvider } from "./context/AuthContext";
-import Test from "./pages/test.jsx";
+import EventPage from "./pages/EventPage.jsx";
 /** CSS globale: font + reset viewport*/
 import "./styles/base.css";
 
@@ -27,7 +27,7 @@ createRoot(document.getElementById("ui")).render(
             <Route path="/signup" element={<SignupPage />} />
             <Route path="/travel" element={<TravelPage />} />
              <Route path="/checkout" element={<CheckoutPage />} />
-             <Route path="/test" element={<Test />} />
+             <Route path="/event" element={<EventPage />} />
               <Route path="/leader" element={<LeaderboardPage />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>

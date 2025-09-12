@@ -1,7 +1,7 @@
 import { useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import "../styles/ui.css";
-import logo from "/public/logo.png";
+import logo from "../images/logo.png";
 export default function StartPage() {
   // Attiva lo stile della schermata UI e rimuovilo all'uscita
   useEffect(() => {

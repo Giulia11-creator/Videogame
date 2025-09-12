@@ -182,20 +182,20 @@ export default async function initGame() {
     k.pos(500, 500),
   ]);
   npc.onCollide("player", () => {
-  store.set(textBoxContentAtom, "Messaggio NPC 1");
+  store.set(textBoxContentAtom, "Un bug ben nascosto non teme gli occhi distratti, ma trema davanti a chi sa dove cercare.(Premi barra spazziatrice per accedere al livello oppure esc per chiudere la finestra)");
   store.set(isTextBoxVisibleAtom, true);
   store.set(nextpage, "/");
 
 });
 
 npc2.onCollide("player", () => {
-  store.set(textBoxContentAtom, "Messaggio NPC 2");
+  store.set(textBoxContentAtom, "Gli ingenui cliccano, i curiosi indagano, i veri sviluppatori scoprono l’errore.(Premi barra spazziatrice per accedere al livello oppure esc per chiudere la finestra)");
   store.set(isTextBoxVisibleAtom, true);
-  store.set(nextpage, "/test");
+  store.set(nextpage, "/event");
 });
 
 npc3.onCollide("player", () => {
-  store.set(textBoxContentAtom, "Solo chi sa dove guardare vede l’inganno. Gli altri? Si limitano a cliccare e sperare.");
+  store.set(textBoxContentAtom, "Solo chi sa dove guardare vede l’inganno. Gli altri? Si limitano a cliccare e sperare.(Premi barra spazziatrice per accedere al livello oppure esc per chiudere la finestra)");
   store.set(isTextBoxVisibleAtom, true);
   store.set(nextpage, "/travel");
 });

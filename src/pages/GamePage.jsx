@@ -1,9 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef} from "react";
 import "../styles/game.css";
 import initGame from "../initGame.js";
 import ReactUI from "../ReactUI.jsx";
-import { collection, query, orderBy, limit, onSnapshot } from "firebase/firestore";
-import { db } from "../firebase"; // usa il tuo export
 
 // scala l’overlay 1920×1080 in base al viewport
 function useViewportScale() {
