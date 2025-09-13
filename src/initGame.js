@@ -184,7 +184,7 @@ export default async function initGame() {
   npc.onCollide("player", () => {
   store.set(textBoxContentAtom, "Un bug ben nascosto non teme gli occhi distratti, ma trema davanti a chi sa dove cercare.(Premi barra spazziatrice per accedere al livello oppure esc per chiudere la finestra)");
   store.set(isTextBoxVisibleAtom, true);
-  store.set(nextpage, "/");
+  store.set(nextpage, "/library");
 
 });
 
