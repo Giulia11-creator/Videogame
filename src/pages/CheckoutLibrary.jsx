@@ -24,16 +24,14 @@ export default function CheckoutPage() {
 
   const navigate = useNavigate();
 
-  function BackToLibrary() {
-    navigate("/library");
-  }
 
   function handleCheckout() {
+    navigate("/library");
     alert("✅ Prenotazione effettuata con successo!");
     // qui puoi aggiungere logica per salvare sul db o svuotare la sessionStorage
     sessionStorage.removeItem("books");
     setLibri([]);
-    navigate("/game"); // esempio: torna al gioco
+    navigate("/library"); // esempio: torna al gioco
   }
 
   function incrementClicks() {
@@ -63,10 +61,6 @@ export default function CheckoutPage() {
     <div>
       <div className="container with-top-right">
         <div className="topbar">
-          <button className="btn-exit" onClick={BackToLibrary}>
-            Torna alla Libreria
-          </button>
-
           <div className="topbar-right">
             <span className="score-chip">
               <span className="score-label">Libri prenotati</span>
