@@ -253,7 +253,9 @@ export default function LibraryPage() {
           </div>
         </div>
 
-        <h1 onClick={incrementClicks} className="hero-title">📚🐭 Topi da Biblioteca ✨</h1>
+        <h1 onClick={incrementClicks} className="hero-title">
+          📚🐭 Topi da Biblioteca ✨
+        </h1>
 
         <div className="meta" style={{ marginBottom: 16 }}>
           Totale:{" "}

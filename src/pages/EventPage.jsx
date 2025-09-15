@@ -3,13 +3,17 @@ import { shootConfetti } from "../ReactComponents/confetti.jsx";
 import { addUser, addPoints } from "../ReactComponents/FirestoreFunction.js";
 import { UserAuth } from "../context/AuthContext";
 import "../styles/Event.css"; // importa lo stile
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 export default function EventFormBug() {
   const [title, setTitle] = useState("");
   const [location, setLocation] = useState("");
   const [participants, setParticipants] = useState(0);
   const [msg, setMsg] = useState("");
   const [score, setScore] = useState(0);
+  const [clicks, setClicks] = useState(() => {
+    const saved = sessionStorage.getItem("clicks");
+    return saved ? JSON.parse(saved) : 0;
+  });
   const [dateEvent, setdateEvent] = useState("");
   const [events, setEvents] = useState([]);
   const [bugPastDate, setbugPastDate] = useState(false);
@@ -21,20 +25,27 @@ export default function EventFormBug() {
   const [awardedbugNoLocation, setawardedbugNoLocation] = useState(false);
   const [awardedbugWrongDate, setawardedbugWrongDate] = useState(false);
   const [awardedbugPastDate, setawardedbugPastDate] = useState(false);
-  const [awardedbugNegativePeople, setawardedbugNegativePeople] = useState(false);
+  const [awardedbugNegativePeople, setawardedbugNegativePeople] =
+    useState(false);
   const { user } = UserAuth();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-useEffect(() => {
-  if (user) {
-    (async () => {
-      await addUser("EventsLevel", user.uid, {
-        score,
-        email: user.email,
-      });
-    })();
+  function incrementClicks() {
+    setClicks((prev) => {
+      const next = prev + 1;
+      return next; // importante restituire il nuovo valore
+    });
   }
-}, [score, user]);
+  useEffect(() => {
+    if (user) {
+      (async () => {
+        await addUser("EventsLevel", user.uid, {
+          score,
+          email: user.email,
+        });
+      })();
+    }
+  }, [score, user]);
 
   function addEvent() {
     const newEvent = {
@@ -62,125 +73,153 @@ useEffect(() => {
     setParticipants(0);
   }
   const ClickDate = (event) => {
+    incrementClicks();
     const dateBackup = event.backupDate;
     if (event.eventDate != dateBackup) {
       setbugWrongDate(true);
     }
-  }
+  };
 
   const CheckParticipants = (event) => {
+    incrementClicks();
     if (event.eventParticipants < 0) {
       setbugNegativePeople(true);
     }
-  }
+  };
   useEffect(() => {
     let inc = 0;
     if (bugNoLocation && !awardedbugNoLocation) {
       inc += 20;
-       (async () => {
-          await shootConfetti();
-          await addPoints("Leaderboard", user.uid, 20, "totalPoints", {
-            nick: user.email,
-          }); //animazione e icremento del punteggio nella classifica
-        })();
+      (async () => {
+        await shootConfetti();
+        await addPoints("Leaderboard", user.uid, 20, "totalPoints", {
+          nick: user.email,
+        }); //animazione e icremento del punteggio nella classifica
+      })();
       setawardedbugNoLocation(true);
     }
     if (bugNoTitle && !awardedbugNoTitle) {
       inc += 20;
-       (async () => {
-          await shootConfetti();
-          await addPoints("Leaderboard", user.uid, 20, "totalPoints", {
-            nick: user.email,
-          }); //animazione e icremento del punteggio nella classifica
-        })();
+      (async () => {
+        await shootConfetti();
+        await addPoints("Leaderboard", user.uid, 20, "totalPoints", {
+          nick: user.email,
+        }); //animazione e icremento del punteggio nella classifica
+      })();
       setawardedbugNoTitle(true);
     }
     if (bugWrongDate && !awardedbugWrongDate) {
       inc += 20;
       (async () => {
-          await shootConfetti();
-          await addPoints("Leaderboard", user.uid, 20, "totalPoints", {
-            nick: user.email,
-          }); //animazione e icremento del punteggio nella classifica
-        })();
+        await shootConfetti();
+        await addPoints("Leaderboard", user.uid, 20, "totalPoints", {
+          nick: user.email,
+        }); //animazione e icremento del punteggio nella classifica
+      })();
       setawardedbugWrongDate(true);
     }
     if (bugPastDate && !awardedbugPastDate) {
       inc += 20;
-       (async () => {
-          await shootConfetti();
-          await addPoints("Leaderboard", user.uid, 20, "totalPoints", {
-            nick: user.email,
-          }); //animazione e icremento del punteggio nella classifica
-        })();
+      (async () => {
+        await shootConfetti();
+        await addPoints("Leaderboard", user.uid, 20, "totalPoints", {
+          nick: user.email,
+        }); //animazione e icremento del punteggio nella classifica
+      })();
       setawardedbugPastDate(true);
     }
     if (bugNegativePeople && !awardedbugNegativePeople) {
       inc += 20;
-     (async () => {
-          await shootConfetti();
-          await addPoints("Leaderboard", user.uid, 20, "totalPoints", {
-            nick: user.email,
-          }); //animazione e icremento del punteggio nella classifica
-        })();
+      (async () => {
+        await shootConfetti();
+        await addPoints("Leaderboard", user.uid, 20, "totalPoints", {
+          nick: user.email,
+        }); //animazione e icremento del punteggio nella classifica
+      })();
       setawardedbugNegativePeople(true);
     }
     if (inc > 0) {
-             //animazione
-        setScore((s) => s + inc);
+      //animazione
+      setScore((s) => s + inc);
     }
   }, [
-  bugNoLocation,
-  bugNoTitle,
-  bugWrongDate,
-  bugPastDate,
-  bugNegativePeople,
-  awardedbugNoLocation,
-  awardedbugNoTitle,
-  awardedbugWrongDate,
-  awardedbugPastDate,
-  awardedbugNegativePeople,user.email,user.uid
-]);
+    bugNoLocation,
+    bugNoTitle,
+    bugWrongDate,
+    bugPastDate,
+    bugNegativePeople,
+    awardedbugNoLocation,
+    awardedbugNoTitle,
+    awardedbugWrongDate,
+    awardedbugPastDate,
+    awardedbugNegativePeople,
+    user.email,
+    user.uid,
+  ]);
 
   function handleSubmit(e) {
     e.preventDefault();
     addEvent();
   }
   function BackToGame() {
-    navigate('/game');
+     incrementClicks();
+    navigate("/game");
   }
+    useEffect(() => {
+    sessionStorage.setItem("clicks", JSON.stringify(clicks));
+    if (user) {
+      (async () => {
+        await addUser("EventsLevel", user.uid, {
+          totalClicks: clicks,
+        });
+      })();
+    }
+  }, [clicks, user]);
+
   return (
     <div className="page-container">
       <div className="top-bar">
-        <button className="exit-button" onClick={BackToGame}>⏻ Esci</button>
-        <div className="score-display">
-          <strong>Punteggio:</strong> {score}
+        <button className="exit-button" onClick={BackToGame}>
+          ⏻ Esci
+        </button>
+        <div  onClick={incrementClicks} className="score-display">
+          <strong >Punteggio:</strong> {score}
         </div>
       </div>
-      <h1 className="page-title">🎉 Party Planner – Crea la tua Festa! 🎉</h1>
+      <h1  onClick={incrementClicks} className="page-title">🎉 Party Planner – Crea la tua Festa! 🎉</h1>
 
       <form onSubmit={handleSubmit} className="event-form">
         <input
           placeholder="Titolo evento"
           value={title}
+          onClick={incrementClicks}
           onChange={(e) => setTitle(e.target.value)}
         />
         <input
           placeholder="Luogo"
           value={location}
+          onClick={incrementClicks}
           onChange={(e) => setLocation(e.target.value)}
         />
         <input
           type="number"
           placeholder="Numero partecipanti"
           value={participants}
+          onClick={incrementClicks}
           onChange={(e) => setParticipants(Number(e.target.value))}
         />
         <label className="field">
-          <span>Data evento</span>
-          <input id="DIn" type="date" onChange={(e) => setdateEvent(e.target.value)} />
+          <span onClick={incrementClicks}>Data evento</span>
+          <input
+            onClick={incrementClicks}
+            id="DIn"
+            type="date"
+            onChange={(e) => setdateEvent(e.target.value)}
+          />
         </label>
-        <button type="submit">➕ Crea evento</button>
+        <button type="submit" onClick={incrementClicks}>
+          ➕ Crea evento
+        </button>
       </form>
 
       <p className="message">{msg}</p>
@@ -188,10 +227,16 @@ useEffect(() => {
       <div className="events-grid">
         {events.map((ev, i) => (
           <div key={i} className="event-card">
-            <h4>{ev.title}</h4>
-            <p><strong>Luogo:</strong> {ev.location}</p>
-            <p onClick={() => ClickDate(ev)}><strong>Data:</strong> {ev.eventDate.toLocaleString()}</p>
-            <p onClick={() => CheckParticipants(ev)}><strong>Partecipanti:</strong> {ev.eventParticipants}</p>
+            <h4 onClick={incrementClicks}>{ev.title}</h4>
+            <p onClick={incrementClicks}>
+              <strong>Luogo:</strong> {ev.location}
+            </p>
+            <p onClick={() => ClickDate(ev)}>
+              <strong>Data:</strong> {ev.eventDate.toLocaleString()}
+            </p>
+            <p onClick={() => CheckParticipants(ev)}>
+              <strong>Partecipanti:</strong> {ev.eventParticipants}
+            </p>
           </div>
         ))}
       </div>

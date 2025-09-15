@@ -36,7 +36,20 @@ const TravelPage = () => {
     return saved ? JSON.parse(saved) : 0;
   });
 
+  const [clicks, setClicks] = useState(() => {
+    const saved = sessionStorage.getItem("clicks");
+    return saved ? JSON.parse(saved) : 0;
+  });
+
   const { user } = UserAuth();
+
+  function incrementClicks() {
+    setClicks((prev) => {
+      const next = prev + 1;
+      sessionStorage.setItem("clicks", JSON.stringify(next));
+      return next; // importante restituire il nuovo valore
+    });
+  }
 
   useEffect(() => {
     const dIn = new Date(dateIn);
@@ -132,11 +145,24 @@ const TravelPage = () => {
     }
   }, [score]);*/
 
+  useEffect(() => {
+    sessionStorage.setItem("clicks", JSON.stringify(clicks));
+    if (user) {
+      (async () => {
+        await addUser("TravelLevel", user.uid, {
+          totalClicks: clicks,
+        });
+      })();
+    }
+  }, [clicks, user]);
+
   function BackToGame() {
+    incrementClicks();
     navigate("/game");
   }
 
   function saveData(price, name) {
+    incrementClicks();
     const hotel = {
       hotel: document.getElementById(name).textContent,
       price: document.getElementById(price).textContent,
@@ -182,13 +208,13 @@ const TravelPage = () => {
         </button>
 
         <div className="score-chip" aria-live="polite" title="Punteggio">
-          <span className="score-label">Punteggio</span>
-          <span className="score-value">{score}</span>
+          <span onClick={incrementClicks} className="score-label">Punteggio</span>
+          <span onClick={incrementClicks} className="score-value">{score}</span>
         </div>
       </div>
 
       <header className="header">
-        <h1 className="page-title">Trova e prenota il tuo soggiorno✈️🏨</h1>
+        <h1 className="page-title" onClick={incrementClicks}>Trova e prenota il tuo soggiorno✈️🏨</h1>
       </header>
 
       <section
@@ -203,6 +229,7 @@ const TravelPage = () => {
               id="DIn"
               type="date"
               onChange={(e) => setDateIn(e.target.value)}
+              onClick={incrementClicks}
             />
           </label>
           <label className="field">
@@ -211,6 +238,7 @@ const TravelPage = () => {
               id="DOut"
               type="date"
               onChange={(e) => setDateOut(e.target.value)}
+              onClick={incrementClicks}
             />
           </label>
           <label className="field">
@@ -219,6 +247,7 @@ const TravelPage = () => {
               id="adults"
               type="number"
               onChange={(e) => setnAdults(Number(e.target.value))}
+              onClick={incrementClicks}
             />
           </label>
           <label className="field">
@@ -227,6 +256,7 @@ const TravelPage = () => {
               id="children"
               type="number"
               onChange={(e) => setnchildren(Number(e.target.value))}
+              onClick={incrementClicks}
             />
           </label>
         </form>
@@ -236,26 +266,26 @@ const TravelPage = () => {
         <div className="cards">
           <article className="card">
             <div className="media">
-              <img src={h1} />
+              <img src={h1}  onClick={incrementClicks} />
             </div>
             <div className="card-body">
               <div className="title-row">
-                <h2 className="title" id="MareAzzurro">
+                <h2 className="title" onClick={incrementClicks} id="MareAzzurro">
                   Hotel Mare Azzurro
                 </h2>
-                <div className="stars">★★★★☆</div>
+                <div className="stars" onClick={incrementClicks}>★★★★☆</div>
               </div>
               <div className="meta">
-                <span className="pill">50 m dal mare</span>
-                <span className="pill">Colazione inclusa</span>
-                <span className="pill">Wi‑Fi</span>
+                <span className="pill" onClick={incrementClicks}>50 m dal mare</span>
+                <span className="pill" onClick={incrementClicks}>Colazione inclusa</span>
+                <span className="pill" onClick={incrementClicks}>Wi‑Fi</span>
               </div>
               <div className="price-row">
                 <div>
                   <div className="price" id="priceMa">
-                    € 129<span className="small"> / notte</span>
+                    € 129<span className="small" onClick={incrementClicks}> / notte</span>
                   </div>
-                  <div className="small">Cancellazione gratuita</div>
+                  <div className="small" onClick={incrementClicks}>Cancellazione gratuita</div>
                 </div>
                 <div className="cta">
                   <button
@@ -271,26 +301,26 @@ const TravelPage = () => {
 
           <article className="card">
             <div className="media">
-              <img src={h2} />
+              <img src={h2} onClick={incrementClicks}/>
             </div>
             <div className="card-body">
               <div className="title-row">
-                <h2 className="title" id="Boutique Centro Storico">
+                <h2 className="title" onClick={incrementClicks} id="Boutique Centro Storico">
                   Boutique Centro Storico
                 </h2>
-                <div className="stars">★★★★★</div>
+                <div className="stars" onClick={incrementClicks}>★★★★★</div>
               </div>
               <div className="meta">
-                <span className="pill">Centro città</span>
-                <span className="pill">Spa &amp; Gym</span>
-                <span className="pill">Pet‑friendly</span>
+                <span  onClick={incrementClicks} className="pill">Centro città</span>
+                <span onClick={incrementClicks} className="pill">Spa &amp; Gym</span>
+                <span onClick={incrementClicks} className="pill">Pet‑friendly</span>
               </div>
               <div className="price-row">
                 <div>
                   <div className="price" id="priceB">
-                    € 189<span className="small"> / notte</span>
+                    € 189<span onClick={incrementClicks} className="small"> / notte</span>
                   </div>
-                  <div className="small">Pagamento in struttura</div>
+                  <div className="small" onClick={incrementClicks}>Pagamento in struttura</div>
                 </div>
                 <div className="cta">
                   <button
@@ -308,26 +338,26 @@ const TravelPage = () => {
 
           <article className="card">
             <div className="media">
-              <img src={h3} />
+              <img src={h3}  onClick={incrementClicks}/>
             </div>
             <div className="card-body">
               <div className="title-row">
-                <h2 className="title" id="Eco Lodge Collina">
+                <h2 className="title" onClick={incrementClicks} id="Eco Lodge Collina">
                   Eco Lodge Collina
                 </h2>
-                <div className="stars">★★★★☆</div>
+                <div className="stars" onClick={incrementClicks}>★★★★☆</div>
               </div>
               <div className="meta">
-                <span className="pill">Parcheggio gratuito</span>
-                <span className="pill">Ristorante</span>
-                <span className="pill">Vicino a sentieri</span>
+                <span className="pill" onClick={incrementClicks}>Parcheggio gratuito</span>
+                <span className="pill" onClick={incrementClicks}>Ristorante</span>
+                <span className="pill"onClick={incrementClicks}>Vicino a sentieri</span>
               </div>
               <div className="price-row">
                 <div>
                   <div className="price" id="priceEco">
-                    € 99<span className="small"> / notte</span>
+                    € 99<span onClick={incrementClicks} className="small"> / notte</span>
                   </div>
-                  <div className="small">Offerta limitata</div>
+                  <div className="small" onClick={incrementClicks}>Offerta limitata</div>
                 </div>
                 <div className="cta">
                   <button
@@ -343,26 +373,26 @@ const TravelPage = () => {
 
           <article className="card">
             <div className="media">
-              <img src={h4} />
+              <img src={h4}  onClick={incrementClicks}/>
             </div>
             <div className="card-body">
               <div className="title-row">
-                <h2 className="title" id="Resort Lago Sereno">
+                <h2 className="title" onClick={incrementClicks} id="Resort Lago Sereno">
                   Resort Lago Sereno
                 </h2>
-                <div className="stars">★★★★☆</div>
+                <div className="stars" onClick={incrementClicks}>★★★★☆</div>
               </div>
               <div className="meta">
-                <span className="pill">Vista lago</span>
-                <span className="pill">Piscina</span>
-                <span className="pill">Colazione inclusa</span>
+                <span className="pill" onClick={incrementClicks}>Vista lago</span>
+                <span className="pill" onClick={incrementClicks}>Piscina</span>
+                <span className="pill" onClick={incrementClicks}>Colazione inclusa</span>
               </div>
               <div className="price-row">
                 <div>
                   <div className="price" id="pricer">
-                    € 149<span className="small"> / notte</span>
+                    € 149<span className="small" onClick={incrementClicks}> / notte</span>
                   </div>
-                  <div className="small">Cancellazione gratuita</div>
+                  <div className="small" onClick={incrementClicks}>Cancellazione gratuita</div>
                 </div>
                 <div className="cta">
                   <button

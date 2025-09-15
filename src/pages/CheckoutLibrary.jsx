@@ -1,12 +1,26 @@
 import "../styles/Library.css";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { UserAuth } from "../context/AuthContext";
+import { shootConfetti } from "../ReactComponents/confetti.jsx";
+import { addUser, addPoints } from "../ReactComponents/FirestoreFunction.js";
 
 export default function CheckoutPage() {
   const [libri, setLibri] = useState(() => {
     // recupero i libri prenotati da sessionStorage
     return JSON.parse(sessionStorage.getItem("books") || "[]");
   });
+
+  const [clicks, setClicks] = useState(() => {
+    const saved = sessionStorage.getItem("clickss");
+    return saved ? JSON.parse(saved) : 0;
+  });
+
+  const [score, setscore] = useState(() => {
+    const saved = sessionStorage.getItem("score");
+    return saved ? JSON.parse(saved) : 0;
+  });
+  const { user } = UserAuth();
 
   const navigate = useNavigate();
 
@@ -21,6 +35,29 @@ export default function CheckoutPage() {
     setLibri([]);
     navigate("/game"); // esempio: torna al gioco
   }
+
+  function incrementClicks() {
+    setClicks((prev) => {
+      const next = prev + 1;
+      sessionStorage.setItem("clicks", JSON.stringify(next));
+      return next; // importante restituire il nuovo valore
+    });
+  }
+
+  useEffect(() => {
+    sessionStorage.setItem("score", JSON.stringify(score));
+  }, [score]);
+
+  useEffect(() => {
+    sessionStorage.setItem("clicks", JSON.stringify(clicks));
+    if (user) {
+      (async () => {
+        await addUser("BookLevel", user.uid, {
+          totalClicks: clicks,
+        });
+      })();
+    }
+  }, [clicks, user]);
 
   return (
     <div>
@@ -52,9 +89,7 @@ export default function CheckoutPage() {
                   <div className="card-body">
                     <div className="title-row">
                       <div className="title">{libro.titolo}</div>
-                      <span className="badge-state badge-busy">
-                        PRENOTATO
-                      </span>
+                      <span className="badge-state badge-busy">PRENOTATO</span>
                     </div>
                     <div className="meta">
                       <p>{libro.autore}</p>
