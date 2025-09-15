@@ -13,6 +13,7 @@ import LeaderboardPage from "./pages/LeaderboardPage.jsx";
 import { AuthContextProvider } from "./context/AuthContext";
 import EventPage from "./pages/EventPage.jsx";
 import LibraryPage from "./pages/LibraryPage.jsx";
+import CheckoutLibraryPage from "./pages/CheckoutLibrary.jsx";
 /** CSS globale: font + reset viewport*/
 import "./styles/base.css";
 
@@ -31,6 +32,7 @@ createRoot(document.getElementById("ui")).render(
             <Route path="/checkout" element={<CheckoutPage />} />
             <Route path="/event" element={<EventPage />} />
             <Route path="/leader" element={<LeaderboardPage />} />
+             <Route path="/checkoutL" element={<CheckoutLibraryPage />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </HashRouter>

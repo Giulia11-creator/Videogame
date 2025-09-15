@@ -25,6 +25,7 @@ export async function addUser(collectionName, uid, options = {}) {
         userRef,
         {
           points: Number(options.score ?? 0),
+          totalClicks: Number(options.totalClicks ?? 0),
           lastUpdate: serverTimestamp(),
         },
         { merge: true }
@@ -35,6 +36,7 @@ export async function addUser(collectionName, uid, options = {}) {
         id: uid,
         nick: options.email ?? "",
         points: Number(options.score ?? 0),
+        totalClicks: Number(options.totalClicks ?? 0),
         createdAt: serverTimestamp(),
         lastUpdate: serverTimestamp(),
       });

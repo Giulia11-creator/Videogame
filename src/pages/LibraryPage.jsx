@@ -68,21 +68,25 @@ export default function LibraryPage() {
     const saved = sessionStorage.getItem("score");
     return saved ? JSON.parse(saved) : 0;
   });
+  const [clicks, setClicks] = useState(() => {
+    const saved = sessionStorage.getItem("clickss");
+    return saved ? JSON.parse(saved) : 0;
+  });
 
   const [bugWrongBooked, setbugWrongBooked] = useState(() => {
     const saved = sessionStorage.getItem("bugWrongBooked");
     return saved ? JSON.parse(saved) : false;
   });
 
-    const [bugWrongYear, setbugWrongYear] = useState(() => {
+  const [bugWrongYear, setbugWrongYear] = useState(() => {
     const saved = sessionStorage.getItem("bugWrongYear");
     return saved ? JSON.parse(saved) : false;
   });
 
-
   const { user } = UserAuth();
 
   function BackToGame() {
+    incrementClicks();
     navigate("/game");
   }
 
@@ -107,6 +111,7 @@ export default function LibraryPage() {
   }
 
   function handlePrenotaClick(book) {
+    incrementClicks();
     const isLibero = book.stato === "libero";
     if (isLibero) saveBook(book);
     else removeBook(book.id);
@@ -119,14 +124,23 @@ export default function LibraryPage() {
     );
   }
 
+  function incrementClicks() {
+    setClicks((prev) => {
+      const next = prev + 1;
+      sessionStorage.setItem("clicks", JSON.stringify(next));
+      return next; // importante restituire il nuovo valore
+    });
+  }
+
   function handleClickBooked() {
+    incrementClicks();
     let books = JSON.parse(sessionStorage.getItem("books") || "[]");
     if (prenotati > books.length) setbugWrongBooked(true);
   }
-useEffect(()=>{
-    if(!bugWrongYear) return;
+  useEffect(() => {
+    if (!bugWrongYear) return;
     const alreadyAwarded = sessionStorage.getItem("awardedbugWrongYear");
-    if(alreadyAwarded) return;
+    if (alreadyAwarded) return;
     if (!user?.uid || !user?.email) return;
 
     (async () => {
@@ -142,10 +156,7 @@ useEffect(()=>{
         return next;
       });
     })();
-
-
-},[bugWrongYear,user]);
- 
+  }, [bugWrongYear, user]);
 
   useEffect(() => {
     // esci se non è stato rilevato il bug
@@ -192,16 +203,31 @@ useEffect(()=>{
     return () => clearTimeout(timer);
   }, []);
 
-   function handleClickYear(book){
-
-    if(book.id  != 1) return;
-    else
-        setbugWrongYear(true);
-
-
+  function handleClickYear(book) {
+    incrementClicks();
+    if (book.id != 1) return;
+    else setbugWrongYear(true);
   }
 
+  function handleClickCheckout() {
+    incrementClicks();
+    navigate("/checkoutL");
+  }
 
+  useEffect(() => {
+    sessionStorage.setItem("score", JSON.stringify(score));
+  }, [score]);
+
+  useEffect(() => {
+    sessionStorage.setItem("clicks", JSON.stringify(clicks));
+    if (user) {
+      (async () => {
+        await addUser("BookLevel", user.uid, {
+          totalClicks: clicks,
+        });
+      })();
+    }
+  }, [clicks, user]);
 
   return (
     <div>
@@ -213,21 +239,37 @@ useEffect(()=>{
 
           {/* Lato destro: Checkout + Punteggio */}
           <div className="topbar-right">
-            <button className="btn-checkout">Checkout</button>
+            <button className="btn-checkout" onClick={handleClickCheckout}>
+              Checkout
+            </button>
             <div className="score-chip" aria-live="polite" title="Punteggio">
-              <span className="score-label">Punteggio</span>
-              <span className="score-value">{score}</span>
+              <span onClick={incrementClicks} className="score-label">
+                Punteggio
+              </span>
+              <span onClick={incrementClicks} className="score-value">
+                {score}
+              </span>
             </div>
           </div>
         </div>
 
-        <h1 className="hero-title">📚🐭 Topi da Biblioteca ✨</h1>
+        <h1 onClick={incrementClicks} className="hero-title">📚🐭 Topi da Biblioteca ✨</h1>
 
         <div className="meta" style={{ marginBottom: 16 }}>
           Totale:{" "}
-          <b style={{ marginLeft: 4, marginRight: 12 }}>{libri.length}</b>
+          <b
+            onClick={incrementClicks}
+            style={{ marginLeft: 4, marginRight: 12 }}
+          >
+            {libri.length}
+          </b>
           Libri liberi:{" "}
-          <b style={{ marginLeft: 4, marginRight: 12 }}>{liberi}</b>
+          <b
+            onClick={incrementClicks}
+            style={{ marginLeft: 4, marginRight: 12 }}
+          >
+            {liberi}
+          </b>
           Prenotati:{" "}
           <b onClick={handleClickBooked} style={{ marginLeft: 4 }}>
             {prenotati}
@@ -242,15 +284,20 @@ useEffect(()=>{
                 <div className="card-body">
                   <div className="title-row">
                     <div className="title">{libro.titolo}</div>
-                    <span className={`pill ${libero ? "" : ""}`}>
+                    <span
+                      onClick={incrementClicks}
+                      className={`pill ${libero ? "" : ""}`}
+                    >
                       {libro.stato.toUpperCase()}
                     </span>
                   </div>
                   <div className="meta">
-                    <p>{libro.autore} </p>
-                   <p onClick={() => handleClickYear(libro)}>{libro.anno}</p>
+                    <p onClick={incrementClicks}>{libro.autore} </p>
+                    <p onClick={() => handleClickYear(libro)}>{libro.anno}</p>
                   </div>
-                  <p className="desc">{libro.descr}</p>
+                  <p onClick={incrementClicks} className="desc">
+                    {libro.descr}
+                  </p>
                   <button
                     type="button"
                     className="btn-book"
