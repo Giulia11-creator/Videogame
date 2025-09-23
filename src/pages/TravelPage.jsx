@@ -8,11 +8,13 @@ import h1 from "../images/h1.jpg";
 import h2 from "../images/h2.jpg";
 import h3 from "../images//h3.jpg";
 import h4 from "../images/h4.jpg";
+import LevelCompleted from "../ReactComponents/LevelCompleted.jsx";
+
 
 const TravelPage = () => {
   const navigate = useNavigate();
   // const [errorMessage, seterrorMessage] = useState("");
-  const [modalVisible, setModalVisible] = useState(false);
+  const [modal, setModalVisible] = useState(false);
   // const [popVisible, setpopVisible] = useState(false);
   const [nAdults, setnAdults] = useState(0);
   const [nchildren, setnchildren] = useState(0);
@@ -139,11 +141,11 @@ const TravelPage = () => {
     sessionStorage.setItem("score", JSON.stringify(score));
   }, [score]);
 
-  /* useEffect(() => {
+  useEffect(() => {
     if (score == 100) {
       setModalVisible(true);
     }
-  }, [score]);*/
+  }, [score]);
 
   useEffect(() => {
     sessionStorage.setItem("clicks", JSON.stringify(clicks));
@@ -266,7 +268,7 @@ const TravelPage = () => {
         <div className="cards">
           <article className="card">
             <div className="media">
-              <img src={h1}  onClick={incrementClicks} />
+              <img src={h1} onClick={incrementClicks} />
             </div>
             <div className="card-body">
               <div className="title-row">
@@ -301,7 +303,7 @@ const TravelPage = () => {
 
           <article className="card">
             <div className="media">
-              <img src={h2} onClick={incrementClicks}/>
+              <img src={h2} onClick={incrementClicks} />
             </div>
             <div className="card-body">
               <div className="title-row">
@@ -311,7 +313,7 @@ const TravelPage = () => {
                 <div className="stars" onClick={incrementClicks}>★★★★★</div>
               </div>
               <div className="meta">
-                <span  onClick={incrementClicks} className="pill">Centro città</span>
+                <span onClick={incrementClicks} className="pill">Centro città</span>
                 <span onClick={incrementClicks} className="pill">Spa &amp; Gym</span>
                 <span onClick={incrementClicks} className="pill">Pet‑friendly</span>
               </div>
@@ -338,7 +340,7 @@ const TravelPage = () => {
 
           <article className="card">
             <div className="media">
-              <img src={h3}  onClick={incrementClicks}/>
+              <img src={h3} onClick={incrementClicks} />
             </div>
             <div className="card-body">
               <div className="title-row">
@@ -350,7 +352,7 @@ const TravelPage = () => {
               <div className="meta">
                 <span className="pill" onClick={incrementClicks}>Parcheggio gratuito</span>
                 <span className="pill" onClick={incrementClicks}>Ristorante</span>
-                <span className="pill"onClick={incrementClicks}>Vicino a sentieri</span>
+                <span className="pill" onClick={incrementClicks}>Vicino a sentieri</span>
               </div>
               <div className="price-row">
                 <div>
@@ -373,7 +375,7 @@ const TravelPage = () => {
 
           <article className="card">
             <div className="media">
-              <img src={h4}  onClick={incrementClicks}/>
+              <img src={h4} onClick={incrementClicks} />
             </div>
             <div className="card-body">
               <div className="title-row">
@@ -408,72 +410,9 @@ const TravelPage = () => {
         </div>
       </section>
 
-      {modalVisible && (
-        <div
-          style={{
-            position: "fixed",
-            inset: 0, // equivale a top:0, right:0, bottom:0, left:0
-            zIndex: 50,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            backgroundColor: "rgba(75, 85, 99, 0.5)", // grigio con opacità
-          }}
-        >
-          <div
-            style={{
-              background: "white",
-              padding: "24px",
-              borderRadius: "16px",
-              boxShadow: "0 4px 20px rgba(0,0,0,0.3)",
-              width: "100%",
-              maxWidth: "500px",
-            }}
-          >
-            <h3
-              style={{
-                fontSize: "24px",
-                fontWeight: "600",
-                textAlign: "center",
-                marginBottom: "16px",
-                color: "#9333ea", // viola
-              }}
-            >
-              Ottimo lavoro!
-            </h3>
-            <p
-              style={{
-                textAlign: "center",
-                marginBottom: "24px",
-                color: "#374151",
-              }}
-            >
-              Hai trovato tutti i bug! Puoi passare al prossimo gruppo di test!
-            </p>
-            <div style={{ textAlign: "center" }}>
-              <button
-                onClick={closeModal}
-                style={{
-                  backgroundColor: "#9333ea",
-                  color: "white",
-                  padding: "12px 24px",
-                  borderRadius: "8px",
-                  fontWeight: "600",
-                  border: "none",
-                  cursor: "pointer",
-                  transition: "background-color 0.2s ease",
-                }}
-                onMouseOver={(e) =>
-                  (e.currentTarget.style.backgroundColor = "#7e22ce")
-                }
-                onMouseOut={(e) =>
-                  (e.currentTarget.style.backgroundColor = "#9333ea")
-                }
-              >
-                Ok, torna alla Home
-              </button>
-            </div>
-          </div>
+      {modal && (
+        <div>
+          <LevelCompleted />
         </div>
       )}
     </div>

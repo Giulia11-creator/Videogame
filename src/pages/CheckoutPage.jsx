@@ -4,6 +4,7 @@ import { UserAuth } from "../context/AuthContext";
 import { shootConfetti } from "../ReactComponents/confetti.jsx";
 import { addUser, addPoints } from "../ReactComponents/FirestoreFunction.js";
 import "../styles/checkout.css";
+import LevelCompleted from "../ReactComponents/LevelCompleted.jsx";
 
 const CheckoutPage = () => {
   const storedhotel = sessionStorage.getItem("hotels");
@@ -30,6 +31,7 @@ const CheckoutPage = () => {
     return saved ? JSON.parse(saved) : false;
   });
 
+  const [modal, setModalVisible] = useState(false);
 
     function incrementClicks() {
     setClicks((prev) => {
@@ -49,6 +51,14 @@ const CheckoutPage = () => {
       })();
     }
   }, [score, user]);
+
+
+  useEffect(() => {
+    if (score === 100) {
+      
+    setModalVisible(true);
+    }
+  }, [score]);
 
   function BackToTravels() {
     incrementClicks();
@@ -213,7 +223,13 @@ const CheckoutPage = () => {
           </section>
         </main>
       </div>
+        {modal && (
+              <div>
+                <LevelCompleted />
+              </div>
+            )}
     </div>
+    
   );
 };
 export default CheckoutPage;

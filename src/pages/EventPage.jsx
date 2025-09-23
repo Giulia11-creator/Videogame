@@ -4,12 +4,14 @@ import { addUser, addPoints } from "../ReactComponents/FirestoreFunction.js";
 import { UserAuth } from "../context/AuthContext";
 import "../styles/Event.css"; // importa lo stile
 import { useNavigate } from "react-router-dom";
+import LevelCompleted from "../ReactComponents/LevelCompleted.jsx";
 export default function EventFormBug() {
   const [title, setTitle] = useState("");
   const [location, setLocation] = useState("");
   const [participants, setParticipants] = useState(0);
   const [msg, setMsg] = useState("");
   const [score, setScore] = useState(0);
+  const [modal, setModalVisible] = useState(false);
   const [clicks, setClicks] = useState(() => {
     const saved = sessionStorage.getItem("clicks");
     return saved ? JSON.parse(saved) : 0;
@@ -47,6 +49,13 @@ export default function EventFormBug() {
     }
   }, [score, user]);
 
+  useEffect(() => {
+
+    if (score == 100)
+      setModalVisible(true);
+
+  }, [score])
+
   function addEvent() {
     const newEvent = {
       title,
@@ -61,7 +70,11 @@ export default function EventFormBug() {
       wrongDate.setDate(wrongDate.getDate() + addDays);
       newEvent.eventDate = wrongDate.toISOString().split("T")[0];
     }
-    if(newEvent.eventDate=="") newEvent.eventDate= new Date().toISOString().split("T")[0];
+    if (newEvent.eventDate === "") {
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1); // aggiunge 1 giorno
+      newEvent.eventDate = tomorrow.toISOString().split("T")[0];
+    }
     if (new Date(newEvent.eventDate) < new Date()) setbugPastDate(true);
 
     if (title === "") setbugNoTitle(true);
@@ -154,8 +167,7 @@ export default function EventFormBug() {
     awardedbugWrongDate,
     awardedbugPastDate,
     awardedbugNegativePeople,
-    user.email,
-    user.uid,
+    user,
   ]);
 
   function handleSubmit(e) {
@@ -163,10 +175,10 @@ export default function EventFormBug() {
     addEvent();
   }
   function BackToGame() {
-     incrementClicks();
+    incrementClicks();
     navigate("/game");
   }
-    useEffect(() => {
+  useEffect(() => {
     sessionStorage.setItem("clicks", JSON.stringify(clicks));
     if (user) {
       (async () => {
@@ -183,11 +195,11 @@ export default function EventFormBug() {
         <button className="exit-button" onClick={BackToGame}>
           ⏻ Esci
         </button>
-        <div  onClick={incrementClicks} className="score-display">
+        <div onClick={incrementClicks} className="score-display">
           <strong >Punteggio:</strong> {score}
         </div>
       </div>
-      <h1  onClick={incrementClicks} className="page-title">🎉 Party Planner – Crea la tua Festa! 🎉</h1>
+      <h1 onClick={incrementClicks} className="page-title">🎉 Party Planner – Crea la tua Festa! 🎉</h1>
 
       <form onSubmit={handleSubmit} className="event-form">
         <input
@@ -241,6 +253,13 @@ export default function EventFormBug() {
           </div>
         ))}
       </div>
+      {modal && (
+        <div>
+          <LevelCompleted />
+        </div>
+      )}
+
+
     </div>
   );
 }
