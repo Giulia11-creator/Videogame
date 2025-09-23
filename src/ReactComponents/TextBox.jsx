@@ -33,7 +33,10 @@ export default function TextBox() {
   useEffect(() => {
     const closeHandler = (e) => {
       if (!isVisible) return;
-      if (e.code === "Space") { setIsCloseRequest(true); setChangePage(true) };
+      if (e.code === "Space" && nextPage != "") { setIsCloseRequest(true); setChangePage(true) } else {
+        setIsCloseRequest(true);
+        setChangePage(false);
+      };
       if (e.code === "Escape") { setIsCloseRequest(true); setChangePage(false); };
     };
     window.addEventListener("keydown", closeHandler);

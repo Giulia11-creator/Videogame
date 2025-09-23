@@ -6,7 +6,7 @@ import {
   increment,
   serverTimestamp,
 } from "firebase/firestore";
-import { db } from "../firebase"; // importa la tua configurazione Firebase
+import { db } from "../firebase"; // importa la configurazione Firebase
 
 /**
  * 🔹 Crea o aggiorna un utente in una collezione Firestore.
@@ -79,4 +79,17 @@ export async function addPoints(
     });
     console.log(`🆕 Creato nuovo documento in ${collectionName}/${uid}`);
   }
+}
+
+/**
+ * 🔹 Aggiunge punti a un documento in Firestore (o lo crea se non esiste).
+ * @param {string} collectionName - Nome della collezione (es. "Leaderboard").
+ * @param {string} uid - UID dell'utente.
+ * @param {object} extraData - Dati opzionali da salvare alla creazione.
+ */
+
+export async function checkLevel(collectionName, uid) {
+  const ref = doc(db, collectionName, uid);
+  const docSnap = await getDoc(ref);
+  return docSnap.exists(); // true se ha già fatto il livello
 }

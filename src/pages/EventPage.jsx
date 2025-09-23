@@ -188,7 +188,11 @@ export default function EventFormBug() {
       })();
     }
   }, [clicks, user]);
-
+  useEffect(() => {
+    if (user) {
+      sessionStorage.setItem("flag2", true);
+    }
+  }, [user]);
   return (
     <div className="page-container">
       <div className="top-bar">

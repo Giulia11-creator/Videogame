@@ -226,24 +226,17 @@ button {
 
 /* --- Pulsante Esci (coerente con stile “btn-buy” ma neutro) --- */
 .btn-exit {
-  background: #10b981;
-  /* verde “success” */
-  color: #fff;
+  background: #ff4d4d;
+  color: white;
   border: none;
-  border-radius: 10px;
-  padding: 8px 14px;
-  font-weight: 600;
+  padding: 8px 12px;
+  border-radius: 8px;
   cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, .12);
-  transition: transform .06s ease, filter .15s ease;
+  font-weight: bold;
 }
 
 .btn-exit:hover {
-  filter: brightness(0.95);
-}
-
-.btn-exit:active {
-  transform: translateY(1px);
+  background: #cc0000;
 }
 
 /* --- Chip Punteggio --- */
@@ -269,4 +262,13 @@ button {
   font-variant-numeric: tabular-nums;
   color: #111827;
   /* quasi-nero */
+}
+
+/* Responsive fixes */
+.container,
+.wrap {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  box-sizing: border-box;
 }

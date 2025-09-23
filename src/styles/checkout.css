@@ -208,3 +208,12 @@ hr {
   border-top: 1px solid #e5e7eb;
   margin: 12px 0;
 }
+
+
+/* Responsive fixes */
+.container, .wrap {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}

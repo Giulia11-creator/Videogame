@@ -1,9 +1,14 @@
 .container {
-gap: 8px;
-box-shadow: 0 4px 12px rgba(0,0,0,.06);
-font-weight: 800;
+  gap: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, .06);
+  font-weight: 800;
 }
-.points-badge .label { font-weight: 700; color: #6b7280; letter-spacing: .08em; }
+
+.points-badge .label {
+  font-weight: 700;
+  color: #6b7280;
+  letter-spacing: .08em;
+}
 
 /* --- Top bar layout --- */
 .topbar {
@@ -18,136 +23,219 @@ font-weight: 800;
   z-index: 10;
 }
 
-/* --- Pulsante Esci (coerente con stile “btn-buy” ma neutro) --- */
-.btn-exit {
-  background: #10b981;
-  /* verde “success” */
-  color: #fff;
-  border: none;
-  border-radius: 10px;
-  padding: 8px 14px;
-  font-weight: 600;
-  cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, .12);
-  transition: transform .06s ease, filter .15s ease;
-}
 
-.btn-exit:hover {
-  filter: brightness(0.95);
-}
+.btn-exit 
+    {
+    background: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+  }
 
-.btn-exit:active {
-  transform: translateY(1px);
-}
-
-/* --- Chip Punteggio --- */
-.score-chip {
-  background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  padding: 8px 14px;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, .06);
-  font-weight: 700;
-}
-
-.score-label {
-  font-weight: 600;
-  color: #6b7280;
-  /* grigio soft */
-}
-
-.score-value {
-  font-variant-numeric: tabular-nums;
-  color: #111827;
-  /* quasi-nero */
-}
-
-/* Spazio sotto l'overlay per evitare sovrapposizioni */
-.with-top-right { padding-top: 92px; }
-@media (max-width: 640px) {
-.top-right { position: static; justify-content: flex-end; margin: 8px 20px 0; }
-.with-top-right { padding-top: 16px; }
-}
+  .btn-exit:hover {
+    background: #cc0000;
+  }
 
 
-/* ---------- Titolo/hero leggibile sempre ---------- */
-.title-wrap {
-display: inline-flex;
-align-items: center;
-gap: 10px;
-padding: 10px 16px;
-border-radius: 12px;
-background: linear-gradient(90deg, #4f46e5, #7c3aed);
-color: #fff; /* testo bianco sopra ribbon viola */
-box-shadow: 0 8px 20px rgba(79,70,229,.25);
-}
-.hero-title {
-margin: 0;
-font-size: 2.2rem;
-font-weight: 900;
-letter-spacing: -0.02em;
-color: #000000; /* niente text-clip trasparente */
-}
-.title-emoji { font-size: 1.4rem; }
+  /* --- Chip Punteggio --- */
+  .score-chip {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 8px 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, .06);
+    font-weight: 700;
+  }
+
+  .score-label {
+    font-weight: 600;
+    color: #6b7280;
+    /* grigio soft */
+  }
+
+  .score-value {
+    font-variant-numeric: tabular-nums;
+    color: #111827;
+    /* quasi-nero */
+  }
+
+  /* Spazio sotto l'overlay per evitare sovrapposizioni */
+  .with-top-right {
+    padding-top: 92px;
+  }
+
+  @media (max-width: 640px) {
+    .top-right {
+      position: static;
+      justify-content: flex-end;
+      margin: 8px 20px 0;
+    }
+
+    .with-top-right {
+      padding-top: 16px;
+    }
+  }
 
 
-/* ---------- Cards ---------- */
-.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
-.card { display: flex; flex-direction: column; border: 1px solid #e2e8f0; border-radius: 16px; background: #fff; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,.05); transition: transform .2s ease, box-shadow .2s ease; }
-.card:hover { transform: translateY(-3px); box-shadow: 0 10px 22px rgba(0,0,0,.10); }
-.card-body { padding: 18px; display: flex; flex-direction: column; gap: 12px; }
-.title-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-.title { font-size: 1.1rem; font-weight: 800; color: #0f172a; }
-.meta { display: flex; flex-wrap: wrap; gap: 6px; font-size: .85rem; color: #475569; }
-.desc { font-size: .95rem; color: #334155; }
+  /* ---------- Titolo/hero leggibile sempre ---------- */
+  .title-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    border-radius: 12px;
+    background: linear-gradient(90deg, #4f46e5, #7c3aed);
+    color: #fff;
+    /* testo bianco sopra ribbon viola */
+    box-shadow: 0 8px 20px rgba(79, 70, 229, .25);
+  }
+
+  .hero-title {
+    margin: 0;
+    font-size: 2.2rem;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    color: #000000;
+    /* niente text-clip trasparente */
+  }
+
+  .title-emoji {
+    font-size: 1.4rem;
+  }
 
 
-/* Badge stato ben leggibili */
-.badge-state {
-font-size: .78rem;
-padding: 6px 10px;
-border-radius: 999px;
-font-weight: 800;
-letter-spacing: .02em;
-border: 1px solid transparent;
-}
-.badge-free { background: #ede9fe; color: #5b21b6; border-color: #c4b5fd; }
-.badge-busy { background: #e2e8f0; color: #334155; border-color: #cbd5e1; }
+  /* ---------- Cards ---------- */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+  }
+
+  .card {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    background: #fff;
+    overflow: hidden;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, .05);
+    transition: transform .2s ease, box-shadow .2s ease;
+  }
+
+  .card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 22px rgba(0, 0, 0, .10);
+  }
+
+  .card-body {
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .title {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #0f172a;
+  }
+
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    font-size: .85rem;
+    color: #475569;
+  }
+
+  .desc {
+    font-size: .95rem;
+    color: #334155;
+  }
 
 
-/* CTA viola */
-.btn-book {
-background: #7c3aed;
-color: #fff;
-font-weight: 800;
-padding: 0 14px;
-height: 44px;
-border-radius: 12px;
-border: none;
-cursor: pointer;
-box-shadow: 0 6px 16px rgba(124,58,237,.22);
-}
-.btn-book:hover { background: #6d28d9; }
+  /* Badge stato ben leggibili */
+  .badge-state {
+    font-size: .78rem;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-weight: 800;
+    letter-spacing: .02em;
+    border: 1px solid transparent;
+  }
 
-.topbar-right{
-  display:flex;
-  align-items:center;
-  gap:12px;
-}
+  .badge-free {
+    background: #ede9fe;
+    color: #5b21b6;
+    border-color: #c4b5fd;
+  }
 
-/* Checkout stile CTA viola (come i bottoni Prenota) */
-.btn-checkout{
-  background:#7c3aed;
-  color:#fff;
-  font-weight:700;
-  border:none;
-  cursor:pointer;
-  height:40px;
-  padding:0 16px;
-  border-radius:10px;
-  box-shadow:0 4px 12px rgba(124,58,237,.22);
-}
-.btn-checkout:hover{ background:#6d28d9; }
+  .badge-busy {
+    background: #e2e8f0;
+    color: #334155;
+    border-color: #cbd5e1;
+  }
+
+
+  /* CTA viola */
+  .btn-book {
+    background: #7c3aed;
+    color: #fff;
+    font-weight: 800;
+    padding: 0 14px;
+    height: 44px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 6px 16px rgba(124, 58, 237, .22);
+  }
+
+  .btn-book:hover {
+    background: #6d28d9;
+  }
+
+  .topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  /* Checkout stile CTA viola (come i bottoni Prenota) */
+  .btn-checkout {
+    background: #7c3aed;
+    color: #fff;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    height: 40px;
+    padding: 0 16px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(124, 58, 237, .22);
+  }
+
+  .btn-checkout:hover {
+    background: #6d28d9;
+  }
+
+
+  /* Responsive fixes */
+  .container,
+  .wrap {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    box-sizing: border-box;
+  }

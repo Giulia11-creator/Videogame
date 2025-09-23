@@ -229,12 +229,18 @@ export default function LibraryPage() {
     }
   }, [clicks, user]);
 
+   useEffect(() => {
+    if (user) {
+     sessionStorage.setItem("flag3", true);
+    }
+  }, [user]);
+
   return (
     <div>
       <div className="container with-top-right">
         <div className="topbar">
           <button className="btn-exit" onClick={BackToGame}>
-            Esci
+            ⏻ Esci
           </button>
 
           {/* Lato destro: Checkout + Punteggio */}

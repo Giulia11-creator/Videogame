@@ -147,3 +147,13 @@ body.ui-screen #ui {
 @media (min-width: 1024px) {
   .signin-page { padding-left: 2rem; padding-right: 2rem; }
 }
+
+
+/* Responsive global fix */
+body.ui-screen {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}

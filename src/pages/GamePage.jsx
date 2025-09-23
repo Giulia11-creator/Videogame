@@ -22,6 +22,14 @@ function wipeAllClientSession() {
   sessionStorage.clear();
 }
 
+function clearSessionStorageExcept(keepKeys = []) {
+  Object.keys(sessionStorage).forEach(key => {
+    if (!keepKeys.includes(key)) {
+      sessionStorage.removeItem(key);
+    }
+  });
+}
+
 
 
 export default function GamePage() {
@@ -32,7 +40,9 @@ export default function GamePage() {
     // Disattiva stile Start/Login, attiva stile Game
     document.body.classList.remove("ui-screen");
     document.body.classList.add("in-game");
-    wipeAllClientSession();
+    //wipeAllClientSession();
+    clearSessionStorageExcept(["flag1", "flag2", "flag3"]);
+
 
     if (!startedRef.current) {
       startedRef.current = true;

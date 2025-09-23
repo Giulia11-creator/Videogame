@@ -197,16 +197,18 @@ const TravelPage = () => {
     }
   }, [score, user]);
 
-  const closeModal = () => {
-    setModalVisible(false);
-    navigate("/game");
-  };
+   useEffect(() => {
+    if (user) {
+     sessionStorage.setItem("flag1", true);
+    }
+  }, [user]);
+
 
   return (
     <div className="container">
       <div className="topbar">
         <button className="btn-exit" onClick={BackToGame}>
-          Esci
+          ⏻ Esci
         </button>
 
         <div className="score-chip" aria-live="polite" title="Punteggio">

@@ -20,7 +20,7 @@ export default async function initGame() {
       "npc-left": 0,
     },
   });
-   await k.loadSprite("npc2", npcImageUrl, {
+  await k.loadSprite("npc2", npcImageUrl, {
     sliceY: 2,
     sliceX: 2,
     anims: {
@@ -90,8 +90,8 @@ export default async function initGame() {
 
   // Imposta la posizione iniziale del giocatore in basso a sinistra dello sfondo
   player.pos = k.vec2(
-    bgMinX + playerSpawnHalfWidth +70, // Bordo sinistro dello sfondo + metà larghezza del giocatore
-    bgMaxY - playerSpawnHalfHeight -70  // Bordo inferiore dello sfondo - metà altezza del giocatore
+    bgMinX + playerSpawnHalfWidth + 70, // Bordo sinistro dello sfondo + metà larghezza del giocatore
+    bgMaxY - playerSpawnHalfHeight - 70  // Bordo inferiore dello sfondo - metà altezza del giocatore
   );
   // --- FINE NUOVA LOGICA PER LO SPAWN IN BASSO A SINISTRA ---
 
@@ -182,22 +182,54 @@ export default async function initGame() {
     k.pos(500, 500),
   ]);
   npc.onCollide("player", () => {
-  store.set(textBoxContentAtom, "Un bug ben nascosto non teme gli occhi distratti, ma trema davanti a chi sa dove cercare.(Premi barra spazziatrice per accedere al livello oppure esc per chiudere la finestra)");
-  store.set(isTextBoxVisibleAtom, true);
-  store.set(nextpage, "/library");
+    const flagLibraryLevel = sessionStorage.getItem("flag3");
 
-});
+    if (flagLibraryLevel === "true") {
+      store.set(textBoxContentAtom, "Hai gia giocato questo livello, ora tocca ad un altro. Premi spazio per chiudere questa finestra");
+      store.set(nextpage, "");
+      store.set(isTextBoxVisibleAtom, true);
+    } else {
+      // Prima volta → apri livello
+      store.set(textBoxContentAtom, "Un bug ben nascosto non teme gli occhi distratti, ma trema davanti a chi sa dove cercare. Premi barra spaziatrice per accedere al livello oppure esc per chiudere la finestra");
+      store.set(isTextBoxVisibleAtom, true);
+      store.set(nextpage, "/library");
+    }
 
-npc2.onCollide("player", () => {
-  store.set(textBoxContentAtom, "Gli ingenui cliccano, i curiosi indagano, i veri sviluppatori scoprono l’errore.(Premi barra spazziatrice per accedere al livello oppure esc per chiudere la finestra)");
-  store.set(isTextBoxVisibleAtom, true);
-  store.set(nextpage, "/event");
-});
 
-npc3.onCollide("player", () => {
-  store.set(textBoxContentAtom, "Solo chi sa dove guardare vede l’inganno. Gli altri? Si limitano a cliccare e sperare.(Premi barra spazziatrice per accedere al livello oppure esc per chiudere la finestra)");
-  store.set(isTextBoxVisibleAtom, true);
-  store.set(nextpage, "/travel");
-});
+  });
+
+  npc2.onCollide("player", () => {
+    const flagEventLevel = sessionStorage.getItem("flag2");
+
+    if (flagEventLevel === "true") {
+      store.set(textBoxContentAtom, "Hai gia giocato questo livello, ora tocca ad un altro. Premi spazio per chiudere questa finestra");
+      store.set(nextpage, "");
+      store.set(isTextBoxVisibleAtom, true);
+    }
+    else {
+      store.set(textBoxContentAtom, "Gli ingenui cliccano, i curiosi indagano, i veri sviluppatori scoprono l’errore. Premi barra spazziatrice per accedere al livello oppure esc per chiudere la finestra");
+      store.set(isTextBoxVisibleAtom, true);
+      store.set(nextpage, "/event");
+    }
+
+  });
+
+  npc3.onCollide("player", () => {
+
+    const flagTravelLevel = sessionStorage.getItem("flag1");
+
+    if (flagTravelLevel === "true") {
+      store.set(textBoxContentAtom, "Hai gia giocato questo livello, ora tocca ad un altro. Premi spazio per chiudere questa finestra");
+      store.set(nextpage, "");
+      store.set(isTextBoxVisibleAtom, true);
+    }
+    else {
+      store.set(textBoxContentAtom, "Solo chi sa dove guardare vede l’inganno. Gli altri? Si limitano a cliccare e sperare. Premi barra spazziatrice per accedere al livello oppure esc per chiudere la finestra");
+      store.set(isTextBoxVisibleAtom, true);
+      store.set(nextpage, "/travel");
+
+    }
+
+  });
 
 }
