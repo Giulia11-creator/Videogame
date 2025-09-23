@@ -52,7 +52,7 @@ export default function EventFormBug() {
       title,
       location,
       eventDate: dateEvent,
-      eventParticipants: participants,
+      eventParticipants: participants === 0 ? 1 : participants,
       backupDate: dateEvent,
     };
     if ((events.length + 1) % 3 === 0 && events.length > 0) {
@@ -61,6 +61,7 @@ export default function EventFormBug() {
       wrongDate.setDate(wrongDate.getDate() + addDays);
       newEvent.eventDate = wrongDate.toISOString().split("T")[0];
     }
+    if(newEvent.eventDate=="") newEvent.eventDate= new Date().toISOString().split("T")[0];
     if (new Date(newEvent.eventDate) < new Date()) setbugPastDate(true);
 
     if (title === "") setbugNoTitle(true);
