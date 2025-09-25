@@ -4,15 +4,19 @@ import { useNavigate } from "react-router-dom";
 import { UserAuth } from "../context/AuthContext";
 import { shootConfetti } from "../ReactComponents/confetti.jsx";
 import { addUser, addPoints } from "../ReactComponents/FirestoreFunction.js";
+import LevelCompleted from "../ReactComponents/LevelCompleted.jsx";
 
 export default function CheckoutPage() {
+
+  const[modal,setModalVisible] = useState(false);
+
   const [libri, setLibri] = useState(() => {
     // recupero i libri prenotati da sessionStorage
     return JSON.parse(sessionStorage.getItem("books") || "[]");
   });
 
   const [clicks, setClicks] = useState(() => {
-    const saved = sessionStorage.getItem("clickss");
+    const saved = sessionStorage.getItem("clicks");
     return saved ? JSON.parse(saved) : 0;
   });
 
@@ -20,18 +24,23 @@ export default function CheckoutPage() {
     const saved = sessionStorage.getItem("score");
     return saved ? JSON.parse(saved) : 0;
   });
+
+  const [bugWrongAuthor, setbugWrongAuthor] = useState(() => {
+    const saved = sessionStorage.getItem("bugWrongAuthor");
+    return saved ? JSON.parse(saved) : false;
+  });
   const { user } = UserAuth();
 
   const navigate = useNavigate();
 
 
   function handleCheckout() {
+    incrementClicks();
     navigate("/library");
     alert("✅ Prenotazione effettuata con successo!");
-    // qui puoi aggiungere logica per salvare sul db o svuotare la sessionStorage
     sessionStorage.removeItem("books");
     setLibri([]);
-    navigate("/library"); // esempio: torna al gioco
+    navigate("/library"); 
   }
 
   function incrementClicks() {
@@ -57,22 +66,76 @@ export default function CheckoutPage() {
     }
   }, [clicks, user]);
 
+
+    useEffect(() => {
+    const timer = setTimeout(() => {
+      setLibri((prev) =>
+        prev.map((b) => (b.id === 6 ? { ...b, autore: "G.Bertoli" } : b))
+      );
+    }, 6000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  function handleClickAuthor(book){
+    incrementClicks();
+    if(book.rightAutore != "" && book.autore != book.rightAutore)
+      setbugWrongAuthor(true);
+  }
+
+   useEffect(() => {
+    if (!bugWrongAuthor) return;
+    const alreadyAwarded = sessionStorage.getItem("awardedbugWrongAuthor");
+    if (alreadyAwarded) return;
+    if (!user?.uid || !user?.email) return;
+
+    (async () => {
+      await shootConfetti();
+      await addPoints("Leaderboard", user.uid, 34, "totalPoints", {
+        nick: user.email,
+      });
+
+      setscore((prev) => {
+        const next = prev + 34;
+        sessionStorage.setItem("score", JSON.stringify(next));
+        sessionStorage.setItem("awardedbugWrongAuthor", "true");
+        return next;
+      });
+    })();
+  }, [bugWrongAuthor, user]);
+
+ useEffect(() => {
+    if (user) {
+      (async () => {
+        await addUser("BookLevel", user.uid, {
+          score,
+          email: user.email,
+        });
+      })();
+    }
+  }, [score, user]);
+
+    useEffect(()=>{
+    if(score === 100)
+      setModalVisible(true);
+
+  },[score]);
+
   return (
     <div>
       <div className="container with-top-right">
         <div className="topbar">
           <div className="topbar-right">
             <span className="score-chip">
-              <span className="score-label">Libri prenotati</span>
-              <span className="score-value">{libri.length}</span>
+              <span onClick={incrementClicks} className="score-label">Libri prenotati</span>
+              <span onClick={incrementClicks} className="score-value">{libri.length}</span>
             </span>
           </div>
         </div>
 
-        <h1 className="hero-title">🛒 Checkout</h1>
+        <h1 onClick={incrementClicks} className="hero-title">🛒 Checkout</h1>
 
         {libri.length === 0 ? (
-          <p style={{ fontSize: "1.1rem", marginTop: "20px" }}>
+          <p onClick={incrementClicks} style={{ fontSize: "1.1rem", marginTop: "20px" }}>
             Nessun libro prenotato.
           </p>
         ) : (
@@ -82,12 +145,12 @@ export default function CheckoutPage() {
                 <div key={libro.id} className="card">
                   <div className="card-body">
                     <div className="title-row">
-                      <div className="title">{libro.titolo}</div>
-                      <span className="badge-state badge-busy">PRENOTATO</span>
+                      <div onClick={incrementClicks} className="title">{libro.titolo}</div>
+                      <span onClick={incrementClicks} className="badge-state badge-busy">PRENOTATO</span>
                     </div>
                     <div className="meta">
-                      <p>{libro.autore}</p>
-                      <p>{libro.anno}</p>
+                      <p onClick={() => handleClickAuthor(libro)}>{libro.autore}</p>
+                      <p onClick={incrementClicks}>{libro.anno}</p>
                     </div>
                   </div>
                 </div>
@@ -106,6 +169,7 @@ export default function CheckoutPage() {
           </>
         )}
       </div>
+      {modal && (<LevelCompleted/>)}
     </div>
   );
 }

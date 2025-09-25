@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { UserAuth } from "../context/AuthContext";
 import { shootConfetti } from "../ReactComponents/confetti.jsx";
 import { addUser, addPoints } from "../ReactComponents/FirestoreFunction.js";
+import LevelCompleted from "../ReactComponents/LevelCompleted.jsx";
 
 export default function LibraryPage() {
   const [libri, setLibri] = useState([
@@ -11,6 +12,7 @@ export default function LibraryPage() {
       id: 1,
       titolo: "Il nome della rosa",
       autore: "U. Eco",
+      rightAutore: "",
       anno: 1980,
       rightAnno: 1980,
       stato: "libero",
@@ -20,6 +22,7 @@ export default function LibraryPage() {
       id: 2,
       titolo: "1984",
       autore: "G. Orwell",
+      rightAutore: "",
       anno: 1949,
       stato: "libero",
       descr: "Distopia sul controllo.",
@@ -28,6 +31,7 @@ export default function LibraryPage() {
       id: 3,
       titolo: "La coscienza di Zeno",
       autore: "I. Svevo",
+      rightAutore: "",
       anno: 1923,
       stato: "libero",
       descr: "Romanzo psicologico.",
@@ -36,6 +40,7 @@ export default function LibraryPage() {
       id: 4,
       titolo: "Il Signore degli Anelli",
       autore: "J.R.R. Tolkien",
+      rightAutore: "",
       anno: 1954,
       stato: "libero",
       descr: "Avventura epica.",
@@ -52,6 +57,7 @@ export default function LibraryPage() {
       id: 6,
       titolo: "La Divina Commedia",
       autore: "D. Alighieri",
+      rightAutore: "D. Alighieri",
       anno: 1320,
       stato: "libero",
       descr: "Inferno, Purgatorio, Paradiso.",
@@ -69,7 +75,7 @@ export default function LibraryPage() {
     return saved ? JSON.parse(saved) : 0;
   });
   const [clicks, setClicks] = useState(() => {
-    const saved = sessionStorage.getItem("clickss");
+    const saved = sessionStorage.getItem("clicks");
     return saved ? JSON.parse(saved) : 0;
   });
 
@@ -85,6 +91,8 @@ export default function LibraryPage() {
 
   const { user } = UserAuth();
 
+  const[modal,setModalVisible] = useState(false);
+
   function BackToGame() {
     incrementClicks();
     navigate("/game");
@@ -98,7 +106,9 @@ export default function LibraryPage() {
         id: book.id,
         titolo: book.titolo,
         autore: book.autore,
+        rightAutore: book.rightAutore,
         anno: book.anno,
+
       });
       sessionStorage.setItem("books", JSON.stringify(books));
     }
@@ -145,12 +155,12 @@ export default function LibraryPage() {
 
     (async () => {
       await shootConfetti();
-      await addPoints("Leaderboard", user.uid, 25, "totalPoints", {
+      await addPoints("Leaderboard", user.uid, 33, "totalPoints", {
         nick: user.email,
       });
 
       setscore((prev) => {
-        const next = prev + 25;
+        const next = prev + 33;
         sessionStorage.setItem("score", JSON.stringify(next));
         sessionStorage.setItem("awardedbugWrongYear", "true");
         return next;
@@ -170,12 +180,12 @@ export default function LibraryPage() {
 
     (async () => {
       await shootConfetti();
-      await addPoints("Leaderboard", user.uid, 25, "totalPoints", {
+      await addPoints("Leaderboard", user.uid, 33, "totalPoints", {
         nick: user.email,
       });
 
       setscore((prev) => {
-        const next = prev + 25;
+        const next = prev + 33;
         sessionStorage.setItem("score", JSON.stringify(next));
         sessionStorage.setItem("awardedbugWrongBooked", "true");
         return next;
@@ -193,6 +203,12 @@ export default function LibraryPage() {
       })();
     }
   }, [score, user]);
+
+  useEffect(()=>{
+    if(score === 100)
+      setModalVisible(true);
+
+  },[score]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -243,7 +259,6 @@ export default function LibraryPage() {
             ⏻ Esci
           </button>
 
-          {/* Lato destro: Checkout + Punteggio */}
           <div className="topbar-right">
             <button className="btn-checkout" onClick={handleClickCheckout}>
               Checkout
@@ -291,7 +306,7 @@ export default function LibraryPage() {
               <div key={libro.id} className="card">
                 <div className="card-body">
                   <div className="title-row">
-                    <div className="title">{libro.titolo}</div>
+                    <div  onClick={incrementClicks} className="title">{libro.titolo}</div>
                     <span
                       onClick={incrementClicks}
                       className={`pill ${libero ? "" : ""}`}
@@ -319,6 +334,7 @@ export default function LibraryPage() {
           })}
         </div>
       </div>
+      {modal && (<LevelCompleted/>)}
     </div>
   );
 }

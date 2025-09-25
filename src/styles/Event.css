@@ -61,12 +61,30 @@
   color: #444;
 }
 
-.score {
-  font-size: 1.2rem;
-  font-weight: bold;
-  margin-bottom: 30px;
-  color: #6a0dad;
-}
+  /* --- Chip Punteggio --- */
+  .score-chip {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 8px 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, .06);
+    font-weight: 700;
+  }
+
+  .score-label {
+    font-weight: 600;
+    color: #6b7280;
+    /* grigio soft */
+  }
+
+  .score-value {
+    font-variant-numeric: tabular-nums;
+    color: #111827;
+    /* quasi-nero */
+  }
 
 .events-grid {
   display: grid;

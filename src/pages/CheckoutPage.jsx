@@ -22,7 +22,7 @@ const CheckoutPage = () => {
     return saved ? JSON.parse(saved) : 0;
   });
   const [clicks, setClicks] = useState(() => {
-    const saved = sessionStorage.getItem("clickss");
+    const saved = sessionStorage.getItem("clicks");
     return saved ? JSON.parse(saved) : 0;
   });
 
@@ -143,6 +143,7 @@ const CheckoutPage = () => {
               <div>
                 <span  onClick={incrementClicks}>Ospiti</span>
                 <strong  onClick={incrementClicks}>{hotel[0]?.adults || 1} adulti • 1 camera</strong>
+                <strong  onClick={incrementClicks}>{hotel[0]?.children || 0} bambini • 1 camera</strong>
               </div>
               <div>
                 <span  onClick={incrementClicks}>Prezzo </span>

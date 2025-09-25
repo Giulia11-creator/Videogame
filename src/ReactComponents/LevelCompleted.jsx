@@ -1,8 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import { UserAuth } from "../context/AuthContext";
+
 export default function LevelCompleted() {
   const navigate = useNavigate();
-   const { user } = UserAuth();
+  const { user } = UserAuth();
 
   function closeModal() {
     navigate("/game");
@@ -18,6 +19,7 @@ export default function LevelCompleted() {
         alignItems: "center",
         justifyContent: "center",
         backgroundColor: "rgba(75, 85, 99, 0.5)",
+        fontFamily: "Arial, sans-serif", // 👈 font forzato
       }}
     >
       <div
@@ -62,6 +64,7 @@ export default function LevelCompleted() {
               border: "none",
               cursor: "pointer",
               transition: "background-color 0.2s ease",
+              fontFamily: "Arial, sans-serif", // 👈 anche sul bottone
             }}
             onMouseOver={(e) =>
               (e.currentTarget.style.backgroundColor = "#7e22ce")

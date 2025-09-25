@@ -199,8 +199,13 @@ export default function EventFormBug() {
         <button className="exit-button" onClick={BackToGame}>
           ⏻ Esci
         </button>
-        <div onClick={incrementClicks} className="score-display">
-          <strong >Punteggio:</strong> {score}
+        <div className="score-chip" aria-live="polite" title="Punteggio">
+          <span onClick={incrementClicks} className="score-label">
+            Punteggio
+          </span>
+          <span onClick={incrementClicks} className="score-value">
+            {score}
+          </span>
         </div>
       </div>
       <h1 onClick={incrementClicks} className="page-title">🎉 Party Planner – Crea la tua Festa! 🎉</h1>
