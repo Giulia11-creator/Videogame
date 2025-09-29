@@ -12,6 +12,7 @@ export default function EventFormBug() {
   const [msg, setMsg] = useState("");
   const [score, setScore] = useState(0);
   const [modal, setModalVisible] = useState(false);
+  const [onlySpaces, setOnlySpaces] = useState(false);
   const [clicks, setClicks] = useState(() => {
     const saved = sessionStorage.getItem("clicks");
     return saved ? JSON.parse(saved) : 0;
@@ -54,7 +55,16 @@ export default function EventFormBug() {
     if (score == 100)
       setModalVisible(true);
 
-  }, [score])
+  }, [score]);
+
+  function isPastDate(dateString) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // reset ore
+    const inputDate = new Date(dateString);
+    inputDate.setHours(0, 0, 0, 0);
+    return inputDate < today;
+  }
+
 
   function addEvent() {
     const newEvent = {
@@ -64,21 +74,28 @@ export default function EventFormBug() {
       eventParticipants: participants === 0 ? 1 : participants,
       backupDate: dateEvent,
     };
+
     if ((events.length + 1) % 3 === 0 && events.length > 0) {
       const addDays = Math.floor(Math.random() * 30) + 1;
       const wrongDate = new Date();
       wrongDate.setDate(wrongDate.getDate() + addDays);
       newEvent.eventDate = wrongDate.toISOString().split("T")[0];
     }
+
     if (newEvent.eventDate === "") {
       const tomorrow = new Date();
-      tomorrow.setDate(tomorrow.getDate() + 1); // aggiunge 1 giorno
+      tomorrow.setDate(tomorrow.getDate() + 1);
       newEvent.eventDate = tomorrow.toISOString().split("T")[0];
     }
-    if (new Date(newEvent.eventDate) < new Date()) setbugPastDate(true);
 
-    if (title === "") setbugNoTitle(true);
-    if (location === "") setbugNoLocation(true);
+    if (isPastDate(newEvent.eventDate)) setbugPastDate(true);
+
+    // ✅ controlla se titolo o location sono SOLO spazi
+    const titleOnlySpaces = /^ +$/.test(newEvent.title);
+    const locationOnlySpaces = /^ +$/.test(newEvent.location);
+
+    if (newEvent.title === "" || titleOnlySpaces) setbugNoTitle(true);
+    if (newEvent.location === "" || locationOnlySpaces) setbugNoLocation(true);
 
     setEvents([...events, newEvent]);
     setMsg("Evento aggiunto!");
@@ -86,6 +103,7 @@ export default function EventFormBug() {
     setLocation("");
     setParticipants(0);
   }
+
   const ClickDate = (event) => {
     incrementClicks();
     const dateBackup = event.backupDate;
@@ -215,11 +233,13 @@ export default function EventFormBug() {
           placeholder="Titolo evento"
           value={title}
           onClick={incrementClicks}
+          maxLength={30}
           onChange={(e) => setTitle(e.target.value)}
         />
         <input
           placeholder="Luogo"
           value={location}
+          maxLength={30}
           onClick={incrementClicks}
           onChange={(e) => setLocation(e.target.value)}
         />
@@ -236,6 +256,7 @@ export default function EventFormBug() {
             onClick={incrementClicks}
             id="DIn"
             type="date"
+            min={`${new Date().getFullYear()}-01-01`}
             onChange={(e) => setdateEvent(e.target.value)}
           />
         </label>

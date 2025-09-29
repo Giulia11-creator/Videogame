@@ -158,6 +158,30 @@ const TravelPage = () => {
     }
   }, [clicks, user]);
 
+  function handleDateChange(e, type) {
+    const value = e.target.value;
+    if (!value) return;
+
+    const date = new Date(value);
+    const min = new Date("2025-01-01");
+    const max = new Date("2030-12-31");
+
+    if (date < min || date > max) {
+      alert("La data deve essere tra il 2025 e il 2030");
+      e.target.value = "";
+      return;
+    }
+
+    if (type == "in")
+
+      setDateIn(value);
+    else
+      setDateOut(value);
+  }
+
+
+
+
   function BackToGame() {
     incrementClicks();
     navigate("/game");
@@ -197,9 +221,9 @@ const TravelPage = () => {
     }
   }, [score, user]);
 
-   useEffect(() => {
+  useEffect(() => {
     if (user) {
-     sessionStorage.setItem("flag1", true);
+      sessionStorage.setItem("flag1", true);
     }
   }, [user]);
 
@@ -232,16 +256,21 @@ const TravelPage = () => {
             <input
               id="DIn"
               type="date"
-              onChange={(e) => setDateIn(e.target.value)}
+              min={`${new Date().getFullYear()}-01-01`}
+              max="2030-12-31"
+              onChange={(e) => handleDateChange(e, "in")}
               onClick={incrementClicks}
             />
+
           </label>
           <label className="field">
             <span>Check-out</span>
             <input
               id="DOut"
               type="date"
-              onChange={(e) => setDateOut(e.target.value)}
+              min={`${new Date().getFullYear()}-01-01`}
+              max="2030-12-31"
+              onChange={(e) => handleDateChange(e, "out")}
               onClick={incrementClicks}
             />
           </label>
