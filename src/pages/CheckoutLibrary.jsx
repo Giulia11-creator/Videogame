@@ -49,6 +49,12 @@ export default function CheckoutPage() {
     navigate("/library");
   }
 
+  
+  function handleCheckout() {
+    incrementClicks();
+    navigate("/library");
+  }
+
   function incrementClicks() {
     setClicks((prev) => {
       const next = prev + 1;
@@ -118,6 +124,9 @@ export default function CheckoutPage() {
     <div>
       <div className="container with-top-right">
         <div className="topbar">
+           <button className="btn-exit" onClick={handleCheckout}>
+            Torna alla libreria
+          </button>
           <div className="topbar-right">
             <span className="score-chip">
               <span onClick={incrementClicks} className="score-label">Libri prenotati</span>
