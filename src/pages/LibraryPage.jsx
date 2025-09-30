@@ -91,7 +91,9 @@ export default function LibraryPage() {
 
   const { user } = UserAuth();
 
-  const[modal,setModalVisible] = useState(false);
+  const [modal, setModalVisible] = useState(false);
+  const [popVisible, setpopVisible] = useState(false);
+  const [errorMessage, seterrorMessage] = useState("");
 
   function BackToGame() {
     incrementClicks();
@@ -101,7 +103,7 @@ export default function LibraryPage() {
   function saveBook(book) {
     let books = JSON.parse(sessionStorage.getItem("books") || "[]");
     if (!books.some((b) => b.id === book.id)) {
-      // salva solo quello che ti serve
+
       books.push({
         id: book.id,
         titolo: book.titolo,
@@ -112,6 +114,11 @@ export default function LibraryPage() {
       });
       sessionStorage.setItem("books", JSON.stringify(books));
     }
+  }
+  function resetError() {
+    setpopVisible(false);
+    seterrorMessage("");
+
   }
 
   function removeBook(id) {
@@ -166,6 +173,8 @@ export default function LibraryPage() {
         return next;
       });
     })();
+    seterrorMessage("Hai trovato un flaky bug: l’anno di edizione del libro cambia all’improvviso. In certi casi resta quello giusto, in altri si aggiorna in modo casuale. Anche qui il comportamento è incoerente e imprevedibile, tipico dei bug flaky.");
+    setpopVisible(true);
   }, [bugWrongYear, user]);
 
   useEffect(() => {
@@ -191,31 +200,24 @@ export default function LibraryPage() {
         return next;
       });
     })();
+    seterrorMessage("Hai trovato un bug di logica: premendo una volta il pulsante Prenota per un libro, il sistema ne riserva due. In pratica l’applicazione non rispetta la regola di base (una prenotazione corrisponde a un solo libro) e raddoppia l’azione in modo errato.Un bug di logica (o logic bug, spesso anche business logic bug) è un errore che nasce perché il programma non segue correttamente le regole o i ragionamenti per cui è stato progettato.");
+    setpopVisible(true);
   }, [bugWrongBooked, user]);
 
-  useEffect(() => {
-    if (user) {
-      (async () => {
-        await addUser("BookLevel", user.uid, {
-          score,
-          email: user.email,
-        });
-      })();
-    }
-  }, [score, user]);
 
-  useEffect(()=>{
-    if(score === 100)
+  useEffect(() => {
+    if (score === 100)
       setModalVisible(true);
 
-  },[score]);
+  }, [score]);
 
   useEffect(() => {
+    const randomDelay = Math.floor(Math.random() * (10000 - 3000 + 1)) + 3000;
     const timer = setTimeout(() => {
       setLibri((prev) =>
         prev.map((b) => (b.id === 1 ? { ...b, anno: "2003" } : b))
       );
-    }, 6000);
+    }, randomDelay);
     return () => clearTimeout(timer);
   }, []);
 
@@ -231,23 +233,20 @@ export default function LibraryPage() {
   }
 
   useEffect(() => {
-    sessionStorage.setItem("score", JSON.stringify(score));
-  }, [score]);
-
-  useEffect(() => {
-    sessionStorage.setItem("clicks", JSON.stringify(clicks));
-    if (user) {
+       if (user) {
       (async () => {
         await addUser("BookLevel", user.uid, {
+          score,
           totalClicks: clicks,
+          email: user.email,
         });
       })();
     }
-  }, [clicks, user]);
+  }, [score, clicks, user]);
 
-   useEffect(() => {
+  useEffect(() => {
     if (user) {
-     sessionStorage.setItem("flag3", true);
+      sessionStorage.setItem("flag3", true);
     }
   }, [user]);
 
@@ -306,7 +305,7 @@ export default function LibraryPage() {
               <div key={libro.id} className="card">
                 <div className="card-body">
                   <div className="title-row">
-                    <div  onClick={incrementClicks} className="title">{libro.titolo}</div>
+                    <div onClick={incrementClicks} className="title">{libro.titolo}</div>
                     <span
                       onClick={incrementClicks}
                       className={`pill ${libero ? "" : ""}`}
@@ -334,7 +333,18 @@ export default function LibraryPage() {
           })}
         </div>
       </div>
-      {modal && (<LevelCompleted/>)}
+      {modal && (<LevelCompleted />)}
+      {popVisible && (
+        <div className="modal-overlay">
+          <div className="modal-box">
+            <button className="modal-close" onClick={resetError}>
+              &times;
+            </button>
+            <strong>Complimenti!</strong>
+            <p>{errorMessage}</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

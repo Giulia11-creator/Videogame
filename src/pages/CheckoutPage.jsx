@@ -31,9 +31,16 @@ const CheckoutPage = () => {
     return saved ? JSON.parse(saved) : false;
   });
 
+  const [errorMessage, seterrorMessage] = useState("");
   const [modal, setModalVisible] = useState(false);
+  const[popVisible, setpopVisible] = useState(false);
 
-    function incrementClicks() {
+  const resetError = () => {
+    setpopVisible(false);
+    seterrorMessage('');
+  };
+
+  function incrementClicks() {
     setClicks((prev) => {
       const next = prev + 1;
       sessionStorage.setItem("clicks", JSON.stringify(next));
@@ -41,22 +48,23 @@ const CheckoutPage = () => {
     });
   }
 
-  useEffect(() => {
-    if (user) {
+   useEffect(() => {
+       if (user) {
       (async () => {
         await addUser("TravelLevel", user.uid, {
           score,
+          totalClicks: clicks,
           email: user.email,
         });
       })();
     }
-  }, [score, user]);
+  }, [score, clicks, user]);
 
 
   useEffect(() => {
     if (score === 100) {
-      
-    setModalVisible(true);
+
+      setModalVisible(true);
     }
   }, [score]);
 
@@ -84,7 +92,9 @@ const CheckoutPage = () => {
         return next;
       });
     })();
-  }, [bugCoupon, user.uid, user.email]);
+    seterrorMessage("Hai trovato un bug di validazione, cioè un errore che succede quando il sistema non controlla bene quello che l’utente inserisce. In questo caso l’app ti applica lo sconto anche se scrivi cose a caso nella casella del codice: è come se alla cassa del supermercato dicessi una parola inventata e ti facessero lo stesso lo sconto. Questo non dovrebbe succedere, perché i codici validi dovrebbero essere controllati e accettati solo se corretti.");
+    setpopVisible(true);
+  }, [bugCoupon, user]);
 
   useEffect(() => {
     if (coupon !== "") {
@@ -100,20 +110,6 @@ const CheckoutPage = () => {
     }
   }, [coupon]);
 
-  useEffect(() => {
-    sessionStorage.setItem("score", JSON.stringify(score));
-  }, [score]);
-
-  useEffect(() => {
-    sessionStorage.setItem("clicks", JSON.stringify(clicks));
-    if (user) {
-      (async () => {
-        await addUser("TravelLevel", user.uid, {
-          totalClicks: clicks,
-        });
-      })();
-    }
-  }, [clicks, user]);
 
   return (
     <div className="checkout">
@@ -126,111 +122,124 @@ const CheckoutPage = () => {
           <section className="card mobile-only">
             <div className="hotel">
               <div className="hotel-info">
-                <h2  onClick={incrementClicks} className="hotel-name">{hotel[0]?.hotel}</h2>
+                <h2 onClick={incrementClicks} className="hotel-name">{hotel[0]?.hotel}</h2>
               </div>
             </div>
             <div className="stay">
               <div>
-                <span  onClick={incrementClicks}>Check-in</span>
-                <strong  onClick={incrementClicks}>{hotel[0]?.date1 || today.toLocaleDateString()}</strong>
+                <span onClick={incrementClicks}>Check-in</span>
+                <strong onClick={incrementClicks}>{hotel[0]?.date1 || today.toLocaleDateString()}</strong>
               </div>
               <div>
                 <span>Check-out</span>
-                <strong  onClick={incrementClicks}>
+                <strong onClick={incrementClicks}>
                   {hotel[0]?.date2 || tomorrow.toLocaleDateString()}
                 </strong>
               </div>
               <div>
-                <span  onClick={incrementClicks}>Ospiti</span>
-                <strong  onClick={incrementClicks}>{hotel[0]?.adults || 1} adulti • 1 camera</strong>
-                <strong  onClick={incrementClicks}>{hotel[0]?.children || 0} bambini • 1 camera</strong>
+                <span onClick={incrementClicks}>Ospiti</span>
+                <strong onClick={incrementClicks}>{hotel[0]?.adults || 1} adulti • 1 camera</strong>
+                <strong onClick={incrementClicks}>{hotel[0]?.children || 0} bambini • 1 camera</strong>
               </div>
               <div>
-                <span  onClick={incrementClicks}>Prezzo </span>
-                <strong  onClick={incrementClicks}>{hotel[0]?.price}</strong>
+                <span onClick={incrementClicks}>Prezzo </span>
+                <strong onClick={incrementClicks}>{hotel[0]?.price}</strong>
               </div>
             </div>
           </section>
 
           <section className="card">
-            <h3  onClick={incrementClicks}>Dati ospite</h3>
+            <h3 onClick={incrementClicks}>Dati ospite</h3>
             <div className="grid2">
               <label className="field">
-                <span  onClick={incrementClicks}>Nome*</span>
-                <input type="text" placeholder="Mario"  onClick={incrementClicks} />
+                <span onClick={incrementClicks}>Nome*</span>
+                <input type="text" placeholder="Mario" onClick={incrementClicks} />
               </label>
               <label className="field">
-                <span  onClick={incrementClicks}>Cognome*</span>
-                <input type="text" placeholder="Rossi" onClick={incrementClicks}/>
+                <span onClick={incrementClicks}>Cognome*</span>
+                <input type="text" placeholder="Rossi" onClick={incrementClicks} />
               </label>
             </div>
             <div className="grid2">
               <label className="field">
-                <span  onClick={incrementClicks}>Email*</span>
-                <input type="email" placeholder="mario.rossi@email.com"  onClick={incrementClicks} />
+                <span onClick={incrementClicks}>Email*</span>
+                <input type="email" placeholder="mario.rossi@email.com" onClick={incrementClicks} />
               </label>
               <label className="field">
-                <span  onClick={incrementClicks}>Telefono</span>
-                <input type="text" placeholder="+39 ..."  onClick={incrementClicks}/>
+                <span onClick={incrementClicks}>Telefono</span>
+                <input type="text" placeholder="+39 ..." onClick={incrementClicks} />
               </label>
             </div>
             <label className="field">
-              <span  onClick={incrementClicks}>Richieste (opz.)</span>
-              <input type="text" placeholder="Es. check-in tardivo"  onClick={incrementClicks} />
+              <span onClick={incrementClicks}>Richieste (opz.)</span>
+              <input type="text" placeholder="Es. check-in tardivo" onClick={incrementClicks} />
             </label>
           </section>
 
           <section className="card">
-            <h3  onClick={incrementClicks}>Pagamento</h3>
+            <h3 onClick={incrementClicks}>Pagamento</h3>
             <label className="field">
-              <span  onClick={incrementClicks}>Numero carta</span>
-              <input type="text" placeholder="1234 5678 9012 3456"  onClick={incrementClicks} />
+              <span onClick={incrementClicks}>Numero carta</span>
+              <input type="text" placeholder="1234 5678 9012 3456" onClick={incrementClicks} />
             </label>
             <div className="grid3">
               <label className="field">
-                <span  onClick={incrementClicks}>Nome sulla carta</span>
-                <input type="text" placeholder="MARIO ROSSI"  onClick={incrementClicks} />
+                <span onClick={incrementClicks}>Nome sulla carta</span>
+                <input type="text" placeholder="MARIO ROSSI" onClick={incrementClicks} />
               </label>
               <label className="field">
-                <span  onClick={incrementClicks}>Scadenza</span>
-                <input type="text" placeholder="MM/AA"  onClick={incrementClicks} />
+                <span onClick={incrementClicks}>Scadenza</span>
+                <input type="text" placeholder="MM/AA" onClick={incrementClicks} />
               </label>
               <label className="field">
-                <span  onClick={incrementClicks}>CVV</span>
-                <input type="text" placeholder="123"  onClick={incrementClicks}/>
+                <span onClick={incrementClicks}>CVV</span>
+                <input type="text" placeholder="123" onClick={incrementClicks} />
               </label>
             </div>
 
             <div className="grid2">
               <label className="field">
-                <span  onClick={incrementClicks}>Codice promo (opz.)</span>
+                <span onClick={incrementClicks}>Codice promo (opz.)</span>
                 <input
                   onChange={(e) => setcoupon(e.target.value)}
-                   onClick={incrementClicks}
+                  onClick={incrementClicks}
                   type="text"
                   placeholder="ESTATE10"
                 />
               </label>
-              <div  onClick={incrementClicks} className="hint">
+              <div onClick={incrementClicks} className="hint">
                 Se valido, lo sconto verrà applicato al totale.
               </div>
             </div>
             <button className="btn" onClick={BackToTravels}>
               Paga
             </button>
-            <p className="mini"  onClick={incrementClicks}>
+            <p className="mini" onClick={incrementClicks}>
               Cancellazione gratuita fino a 48h prima (esempio).
             </p>
           </section>
         </main>
       </div>
-        {modal && (
-              <div>
-                <LevelCompleted />
-              </div>
-            )}
+      {modal && (
+        <div>
+          <LevelCompleted />
+        </div>
+      )}
+
+
+      {popVisible && (
+        <div className="modal-overlay">
+          <div className="modal-box">
+            <button className="modal-close" onClick={resetError}>
+              &times;
+            </button>
+            <strong>Complimenti!</strong>
+            <p>{errorMessage}</p>
+          </div>
+        </div>
+      )}
     </div>
-    
+
   );
 };
 export default CheckoutPage;

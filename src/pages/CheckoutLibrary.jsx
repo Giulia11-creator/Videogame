@@ -8,8 +8,9 @@ import LevelCompleted from "../ReactComponents/LevelCompleted.jsx";
 
 export default function CheckoutPage() {
 
-  const[modal,setModalVisible] = useState(false);
-
+  const [modal, setModalVisible] = useState(false);
+  const [popVisible, setpopVisible] = useState(false);
+  const [errorMessage, seterrorMessage] = useState("");
   const [libri, setLibri] = useState(() => {
     // recupero i libri prenotati da sessionStorage
     return JSON.parse(sessionStorage.getItem("books") || "[]");
@@ -33,6 +34,11 @@ export default function CheckoutPage() {
 
   const navigate = useNavigate();
 
+  function resetError() {
+    setpopVisible(false);
+    seterrorMessage("");
+  }
+
 
   function handleCheckout() {
     incrementClicks();
@@ -40,7 +46,7 @@ export default function CheckoutPage() {
     alert("✅ Prenotazione effettuata con successo!");
     sessionStorage.removeItem("books");
     setLibri([]);
-    navigate("/library"); 
+    navigate("/library");
   }
 
   function incrementClicks() {
@@ -52,37 +58,22 @@ export default function CheckoutPage() {
   }
 
   useEffect(() => {
-    sessionStorage.setItem("score", JSON.stringify(score));
-  }, [score]);
-
-  useEffect(() => {
-    sessionStorage.setItem("clicks", JSON.stringify(clicks));
-    if (user) {
-      (async () => {
-        await addUser("BookLevel", user.uid, {
-          totalClicks: clicks,
-        });
-      })();
-    }
-  }, [clicks, user]);
-
-
-    useEffect(() => {
+    const randomDelay = Math.floor(Math.random() * (10000 - 3000 + 1)) + 3000;
     const timer = setTimeout(() => {
       setLibri((prev) =>
         prev.map((b) => (b.id === 6 ? { ...b, autore: "G.Bertoli" } : b))
       );
-    }, 6000);
+    }, randomDelay);
     return () => clearTimeout(timer);
   }, []);
 
-  function handleClickAuthor(book){
+  function handleClickAuthor(book) {
     incrementClicks();
-    if(book.rightAutore != "" && book.autore != book.rightAutore)
+    if (book.rightAutore != "" && book.autore != book.rightAutore)
       setbugWrongAuthor(true);
   }
 
-   useEffect(() => {
+  useEffect(() => {
     if (!bugWrongAuthor) return;
     const alreadyAwarded = sessionStorage.getItem("awardedbugWrongAuthor");
     if (alreadyAwarded) return;
@@ -101,24 +92,27 @@ export default function CheckoutPage() {
         return next;
       });
     })();
+    seterrorMessage("Hai trovato un flaky bug: il nome dell’autore del libro cambia improvvisamente senza motivo. A volte rimane corretto, altre volte si trasforma in un altro nome. Questo è un bug instabile, perché lo stesso scenario può produrre risultati diversi.");
+    setpopVisible(true);
   }, [bugWrongAuthor, user]);
 
- useEffect(() => {
+  useEffect(() => {
     if (user) {
       (async () => {
         await addUser("BookLevel", user.uid, {
           score,
+          totalClicks: clicks,
           email: user.email,
         });
       })();
     }
-  }, [score, user]);
+  }, [score, clicks, user]);
 
-    useEffect(()=>{
-    if(score === 100)
+  useEffect(() => {
+    if (score === 100)
       setModalVisible(true);
 
-  },[score]);
+  }, [score]);
 
   return (
     <div>
@@ -169,7 +163,18 @@ export default function CheckoutPage() {
           </>
         )}
       </div>
-      {modal && (<LevelCompleted/>)}
+      {modal && (<LevelCompleted />)}
+      {popVisible && (
+        <div className="modal-overlay">
+          <div className="modal-box">
+            <button className="modal-close" onClick={resetError}>
+              &times;
+            </button>
+            <strong>Complimenti!</strong>
+            <p>{errorMessage}</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

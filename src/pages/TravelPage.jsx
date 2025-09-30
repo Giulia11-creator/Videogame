@@ -13,9 +13,9 @@ import LevelCompleted from "../ReactComponents/LevelCompleted.jsx";
 
 const TravelPage = () => {
   const navigate = useNavigate();
-  // const [errorMessage, seterrorMessage] = useState("");
+  const [errorMessage, seterrorMessage] = useState("");
   const [modal, setModalVisible] = useState(false);
-  // const [popVisible, setpopVisible] = useState(false);
+  const [popVisible, setpopVisible] = useState(false);
   const [nAdults, setnAdults] = useState(0);
   const [nchildren, setnchildren] = useState(0);
   const [dateIn, setDateIn] = useState("");
@@ -53,6 +53,11 @@ const TravelPage = () => {
     });
   }
 
+
+  const resetError = () => {
+    setpopVisible(false);
+    seterrorMessage('');
+  };
   useEffect(() => {
     const dIn = new Date(dateIn);
     const dOut = new Date(dateOut);
@@ -77,9 +82,11 @@ const TravelPage = () => {
             return next;
           });
         })();
+        seterrorMessage("Hai trovato un bug di validazione: l’app ti lascia mettere come data di arrivo un giorno dopo la data di partenza. È come prenotare un hotel dal 10 al 5 del mese: chiaramente non ha senso e il sistema dovrebbe impedirlo. Questo tipo di bug si presenta il sistema non controlla correttamente i dati inseriti dall’utente.");
+        setpopVisible(true);
       }
     }
-  }, [bugDate1, user.uid, user.email]);
+  }, [bugDate1, user]);
 
   useEffect(() => {
     if (bugNegativePeople) {
@@ -99,9 +106,11 @@ const TravelPage = () => {
             return next;
           });
         })();
+        seterrorMessage("Hai trovato un bug di validazione: l’app ti lascia inserire un numero di persone negativo per una prenotazione. È come se potessi prenotare un tavolo per –3 persone: assurdo, ma il sistema non lo controlla. Questo tipo di bug si presenta il sistema non controlla correttamente i dati inseriti dall’utente.");
+        setpopVisible(true);
       }
     }
-  }, [bugNegativePeople, user.uid, user.email]);
+  }, [bugNegativePeople, user]);
 
   useEffect(() => {
     if (nAdults <= -1) {
@@ -133,13 +142,12 @@ const TravelPage = () => {
             return next;
           });
         })();
+        seterrorMessage("Hai trovato un bug di validazione: l’app ti lascia inserire un numero di bambini negativo per una prenotazione. È come se potessi prenotare un tavolo per –3 persone: assurdo, ma il sistema non lo controlla. Questo tipo di bug si presenta il sistema non controlla correttamente i dati inseriti dall’utente.");
+        setpopVisible(true);
       }
     }
-  }, [bugNegativeChildren, user.uid, user.email]);
-  // Quando lo score cambia, salvo sempre in sessionStorage
-  useEffect(() => {
-    sessionStorage.setItem("score", JSON.stringify(score));
-  }, [score]);
+  }, [bugNegativeChildren, user]);
+
 
   useEffect(() => {
     if (score == 100) {
@@ -147,16 +155,7 @@ const TravelPage = () => {
     }
   }, [score]);
 
-  useEffect(() => {
-    sessionStorage.setItem("clicks", JSON.stringify(clicks));
-    if (user) {
-      (async () => {
-        await addUser("TravelLevel", user.uid, {
-          totalClicks: clicks,
-        });
-      })();
-    }
-  }, [clicks, user]);
+
 
   function handleDateChange(e, type) {
     const value = e.target.value;
@@ -211,15 +210,16 @@ const TravelPage = () => {
   }
 
   useEffect(() => {
-    if (user) {
+       if (user) {
       (async () => {
         await addUser("TravelLevel", user.uid, {
           score,
+          totalClicks: clicks,
           email: user.email,
         });
       })();
     }
-  }, [score, user]);
+  }, [score, clicks, user]);
 
   useEffect(() => {
     if (user) {
@@ -446,8 +446,22 @@ const TravelPage = () => {
           <LevelCompleted />
         </div>
       )}
+
+      {popVisible && (
+        <div className="modal-overlay">
+          <div className="modal-box">
+            <button className="modal-close" onClick={resetError}>
+              &times;
+            </button>
+            <strong>Complimenti!</strong>
+            <p>{errorMessage}</p>
+          </div>
+        </div>
+      )}
     </div>
   );
+
+
 };
 
 export default TravelPage;

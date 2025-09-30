@@ -5,31 +5,47 @@ import { UserAuth } from "../context/AuthContext";
 import "../styles/Event.css"; // importa lo stile
 import { useNavigate } from "react-router-dom";
 import LevelCompleted from "../ReactComponents/LevelCompleted.jsx";
+
 export default function EventFormBug() {
   const [title, setTitle] = useState("");
   const [location, setLocation] = useState("");
   const [participants, setParticipants] = useState(0);
   const [msg, setMsg] = useState("");
-  const [score, setScore] = useState(0);
+  const [score, setscore] = useState(() => {
+    const saved = sessionStorage.getItem("score");
+    return saved ? JSON.parse(saved) : 0;
+  });
   const [modal, setModalVisible] = useState(false);
-  const [onlySpaces, setOnlySpaces] = useState(false);
   const [clicks, setClicks] = useState(() => {
     const saved = sessionStorage.getItem("clicks");
     return saved ? JSON.parse(saved) : 0;
   });
+
+  const [bugNoTitle, setbugNoTitle] = useState(() => {
+    const saved = sessionStorage.getItem("bugNoTitle");
+    return saved ? JSON.parse(saved) : false;
+  });
+  const [bugNoLocation, setbugNoLocation] = useState(() => {
+    const saved = sessionStorage.getItem("bugNoLocation");
+    return saved ? JSON.parse(saved) : false;
+  });
+  const [bugWrongDate, setbugWrongDate] = useState(() => {
+    const saved = sessionStorage.getItem("bugWrongDate");
+    return saved ? JSON.parse(saved) : false;
+  });
+  const [bugNegativePeople, setbugNegativePeople] = useState(() => {
+    const saved = sessionStorage.getItem("bugNegativePeople");
+    return saved ? JSON.parse(saved) : false;
+  });
+  const [bugPastDate, setbugPastDate] = useState(() => {
+    const saved = sessionStorage.getItem("bugPastDate");
+    return saved ? JSON.parse(saved) : false;
+  });
+
+  const [errorMessage, seterrorMessage] = useState("");
+  const [popVisible, setpopVisible] = useState(false);
   const [dateEvent, setdateEvent] = useState("");
   const [events, setEvents] = useState([]);
-  const [bugPastDate, setbugPastDate] = useState(false);
-  const [bugNoTitle, setbugNoTitle] = useState(false);
-  const [bugNoLocation, setbugNoLocation] = useState(false);
-  const [bugWrongDate, setbugWrongDate] = useState(false);
-  const [bugNegativePeople, setbugNegativePeople] = useState(false);
-  const [awardedbugNoTitle, setawardedbugNoTitle] = useState(false);
-  const [awardedbugNoLocation, setawardedbugNoLocation] = useState(false);
-  const [awardedbugWrongDate, setawardedbugWrongDate] = useState(false);
-  const [awardedbugPastDate, setawardedbugPastDate] = useState(false);
-  const [awardedbugNegativePeople, setawardedbugNegativePeople] =
-    useState(false);
   const { user } = UserAuth();
   const navigate = useNavigate();
 
@@ -39,23 +55,33 @@ export default function EventFormBug() {
       return next; // importante restituire il nuovo valore
     });
   }
+
+  // 🔄 Adesso gestiamo score + clicks in un solo effetto
   useEffect(() => {
+    sessionStorage.setItem("score", JSON.stringify(score));
+    sessionStorage.setItem("clicks", JSON.stringify(clicks));
+
     if (user) {
       (async () => {
         await addUser("EventsLevel", user.uid, {
           score,
+          totalClicks: clicks,
           email: user.email,
         });
       })();
     }
-  }, [score, user]);
+  }, [score, clicks, user]);
 
   useEffect(() => {
-
-    if (score == 100)
+    if (score === 100) {
       setModalVisible(true);
-
+    }
   }, [score]);
+
+  function resetError() {
+    setpopVisible(false);
+    seterrorMessage("");
+  }
 
   function isPastDate(dateString) {
     const today = new Date();
@@ -64,7 +90,6 @@ export default function EventFormBug() {
     inputDate.setHours(0, 0, 0, 0);
     return inputDate < today;
   }
-
 
   function addEvent() {
     const newEvent = {
@@ -90,7 +115,6 @@ export default function EventFormBug() {
 
     if (isPastDate(newEvent.eventDate)) setbugPastDate(true);
 
-    // ✅ controlla se titolo o location sono SOLO spazi
     const titleOnlySpaces = /^ +$/.test(newEvent.title);
     const locationOnlySpaces = /^ +$/.test(newEvent.location);
 
@@ -107,7 +131,7 @@ export default function EventFormBug() {
   const ClickDate = (event) => {
     incrementClicks();
     const dateBackup = event.backupDate;
-    if (event.eventDate != dateBackup) {
+    if (event.eventDate !== dateBackup) {
       setbugWrongDate(true);
     }
   };
@@ -118,99 +142,116 @@ export default function EventFormBug() {
       setbugNegativePeople(true);
     }
   };
-  useEffect(() => {
-    let inc = 0;
-    if (bugNoLocation && !awardedbugNoLocation) {
-      inc += 20;
-      (async () => {
-        await shootConfetti();
-        await addPoints("Leaderboard", user.uid, 20, "totalPoints", {
-          nick: user.email,
-        }); //animazione e icremento del punteggio nella classifica
-      })();
-      setawardedbugNoLocation(true);
-    }
-    if (bugNoTitle && !awardedbugNoTitle) {
-      inc += 20;
-      (async () => {
-        await shootConfetti();
-        await addPoints("Leaderboard", user.uid, 20, "totalPoints", {
-          nick: user.email,
-        }); //animazione e icremento del punteggio nella classifica
-      })();
-      setawardedbugNoTitle(true);
-    }
-    if (bugWrongDate && !awardedbugWrongDate) {
-      inc += 20;
-      (async () => {
-        await shootConfetti();
-        await addPoints("Leaderboard", user.uid, 20, "totalPoints", {
-          nick: user.email,
-        }); //animazione e icremento del punteggio nella classifica
-      })();
-      setawardedbugWrongDate(true);
-    }
-    if (bugPastDate && !awardedbugPastDate) {
-      inc += 20;
-      (async () => {
-        await shootConfetti();
-        await addPoints("Leaderboard", user.uid, 20, "totalPoints", {
-          nick: user.email,
-        }); //animazione e icremento del punteggio nella classifica
-      })();
-      setawardedbugPastDate(true);
-    }
-    if (bugNegativePeople && !awardedbugNegativePeople) {
-      inc += 20;
-      (async () => {
-        await shootConfetti();
-        await addPoints("Leaderboard", user.uid, 20, "totalPoints", {
-          nick: user.email,
-        }); //animazione e icremento del punteggio nella classifica
-      })();
-      setawardedbugNegativePeople(true);
-    }
-    if (inc > 0) {
-      //animazione
-      setScore((s) => s + inc);
-    }
-  }, [
-    bugNoLocation,
-    bugNoTitle,
-    bugWrongDate,
-    bugPastDate,
-    bugNegativePeople,
-    awardedbugNoLocation,
-    awardedbugNoTitle,
-    awardedbugWrongDate,
-    awardedbugPastDate,
-    awardedbugNegativePeople,
-    user,
-  ]);
+
 
   function handleSubmit(e) {
     e.preventDefault();
     addEvent();
   }
+
   function BackToGame() {
     incrementClicks();
     navigate("/game");
   }
-  useEffect(() => {
-    sessionStorage.setItem("clicks", JSON.stringify(clicks));
-    if (user) {
-      (async () => {
-        await addUser("EventsLevel", user.uid, {
-          totalClicks: clicks,
-        });
-      })();
-    }
-  }, [clicks, user]);
+
   useEffect(() => {
     if (user) {
       sessionStorage.setItem("flag2", true);
     }
   }, [user]);
+  // 🎯 BUG: Evento senza luogo 
+  useEffect(() => {
+    if (!bugNoLocation) return;
+    const awardedbugNoLocation = sessionStorage.getItem("awardedbugNoLocation");
+    if (awardedbugNoLocation) return;
+    if (!user?.uid || !user?.email) return;
+    (async () => {
+      await shootConfetti();
+      await addPoints("Leaderboard", user.uid, 20, "totalPoints", { nick: user.email, });
+      setscore((prev) => {
+        const next = prev + 20; sessionStorage.setItem("score", JSON.stringify(next));
+        sessionStorage.setItem("awardedbugNoLocation", "true"); return next;
+      });
+    })();
+    seterrorMessage("Hai trovato un bug di validazione: l’app consente di creare un evento senza specificare il luogo. I bug di validazione si hanno quando il sistema non verifica dati essenziali.");
+    setpopVisible(true);
+  }, [bugNoLocation, user]);
+
+  // 🎯 BUG: Evento senza titolo 
+  useEffect(() => {
+    if (!bugNoTitle) return;
+    const awardedbugNoTitle = sessionStorage.getItem("awardedbugNoTitle");
+    if (awardedbugNoTitle) return;
+    if (!user?.uid || !user?.email) return;
+    (async () => {
+      await shootConfetti();
+      await addPoints("Leaderboard", user.uid, 20, "totalPoints", { nick: user.email, });
+      setscore((prev) => {
+        const next = prev + 20; sessionStorage.setItem("score", JSON.stringify(next));
+        sessionStorage.setItem("awardedbugNoTitle", "true"); return next;
+      });
+    })();
+    seterrorMessage("Hai trovato un bug di validazione: l’app ti lascia creare un evento senza titolo. I bug di validazione si verificano quando mancano controlli sui campi obbligatori. È come stampare una locandina di un concerto senza scrivere il nome dell’evento.");
+    setpopVisible(true);
+  }, [bugNoTitle, user]);
+
+  // 🎯 BUG: Data che cambia ogni 3 eventi (flaky) 
+  useEffect(() => {
+    if (!bugWrongDate) return;
+    const awardedbugWrongDate = sessionStorage.getItem("awardedbugWrongDate");
+    if (awardedbugWrongDate) return;
+    if (!user?.uid || !user?.email) return;
+    (async () => {
+      await shootConfetti();
+      await addPoints("Leaderboard", user.uid, 20, "totalPoints", { nick: user.email, });
+      setscore((prev) => {
+        const next = prev + 20; sessionStorage.setItem("score", JSON.stringify(next)); 
+        sessionStorage.setItem("awardedbugWrongDate", "true"); return next;
+      });
+    })();
+    seterrorMessage("Hai trovato un flaky bug: ogni tre eventi creati, la data di uno si modifica da sola senza motivo. Un flaky bug è un errore instabile e imprevedibile, che non si manifesta sempre nello stesso modo. È come se la data di un compleanno sul calendario cambiasse da sola ogni tanto.");
+    setpopVisible(true);
+  },
+    [bugWrongDate, user]);
+
+  // 🎯 BUG: Evento in data passata 
+  useEffect(() => {
+    if (!bugPastDate) return;
+    const awardedbugPastDate = sessionStorage.getItem("awardedbugPastDate");
+    if (awardedbugPastDate) return;
+    if (!user?.uid || !user?.email) return;
+    (async () => {
+      await shootConfetti();
+      await addPoints("Leaderboard", user.uid, 20, "totalPoints", { nick: user.email, });
+      setscore((prev) => {
+        const next = prev + 20; sessionStorage.setItem("score", JSON.stringify(next));
+        sessionStorage.setItem("awardedbugPastDate", "true"); return next;
+      });
+    })();
+    seterrorMessage("Hai trovato un bug di validazione: l’app permette di creare un evento in una data già passata. I bug di validazione sono errori nei controlli logici sugli input. È come fissare una riunione ieri: non ha senso e il sistema dovrebbe impedirlo.");
+    setpopVisible(true);
+  }, [bugPastDate, user]);
+
+  // 🎯 BUG: Numero negativo di persone 
+  useEffect(() => {
+    if (!bugNegativePeople) return;
+    const awardedbugNegativePeople = sessionStorage.getItem("awardedbugNegativePeople");
+    if (awardedbugNegativePeople) return;
+    if (!user?.uid || !user?.email) return;
+    (async () => {
+      await shootConfetti();
+      await addPoints("Leaderboard", user.uid, 20, "totalPoints", { nick: user.email, });
+      setscore((prev) => {
+        const next = prev + 20;
+        sessionStorage.setItem("score", JSON.stringify(next));
+        sessionStorage.setItem("awardedbugNegativePeople", "true"); return next;
+      });
+    })();
+    seterrorMessage("Hai trovato un bug di validazione: l’app ti permette di inserire un numero negativo di persone per un evento. Un bug di validazione è quando il sistema non controlla correttamente i dati inseriti dall’utente. È come organizzare una festa per –5 invitati: assurdo, ma l’app lo accetta.");
+    setpopVisible(true);
+  },
+    [bugNegativePeople, user]);
+
   return (
     <div className="page-container">
       <div className="top-bar">
@@ -218,15 +259,14 @@ export default function EventFormBug() {
           ⏻ Esci
         </button>
         <div className="score-chip" aria-live="polite" title="Punteggio">
-          <span onClick={incrementClicks} className="score-label">
-            Punteggio
-          </span>
-          <span onClick={incrementClicks} className="score-value">
-            {score}
-          </span>
+          <span onClick={incrementClicks} className="score-label">Punteggio</span>
+          <span onClick={incrementClicks} className="score-value">{score}</span>
         </div>
       </div>
-      <h1 onClick={incrementClicks} className="page-title">🎉 Party Planner – Crea la tua Festa! 🎉</h1>
+
+      <h1 onClick={incrementClicks} className="page-title">
+        🎉 Party Planner – Crea la tua Festa! 🎉
+      </h1>
 
       <form onSubmit={handleSubmit} className="event-form">
         <input
@@ -271,25 +311,28 @@ export default function EventFormBug() {
         {events.map((ev, i) => (
           <div key={i} className="event-card">
             <h4 onClick={incrementClicks}>{ev.title}</h4>
-            <p onClick={incrementClicks}>
-              <strong>Luogo:</strong> {ev.location}
-            </p>
-            <p onClick={() => ClickDate(ev)}>
-              <strong>Data:</strong> {ev.eventDate.toLocaleString()}
-            </p>
-            <p onClick={() => CheckParticipants(ev)}>
-              <strong>Partecipanti:</strong> {ev.eventParticipants}
-            </p>
+            <p onClick={incrementClicks}><strong>Luogo:</strong> {ev.location}</p>
+            <p onClick={() => ClickDate(ev)}><strong>Data:</strong> {ev.eventDate.toLocaleString()}</p>
+            <p onClick={() => CheckParticipants(ev)}><strong>Partecipanti:</strong> {ev.eventParticipants}</p>
           </div>
         ))}
       </div>
+
       {modal && (
         <div>
           <LevelCompleted />
         </div>
       )}
 
-
+      {popVisible && (
+        <div className="modal-overlay">
+          <div className="modal-box">
+            <button className="modal-close" onClick={resetError}>&times;</button>
+            <strong>Complimenti!</strong>
+            <p>{errorMessage}</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
