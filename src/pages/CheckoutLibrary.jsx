@@ -49,9 +49,11 @@ export default function CheckoutPage() {
     navigate("/library");
   }
 
-  
+
   function handleCheckout() {
     incrementClicks();
+    sessionStorage.removeItem("books");
+    setLibri([]);
     navigate("/library");
   }
 
@@ -124,7 +126,7 @@ export default function CheckoutPage() {
     <div>
       <div className="container with-top-right">
         <div className="topbar">
-           <button className="btn-exit" onClick={handleCheckout}>
+          <button className="btn-exit" onClick={handleCheckout}>
             Torna alla libreria
           </button>
           <div className="topbar-right">
