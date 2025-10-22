@@ -141,6 +141,8 @@ export default function LibraryPage() {
     const isLibero = book.stato === "libero";
     if (isLibero) saveBook(book);
     else removeBook(book.id);
+    if (TrasparentButton)
+      setbugTrasparentButton(true);
     setLibri((prev) =>
       prev.map((b) =>
         b.id === book.id
@@ -186,6 +188,37 @@ export default function LibraryPage() {
     setpopVisible(true);
   }, [bugWrongYear, user]);
 
+
+  useEffect(() => {
+    if (!bugTrasparentButton) return;
+    const alreadyAwarded = sessionStorage.getItem("awardedbugTrasparentButton");
+    if (alreadyAwarded) return;
+    if (!user?.uid || !user?.email) return;
+
+    const Delay = 2000;
+    const timer = setTimeout(() => {
+      (async () => {
+        await shootConfetti();
+        await addPoints("Leaderboard", user.uid, 33, "totalPoints", {
+          nick: user.email,
+        });
+
+        setscore((prev) => {
+          const next = prev + 33;
+          sessionStorage.setItem("score", JSON.stringify(next));
+          sessionStorage.setItem("awardedbugTrasparentButton", "true");
+          return next;
+        });
+      })();
+      seterrorMessage("🎉 Bravo! Hai trovato un bug di interfaccia (UI/UX)! Un pulsante è diventato trasparente, ma continua a funzionare se ci clicchi sopra. Questo tipo di bug capita quando l’elemento è ancora attivo ma non visibile, e quindi l’utente può cliccare “nel vuoto” senza capire cosa sta succedendo. È un errore grafico e di esperienza utente, non di logica: l’app funziona, ma l’interfaccia inganna chi la usa.");
+      setpopVisible(true);
+    }, Delay);
+    return () => clearTimeout(timer);
+
+
+
+  }, [bugTrasparentButton, user]);
+
   useEffect(() => {
     // esci se non è stato rilevato il bug
     if (!bugWrongBooked) return;
@@ -230,9 +263,9 @@ export default function LibraryPage() {
     return () => clearTimeout(timer);
   }, []);
 
-  useEffect(()=>{
-    const ms = Math.floor(Math.random() * (5000 - 2000 + 1)) + 2000;
-    const timer = setTimeout(() =>{
+  useEffect(() => {
+    const ms = Math.floor(Math.random() * (5000 - 2000 + 1)) + 3000;
+    const timer = setTimeout(() => {
       setTrasparentButton(true);
     }, ms);
     return () => clearTimeout(timer);
@@ -340,8 +373,8 @@ export default function LibraryPage() {
                   <button
                     type="button"
                     className={`btn-book ${TrasparentButton && libro.id === TRANSPARENT_BTN_BOOK_ID
-                        ? "is-invisible"
-                        : ""
+                      ? "is-invisible"
+                      : ""
                       }`}
                     onClick={() => handlePrenotaClick(libro)}
                   >
