@@ -207,6 +207,19 @@
     background: #6d28d9;
   }
 
+  /* invisibile ma cliccabile */
+.btn-book.is-invisible {
+  opacity: 0;           /* sparisce visivamente */
+  pointer-events: auto; /* default, il click passa */
+  /* opzionale: evita alone focus visibile */
+  outline: none;
+}
+
+/* se vuoi sparire anche il testo ma mantenere dimensioni */
+.btn-book.is-invisible span { 
+  visibility: hidden; 
+}
+
   .topbar-right {
     display: flex;
     align-items: center;

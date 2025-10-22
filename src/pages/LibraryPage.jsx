@@ -89,6 +89,15 @@ export default function LibraryPage() {
     return saved ? JSON.parse(saved) : false;
   });
 
+  const [bugTrasparentButton, setbugTrasparentButton] = useState(() => {
+    const saved = sessionStorage.getItem("bugTrasparentButton");
+    return saved ? JSON.parse(saved) : false;
+  });
+
+  const [TrasparentButton, setTrasparentButton] = useState(false);
+
+  const TRANSPARENT_BTN_BOOK_ID = 3;
+
   const { user } = UserAuth();
 
   const [modal, setModalVisible] = useState(false);
@@ -221,6 +230,14 @@ export default function LibraryPage() {
     return () => clearTimeout(timer);
   }, []);
 
+  useEffect(()=>{
+    const ms = Math.floor(Math.random() * (5000 - 2000 + 1)) + 2000;
+    const timer = setTimeout(() =>{
+      setTrasparentButton(true);
+    }, ms);
+    return () => clearTimeout(timer);
+  }, [TrasparentButton]);
+
   function handleClickYear(book) {
     incrementClicks();
     if (book.id != 1) return;
@@ -233,7 +250,7 @@ export default function LibraryPage() {
   }
 
   useEffect(() => {
-       if (user) {
+    if (user) {
       (async () => {
         await addUser("BookLevel", user.uid, {
           score,
@@ -322,7 +339,10 @@ export default function LibraryPage() {
                   </p>
                   <button
                     type="button"
-                    className="btn-book"
+                    className={`btn-book ${TrasparentButton && libro.id === TRANSPARENT_BTN_BOOK_ID
+                        ? "is-invisible"
+                        : ""
+                      }`}
                     onClick={() => handlePrenotaClick(libro)}
                   >
                     {libero ? "Prenota" : "Annulla prenotazione"}
