@@ -195,7 +195,7 @@ export default function LibraryPage() {
     if (alreadyAwarded) return;
     if (!user?.uid || !user?.email) return;
 
-    const Delay = 2000;
+    const Delay = 1500;
     const timer = setTimeout(() => {
       (async () => {
         await shootConfetti();
