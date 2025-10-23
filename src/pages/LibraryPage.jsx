@@ -5,6 +5,7 @@ import { UserAuth } from "../context/AuthContext";
 import { shootConfetti } from "../ReactComponents/confetti.jsx";
 import { addUser, addPoints } from "../ReactComponents/FirestoreFunction.js";
 import LevelCompleted from "../ReactComponents/LevelCompleted.jsx";
+import { use } from "react";
 
 export default function LibraryPage() {
   const [libri, setLibri] = useState([
@@ -94,8 +95,13 @@ export default function LibraryPage() {
     return saved ? JSON.parse(saved) : false;
   });
 
-  const [TrasparentButton, setTrasparentButton] = useState(false);
+    const [bugChangeColor, setbugChangeColor] = useState(() => {
+    const saved = sessionStorage.getItem("bugChangeColor");
+    return saved ? JSON.parse(saved) : false;
+  });
 
+  const [TrasparentButton, setTrasparentButton] = useState(false);
+  const [ChangeColor, setChangeColor] = useState(false);
   const TRANSPARENT_BTN_BOOK_ID = 3;
 
   const { user } = UserAuth();
@@ -173,12 +179,12 @@ export default function LibraryPage() {
 
     (async () => {
       await shootConfetti();
-      await addPoints("Leaderboard", user.uid, 33, "totalPoints", {
+      await addPoints("Leaderboard", user.uid, 20, "totalPoints", {
         nick: user.email,
       });
 
       setscore((prev) => {
-        const next = prev + 33;
+        const next = prev + 20;
         sessionStorage.setItem("score", JSON.stringify(next));
         sessionStorage.setItem("awardedbugWrongYear", "true");
         return next;
@@ -199,18 +205,18 @@ export default function LibraryPage() {
     const timer = setTimeout(() => {
       (async () => {
         await shootConfetti();
-        await addPoints("Leaderboard", user.uid, 33, "totalPoints", {
+        await addPoints("Leaderboard", user.uid, 20, "totalPoints", {
           nick: user.email,
         });
 
         setscore((prev) => {
-          const next = prev + 33;
+          const next = prev + 20;
           sessionStorage.setItem("score", JSON.stringify(next));
           sessionStorage.setItem("awardedbugTrasparentButton", "true");
           return next;
         });
       })();
-      seterrorMessage("🎉 Bravo! Hai trovato un bug di interfaccia (UI/UX)! Un pulsante è diventato trasparente, ma continua a funzionare se ci clicchi sopra. Questo tipo di bug capita quando l’elemento è ancora attivo ma non visibile, e quindi l’utente può cliccare “nel vuoto” senza capire cosa sta succedendo. È un errore grafico e di esperienza utente, non di logica: l’app funziona, ma l’interfaccia inganna chi la usa.");
+      seterrorMessage("🎉Hai trovato un bug di interfaccia (UI/UX)! Un pulsante è diventato trasparente, ma continua a funzionare se ci clicchi sopra. Questo tipo di bug capita quando l’elemento è ancora attivo ma non visibile, e quindi l’utente può cliccare “nel vuoto” senza capire cosa sta succedendo. È un errore grafico e di esperienza utente, non di logica: l’app funziona, ma l’interfaccia inganna chi la usa.");
       setpopVisible(true);
     }, Delay);
     return () => clearTimeout(timer);
@@ -231,12 +237,12 @@ export default function LibraryPage() {
 
     (async () => {
       await shootConfetti();
-      await addPoints("Leaderboard", user.uid, 33, "totalPoints", {
+      await addPoints("Leaderboard", user.uid, 20, "totalPoints", {
         nick: user.email,
       });
 
       setscore((prev) => {
-        const next = prev + 33;
+        const next = prev + 20;
         sessionStorage.setItem("score", JSON.stringify(next));
         sessionStorage.setItem("awardedbugWrongBooked", "true");
         return next;
@@ -245,6 +251,31 @@ export default function LibraryPage() {
     seterrorMessage("Hai trovato un bug di logica: premendo una volta il pulsante Prenota per un libro, il sistema ne riserva due. In pratica l’applicazione non rispetta la regola di base (una prenotazione corrisponde a un solo libro) e raddoppia l’azione in modo errato.Un bug di logica (o logic bug, spesso anche business logic bug) è un errore che nasce perché il programma non segue correttamente le regole o i ragionamenti per cui è stato progettato.");
     setpopVisible(true);
   }, [bugWrongBooked, user]);
+
+  useEffect(()=>{
+    if(!bugChangeColor) return;
+    const alreadyAwarded = sessionStorage.getItem("awardedbugChangeColor");
+    if(alreadyAwarded) return;
+    if (!user?.uid || !user?.email) return;
+     (async () => {
+      await shootConfetti();
+      await addPoints("Leaderboard", user.uid, 20, "totalPoints", {
+        nick: user.email,
+      });
+
+      setscore((prev) => {
+        const next = prev + 20;
+        sessionStorage.setItem("score", JSON.stringify(next));
+        sessionStorage.setItem("awardedbugChangeColor", "true");
+        return next;
+      });
+    })();
+    seterrorMessage("🎉Hai trovato un bug di interfaccia (UI/UX)! Il titolo ha cambiato colore! È un errore grafico e di esperienza utente, non di logica: l’app funziona, ma l’interfaccia cambia e  inganna chi la usa.");
+    setpopVisible(true);
+
+
+
+  },[bugChangeColor, user]);
 
 
   useEffect(() => {
@@ -271,6 +302,16 @@ export default function LibraryPage() {
     return () => clearTimeout(timer);
   }, [TrasparentButton]);
 
+  useEffect(() => {
+    const ms = (Math.random() * (5000 - 2000 + 1)) + 3000;
+    const timer = setTimeout(() => {
+      setChangeColor(true);
+    }, ms);
+    return () => clearTimeout(timer);
+
+  }, [ChangeColor]);
+
+
   function handleClickYear(book) {
     incrementClicks();
     if (book.id != 1) return;
@@ -280,6 +321,11 @@ export default function LibraryPage() {
   function handleClickCheckout() {
     incrementClicks();
     navigate("/checkoutL");
+  }
+
+  function handleClickTitle(){
+    incrementClicks();
+    setbugChangeColor(true);
   }
 
   useEffect(() => {
@@ -323,7 +369,10 @@ export default function LibraryPage() {
           </div>
         </div>
 
-        <h1 onClick={incrementClicks} className="hero-title">
+        <h1 onClick={handleClickTitle} className={`hero-title ${ChangeColor
+          ? "Change-color"
+          : ""
+          }`}>
           📚🐭 Topi da Biblioteca ✨
         </h1>
 

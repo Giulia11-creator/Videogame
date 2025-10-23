@@ -89,12 +89,12 @@ export default function CheckoutPage() {
 
     (async () => {
       await shootConfetti();
-      await addPoints("Leaderboard", user.uid, 34, "totalPoints", {
+      await addPoints("Leaderboard", user.uid, 20, "totalPoints", {
         nick: user.email,
       });
 
       setscore((prev) => {
-        const next = prev + 34;
+        const next = prev + 20;
         sessionStorage.setItem("score", JSON.stringify(next));
         sessionStorage.setItem("awardedbugWrongAuthor", "true");
         return next;

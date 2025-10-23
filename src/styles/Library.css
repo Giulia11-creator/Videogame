@@ -105,6 +105,15 @@
     /* niente text-clip trasparente */
   }
 
+   .hero-title.Change-color {
+    margin: 0;
+    font-size: 2.2rem;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    color: #760898;
+    /* niente text-clip trasparente */
+  }
+
   .title-emoji {
     font-size: 1.4rem;
   }

@@ -8,6 +8,7 @@ import TextBox from "./ReactComponents/TextBox";
 
 function Overlay({ score }) {
   const navigate = useNavigate();
+ const { user, logout } = UserAuth();
   return createPortal(
     <div
       style={{
@@ -25,6 +26,22 @@ function Overlay({ score }) {
         boxShadow: "0 2px 8px rgba(0,0,0,0.2)"
       }}
     >
+
+      <button
+        type="button"
+        onClick={() => { sessionStorage.clear(); logout(); navigate("/"); }}
+        style={{
+          background: "#ff4d4d",
+          color: "white",
+          border: "none",
+          padding: "8px 12px",
+          borderRadius: "8px",
+          cursor: "pointer",
+          fontWeight: "bold"
+        }}
+      >
+        ⏻ Esci
+      </button>
       <span style={{ fontSize: "16px" }}>
         Punteggio: <span style={{ color: "#333" }}>{score}</span>
       </span>
@@ -37,7 +54,7 @@ function Overlay({ score }) {
           padding: "6px 12px",
           cursor: "pointer",
           fontWeight: "bold"
-          
+
         }}
       >
         🏆 Classifica
@@ -52,6 +69,7 @@ export default function ReactUI() {
   const [points, setPoints] = useState(0);
   const [loading, setLoading] = useState(true);
   const { user } = UserAuth();
+
 
   useEffect(() => {
     const run = async () => {

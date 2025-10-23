@@ -2,12 +2,14 @@ import { useEffect, useState } from "react";
 import { collection, query, orderBy, limit, onSnapshot } from "firebase/firestore";
 import { db } from "../firebase"; // usa il tuo export
 import { useNavigate } from "react-router-dom";
+import { UserAuth } from "../context/AuthContext";
 
 export default function LeaderboardPage() {
   const [players, setPlayers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState("");
   const navigate = useNavigate();
+  const { user } = UserAuth();
 
   useEffect(() => {
     // Legge dai documenti di TravelLevel, ordina per campo numerico "points" (disc), prende 20
@@ -27,7 +29,7 @@ export default function LeaderboardPage() {
               ? data.totalPoints
               : Number.parseInt(data.totalPoints, 10) || 0;
 
-        return {
+          return {
             id: d.id,
             name: data.nick, // mostra qualcosa di utile
             points,
@@ -86,23 +88,42 @@ export default function LeaderboardPage() {
         ))}
       </div>
 
-     <div style={{ display: "flex", justifyContent: "center", marginTop: 28 }}>
-        <button
-          onClick={() => navigate("/game")}
-          style={{
-            background: "#9c3aed", // viola
-            color: "white",
-            border: "none",
-            borderRadius: 8,
-            padding: "10px 18px",
-            cursor: "pointer",
-            fontWeight: "600",
-            fontSize: "15px",
-            boxShadow: "0 2px 6px rgba(0,0,0,0.15)"
-          }}
-        >
-          Torna al gioco
-        </button>
+      <div style={{ display: "flex", justifyContent: "center", marginTop: 28 }}>
+        {user ? (
+          <button
+            onClick={() => navigate("/game")}
+            style={{
+              background: "#9c3aed",
+              color: "white",
+              border: "none",
+              borderRadius: 8,
+              padding: "10px 18px",
+              cursor: "pointer",
+              fontWeight: "600",
+              fontSize: "15px",
+              boxShadow: "0 2px 6px rgba(0,0,0,0.15)",
+            }}
+          >
+            🎮 Torna al gioco
+          </button>
+        ) : (
+          <button
+            onClick={() => navigate("/")}
+            style={{
+              background: "#ffcc00",
+              color: "#222",
+              border: "none",
+              borderRadius: 8,
+              padding: "10px 18px",
+              cursor: "pointer",
+              fontWeight: "600",
+              fontSize: "15px",
+              boxShadow: "0 2px 6px rgba(0,0,0,0.15)",
+            }}
+          >
+            🏠 Torna alla home
+          </button>
+        )}
       </div>
     </div>
   );

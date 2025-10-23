@@ -56,21 +56,17 @@ export default function EventFormBug() {
     });
   }
 
-  // 🔄 Adesso gestiamo score + clicks in un solo effetto
   useEffect(() => {
     sessionStorage.setItem("score", JSON.stringify(score));
     sessionStorage.setItem("clicks", JSON.stringify(clicks));
 
-    if (user) {
-      (async () => {
-        await addUser("EventsLevel", user.uid, {
-          score,
-          totalClicks: clicks,
-          email: user.email,
-        });
-      })();
-    }
+    (async () => {
+      if (user) {
+        await addUser("EventsLevel", user.uid, { score, totalClicks: clicks, email: user.email });
+      }
+    })();
   }, [score, clicks, user]);
+
 
   useEffect(() => {
     if (score === 100) {
@@ -205,7 +201,7 @@ export default function EventFormBug() {
       await shootConfetti();
       await addPoints("Leaderboard", user.uid, 20, "totalPoints", { nick: user.email, });
       setscore((prev) => {
-        const next = prev + 20; sessionStorage.setItem("score", JSON.stringify(next)); 
+        const next = prev + 20; sessionStorage.setItem("score", JSON.stringify(next));
         sessionStorage.setItem("awardedbugWrongDate", "true"); return next;
       });
     })();
