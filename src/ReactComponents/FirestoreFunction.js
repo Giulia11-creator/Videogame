@@ -26,6 +26,7 @@ export async function addUser(collectionName, uid, options = {}) {
         {
           points: Number(options.score ?? 0),
           totalClicks: Number(options.totalClicks ?? 0),
+          time: options.time ?? "",
           lastUpdate: serverTimestamp(),
         },
         { merge: true }
@@ -37,6 +38,7 @@ export async function addUser(collectionName, uid, options = {}) {
         nick: options.email ?? "",
         points: Number(options.score ?? 0),
         totalClicks: Number(options.totalClicks ?? 0),
+        time: options.time ?? "",
         createdAt: serverTimestamp(),
         lastUpdate: serverTimestamp(),
       });

@@ -1,10 +1,11 @@
 import "../styles/Library.css";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserAuth } from "../context/AuthContext";
 import { shootConfetti } from "../ReactComponents/confetti.jsx";
 import { addUser, addPoints } from "../ReactComponents/FirestoreFunction.js";
 import LevelCompleted from "../ReactComponents/LevelCompleted.jsx";
+import EndTimer from "../ReactComponents/EndTimer.jsx";
 
 export default function CheckoutPage() {
 
@@ -33,6 +34,13 @@ export default function CheckoutPage() {
   const { user } = UserAuth();
 
   const navigate = useNavigate();
+
+    const DURATION = 20 * 60;
+  const [seconds, setseconds] = useState(() => {
+    const saved = sessionStorage.getItem("timer");
+    return saved ? Number(saved) : DURATION;
+  });
+  const [finished, setfinished] = useState(false);
 
   function resetError() {
     setpopVisible(false);
@@ -64,6 +72,31 @@ export default function CheckoutPage() {
       return next; // importante restituire il nuovo valore
     });
   }
+
+   useEffect(() => {
+    if (seconds <= 0) {
+      setfinished(true);
+      return;
+    }
+    const id = setInterval(() => {
+      setseconds((prev) => {
+        const next = prev - 1;
+        sessionStorage.setItem("timer", next);
+        return next;
+      });
+    }, 1000);
+
+    return () => clearInterval(id);
+  }, [seconds]);
+
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = seconds % 60;
+  const elapsed = DURATION - seconds;
+  const formatTime = useCallback(() => {
+  const minutes = Math.floor(elapsed / 60);
+  const Seconds = elapsed % 60;
+  return `${String(minutes).padStart(2, "0")}:${String(Seconds).padStart(2, "0")}`;
+}, [elapsed]);
 
   useEffect(() => {
     const randomDelay = Math.floor(Math.random() * (10000 - 3000 + 1)) + 3000;
@@ -111,10 +144,11 @@ export default function CheckoutPage() {
           score,
           totalClicks: clicks,
           email: user.email,
+          time: formatTime()
         });
       })();
     }
-  }, [score, clicks, user]);
+  }, [score, clicks, user,seconds,formatTime]);
 
   useEffect(() => {
     if (score === 100)
@@ -129,6 +163,9 @@ export default function CheckoutPage() {
           <button className="btn-exit" onClick={handleCheckoutLibrary}>
             Torna alla libreria
           </button>
+          <h2>
+          Timer: {minutes}:{remainingSeconds.toString().padStart(2, "0")}
+        </h2>
           <div className="topbar-right">
             <span className="score-chip">
               <span onClick={incrementClicks} className="score-label">Libri prenotati</span>
@@ -175,6 +212,7 @@ export default function CheckoutPage() {
         )}
       </div>
       {modal && (<LevelCompleted />)}
+      {finished &&(<EndTimer/>)}
       {popVisible && (
         <div className="modal-overlay">
           <div className="modal-box">

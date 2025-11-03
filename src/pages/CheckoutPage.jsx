@@ -1,12 +1,20 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserAuth } from "../context/AuthContext";
 import { shootConfetti } from "../ReactComponents/confetti.jsx";
 import { addUser, addPoints } from "../ReactComponents/FirestoreFunction.js";
 import "../styles/checkout.css";
 import LevelCompleted from "../ReactComponents/LevelCompleted.jsx";
+import EndTimer from "../ReactComponents/EndTimer.jsx";
 
 const CheckoutPage = () => {
+
+  const DURATION = 20 * 60;
+  const [seconds, setseconds] = useState(() => {
+    const saved = sessionStorage.getItem("timer");
+    return saved ? Number(saved) : DURATION;
+  });
+  const [finished, setfinished] = useState(false);
   const storedhotel = sessionStorage.getItem("hotels");
   const [hotel, setHotel] = useState(
     storedhotel ? JSON.parse(storedhotel) : []
@@ -49,16 +57,42 @@ const CheckoutPage = () => {
   }
 
    useEffect(() => {
+    if (seconds <= 0) {
+      setfinished(true);
+      return;
+    }
+    const id = setInterval(() => {
+      setseconds((prev) => {
+        const next = prev - 1;
+        sessionStorage.setItem("timer", next);
+        return next;
+      });
+    }, 1000);
+
+    return () => clearInterval(id);
+  }, [seconds]);
+
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = seconds % 60;
+  const elapsed = DURATION - seconds;
+  const formatTime = useCallback(() => {
+   const minutes = Math.floor(elapsed / 60);
+   const Seconds = elapsed % 60;
+   return `${String(minutes).padStart(2, "0")}:${String(Seconds).padStart(2, "0")}`;
+ }, [elapsed]);
+
+   useEffect(() => {
        if (user) {
       (async () => {
         await addUser("TravelLevel", user.uid, {
           score,
           totalClicks: clicks,
           email: user.email,
+          time: formatTime()
         });
       })();
     }
-  }, [score, clicks, user]);
+  }, [score, clicks, user, seconds,formatTime]);
 
 
   useEffect(() => {
@@ -113,6 +147,9 @@ const CheckoutPage = () => {
 
   return (
     <div className="checkout">
+       <h2>
+          Timer: {minutes}:{remainingSeconds.toString().padStart(2, "0")}
+        </h2>
       <header className="head">
         <h1>Checkout</h1>
       </header>
@@ -224,7 +261,10 @@ const CheckoutPage = () => {
         <div>
           <LevelCompleted />
         </div>
+
       )}
+
+      {finished && (<EndTimer/>)}
 
 
       {popVisible && (

@@ -1,11 +1,11 @@
 import "../styles/Library.css";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserAuth } from "../context/AuthContext";
 import { shootConfetti } from "../ReactComponents/confetti.jsx";
 import { addUser, addPoints } from "../ReactComponents/FirestoreFunction.js";
 import LevelCompleted from "../ReactComponents/LevelCompleted.jsx";
-import { use } from "react";
+import EndTimer from "../ReactComponents/EndTimer.jsx";
 
 export default function LibraryPage() {
   const [libri, setLibri] = useState([
@@ -65,12 +65,19 @@ export default function LibraryPage() {
     },
   ]);
 
+  const DURATION = 20 * 60;
   const navigate = useNavigate();
   const liberi = libri.filter((l) => l.stato === "libero").length;
   const prenotati = libri.reduce((sum, l) => {
     if (l.stato !== "prenotato") return sum;
     return sum + (l.id === 2 ? 2 : 1);
   }, 0);
+
+  const [seconds, setseconds] = useState(() => {
+    const saved = sessionStorage.getItem("timer");
+    return saved ? Number(saved) : DURATION;
+  });
+  const [finishedTime, setFinishedTimer] = useState(false);
   const [score, setscore] = useState(() => {
     const saved = sessionStorage.getItem("score");
     return saved ? JSON.parse(saved) : 0;
@@ -95,7 +102,7 @@ export default function LibraryPage() {
     return saved ? JSON.parse(saved) : false;
   });
 
-    const [bugChangeColor, setbugChangeColor] = useState(() => {
+  const [bugChangeColor, setbugChangeColor] = useState(() => {
     const saved = sessionStorage.getItem("bugChangeColor");
     return saved ? JSON.parse(saved) : false;
   });
@@ -118,14 +125,12 @@ export default function LibraryPage() {
   function saveBook(book) {
     let books = JSON.parse(sessionStorage.getItem("books") || "[]");
     if (!books.some((b) => b.id === book.id)) {
-
       books.push({
         id: book.id,
         titolo: book.titolo,
         autore: book.autore,
         rightAutore: book.rightAutore,
         anno: book.anno,
-
       });
       sessionStorage.setItem("books", JSON.stringify(books));
     }
@@ -133,7 +138,6 @@ export default function LibraryPage() {
   function resetError() {
     setpopVisible(false);
     seterrorMessage("");
-
   }
 
   function removeBook(id) {
@@ -147,8 +151,7 @@ export default function LibraryPage() {
     const isLibero = book.stato === "libero";
     if (isLibero) saveBook(book);
     else removeBook(book.id);
-    if (TrasparentButton)
-      setbugTrasparentButton(true);
+    if (TrasparentButton) setbugTrasparentButton(true);
     setLibri((prev) =>
       prev.map((b) =>
         b.id === book.id
@@ -171,6 +174,32 @@ export default function LibraryPage() {
     let books = JSON.parse(sessionStorage.getItem("books") || "[]");
     if (prenotati > books.length) setbugWrongBooked(true);
   }
+
+  useEffect(() => {
+    if (seconds <= 0) {
+      setFinishedTimer(true);
+      return;
+    }
+
+    const id = setInterval(() => {
+      setseconds((prev) => {
+        const next = prev - 1;
+        sessionStorage.setItem("timer", next);
+        return next;
+      });
+      
+    }, 1000);
+    return () => clearInterval(id);
+  }, [seconds]);
+
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = seconds % 60;
+ const elapsed = DURATION - seconds;
+  const formatTime = useCallback(() => {
+  const minutes = Math.floor(elapsed / 60);
+  const Seconds = elapsed % 60;
+  return `${String(minutes).padStart(2, "0")}:${String(Seconds).padStart(2, "0")}`;
+}, [elapsed]);
   useEffect(() => {
     if (!bugWrongYear) return;
     const alreadyAwarded = sessionStorage.getItem("awardedbugWrongYear");
@@ -190,10 +219,11 @@ export default function LibraryPage() {
         return next;
       });
     })();
-    seterrorMessage("Hai trovato un flaky bug: l’anno di edizione del libro cambia all’improvviso. In certi casi resta quello giusto, in altri si aggiorna in modo casuale. Anche qui il comportamento è incoerente e imprevedibile, tipico dei bug flaky.");
+    seterrorMessage(
+      "Hai trovato un flaky bug: l’anno di edizione del libro cambia all’improvviso. In certi casi resta quello giusto, in altri si aggiorna in modo casuale. Anche qui il comportamento è incoerente e imprevedibile, tipico dei bug flaky."
+    );
     setpopVisible(true);
   }, [bugWrongYear, user]);
-
 
   useEffect(() => {
     if (!bugTrasparentButton) return;
@@ -216,13 +246,12 @@ export default function LibraryPage() {
           return next;
         });
       })();
-      seterrorMessage("🎉Hai trovato un bug di interfaccia (UI/UX)! Un pulsante è diventato trasparente, ma continua a funzionare se ci clicchi sopra. Questo tipo di bug capita quando l’elemento è ancora attivo ma non visibile, e quindi l’utente può cliccare “nel vuoto” senza capire cosa sta succedendo. È un errore grafico e di esperienza utente, non di logica: l’app funziona, ma l’interfaccia inganna chi la usa.");
+      seterrorMessage(
+        "🎉Hai trovato un bug di interfaccia (UI/UX)! Un pulsante è diventato trasparente, ma continua a funzionare se ci clicchi sopra. Questo tipo di bug capita quando l’elemento è ancora attivo ma non visibile, e quindi l’utente può cliccare “nel vuoto” senza capire cosa sta succedendo. È un errore grafico e di esperienza utente, non di logica: l’app funziona, ma l’interfaccia inganna chi la usa."
+      );
       setpopVisible(true);
     }, Delay);
     return () => clearTimeout(timer);
-
-
-
   }, [bugTrasparentButton, user]);
 
   useEffect(() => {
@@ -248,16 +277,18 @@ export default function LibraryPage() {
         return next;
       });
     })();
-    seterrorMessage("Hai trovato un bug di logica: premendo una volta il pulsante Prenota per un libro, il sistema ne riserva due. In pratica l’applicazione non rispetta la regola di base (una prenotazione corrisponde a un solo libro) e raddoppia l’azione in modo errato.Un bug di logica (o logic bug, spesso anche business logic bug) è un errore che nasce perché il programma non segue correttamente le regole o i ragionamenti per cui è stato progettato.");
+    seterrorMessage(
+      "Hai trovato un bug di logica: premendo una volta il pulsante Prenota per un libro, il sistema ne riserva due. In pratica l’applicazione non rispetta la regola di base (una prenotazione corrisponde a un solo libro) e raddoppia l’azione in modo errato.Un bug di logica (o logic bug, spesso anche business logic bug) è un errore che nasce perché il programma non segue correttamente le regole o i ragionamenti per cui è stato progettato."
+    );
     setpopVisible(true);
   }, [bugWrongBooked, user]);
 
-  useEffect(()=>{
-    if(!bugChangeColor) return;
+  useEffect(() => {
+    if (!bugChangeColor) return;
     const alreadyAwarded = sessionStorage.getItem("awardedbugChangeColor");
-    if(alreadyAwarded) return;
+    if (alreadyAwarded) return;
     if (!user?.uid || !user?.email) return;
-     (async () => {
+    (async () => {
       await shootConfetti();
       await addPoints("Leaderboard", user.uid, 20, "totalPoints", {
         nick: user.email,
@@ -270,18 +301,14 @@ export default function LibraryPage() {
         return next;
       });
     })();
-    seterrorMessage("🎉Hai trovato un bug di interfaccia (UI/UX)! Il titolo ha cambiato colore! È un errore grafico e di esperienza utente, non di logica: l’app funziona, ma l’interfaccia cambia e  inganna chi la usa.");
+    seterrorMessage(
+      "🎉Hai trovato un bug di interfaccia (UI/UX)! Il titolo ha cambiato colore! È un errore grafico e di esperienza utente, non di logica: l’app funziona, ma l’interfaccia cambia e  inganna chi la usa."
+    );
     setpopVisible(true);
-
-
-
-  },[bugChangeColor, user]);
-
+  }, [bugChangeColor, user]);
 
   useEffect(() => {
-    if (score === 100)
-      setModalVisible(true);
-
+    if (score === 100) setModalVisible(true);
   }, [score]);
 
   useEffect(() => {
@@ -303,14 +330,12 @@ export default function LibraryPage() {
   }, [TrasparentButton]);
 
   useEffect(() => {
-    const ms = (Math.random() * (5000 - 2000 + 1)) + 3000;
+    const ms = Math.random() * (5000 - 2000 + 1) + 3000;
     const timer = setTimeout(() => {
       setChangeColor(true);
     }, ms);
     return () => clearTimeout(timer);
-
   }, [ChangeColor]);
-
 
   function handleClickYear(book) {
     incrementClicks();
@@ -323,7 +348,7 @@ export default function LibraryPage() {
     navigate("/checkoutL");
   }
 
-  function handleClickTitle(){
+  function handleClickTitle() {
     incrementClicks();
     setbugChangeColor(true);
   }
@@ -335,10 +360,11 @@ export default function LibraryPage() {
           score,
           totalClicks: clicks,
           email: user.email,
+          time : formatTime()
         });
       })();
     }
-  }, [score, clicks, user]);
+  }, [score, clicks, user,seconds,formatTime]);
 
   useEffect(() => {
     if (user) {
@@ -353,6 +379,9 @@ export default function LibraryPage() {
           <button className="btn-exit" onClick={BackToGame}>
             ⏻ Esci
           </button>
+          <h2>
+            Timer: {minutes}:{remainingSeconds.toString().padStart(2, "0")}
+          </h2>
 
           <div className="topbar-right">
             <button className="btn-checkout" onClick={handleClickCheckout}>
@@ -369,10 +398,10 @@ export default function LibraryPage() {
           </div>
         </div>
 
-        <h1 onClick={handleClickTitle} className={`hero-title ${ChangeColor
-          ? "Change-color"
-          : ""
-          }`}>
+        <h1
+          onClick={handleClickTitle}
+          className={`hero-title ${ChangeColor ? "Change-color" : ""}`}
+        >
           📚🐭 Topi da Biblioteca ✨
         </h1>
 
@@ -404,7 +433,9 @@ export default function LibraryPage() {
               <div key={libro.id} className="card">
                 <div className="card-body">
                   <div className="title-row">
-                    <div onClick={incrementClicks} className="title">{libro.titolo}</div>
+                    <div onClick={incrementClicks} className="title">
+                      {libro.titolo}
+                    </div>
                     <span
                       onClick={incrementClicks}
                       className={`pill ${libero ? "" : ""}`}
@@ -421,10 +452,11 @@ export default function LibraryPage() {
                   </p>
                   <button
                     type="button"
-                    className={`btn-book ${TrasparentButton && libro.id === TRANSPARENT_BTN_BOOK_ID
-                      ? "is-invisible"
-                      : ""
-                      }`}
+                    className={`btn-book ${
+                      TrasparentButton && libro.id === TRANSPARENT_BTN_BOOK_ID
+                        ? "is-invisible"
+                        : ""
+                    }`}
                     onClick={() => handlePrenotaClick(libro)}
                   >
                     {libero ? "Prenota" : "Annulla prenotazione"}
@@ -435,7 +467,8 @@ export default function LibraryPage() {
           })}
         </div>
       </div>
-      {modal && (<LevelCompleted />)}
+      {modal && <LevelCompleted />}
+      {finishedTime && <EndTimer />}
       {popVisible && (
         <div className="modal-overlay">
           <div className="modal-box">

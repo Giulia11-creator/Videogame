@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect,useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserAuth } from "../context/AuthContext";
 import { shootConfetti } from "../ReactComponents/confetti.jsx";
@@ -9,6 +9,7 @@ import h2 from "../images/h2.jpg";
 import h3 from "../images//h3.jpg";
 import h4 from "../images/h4.jpg";
 import LevelCompleted from "../ReactComponents/LevelCompleted.jsx";
+import EndTimer from "../ReactComponents/EndTimer.jsx";
 
 
 const TravelPage = () => {
@@ -20,6 +21,12 @@ const TravelPage = () => {
   const [nchildren, setnchildren] = useState(0);
   const [dateIn, setDateIn] = useState("");
   const [dateOut, setDateOut] = useState("");
+   const DURATION = 20 * 60;
+  const [seconds, setseconds] = useState(() => {
+    const saved = sessionStorage.getItem("timer");
+    return saved ? Number(saved) : DURATION;
+  });
+  const [finished, setfinished] = useState(false);
   const [bugNegativePeople, setbugNegativePeople] = useState(() => {
     const saved = sessionStorage.getItem("bugNegativePeople");
     return saved ? JSON.parse(saved) : false;
@@ -58,6 +65,35 @@ const TravelPage = () => {
     setpopVisible(false);
     seterrorMessage('');
   };
+
+
+
+   useEffect(() => {
+      if (seconds <= 0) {
+        setfinished(true);
+        return;
+      }
+      const id = setInterval(() => {
+        setseconds((prev) => {
+          const next = prev - 1;
+          sessionStorage.setItem("timer", next);
+          return next;
+        });
+      }, 1000);
+  
+      return () => clearInterval(id);
+    }, [seconds]);
+  
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    const elapsed = DURATION - seconds;
+    const formatTime = useCallback(() => {
+     const minutes = Math.floor(elapsed / 60);
+     const Seconds = elapsed % 60;
+     return `${String(minutes).padStart(2, "0")}:${String(Seconds).padStart(2, "0")}`;
+   }, [elapsed]);
+
+
   useEffect(() => {
     const dIn = new Date(dateIn);
     const dOut = new Date(dateOut);
@@ -216,10 +252,11 @@ const TravelPage = () => {
           score,
           totalClicks: clicks,
           email: user.email,
+          time:formatTime()
         });
       })();
     }
-  }, [score, clicks, user]);
+  }, [score, clicks, user,seconds,formatTime]);
 
   useEffect(() => {
     if (user) {
@@ -234,6 +271,9 @@ const TravelPage = () => {
         <button className="btn-exit" onClick={BackToGame}>
           ⏻ Esci
         </button>
+         <h2>
+          Timer: {minutes}:{remainingSeconds.toString().padStart(2, "0")}
+        </h2>
 
         <div className="score-chip" aria-live="polite" title="Punteggio">
           <span onClick={incrementClicks} className="score-label">Punteggio</span>
@@ -446,6 +486,7 @@ const TravelPage = () => {
           <LevelCompleted />
         </div>
       )}
+      {finished && (<EndTimer/>)}
 
       {popVisible && (
         <div className="modal-overlay">
