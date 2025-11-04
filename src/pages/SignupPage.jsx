@@ -1,26 +1,38 @@
 import { useEffect, useState } from "react";
-import { useNavigate, Link} from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import "../styles/ui.css";
-import {UserAuth} from '../context/AuthContext';
+import { UserAuth } from '../context/AuthContext';
 
 const SignupPage = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const {createUser} = UserAuth();
+  const [errorMsg, setErrorMsg] = useState("");
+  const { createUser } = UserAuth();
 
-  const handleSubmit = async (e) =>{
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
 
+    // ✅ validazione password
+    if (password.length < 8) {
+      setErrorMsg("La password deve contenere almeno 8 caratteri.");
+      return;
+    }
+
+    try {
       await createUser(email, password);
       navigate("/game");
 
-      
     } catch (e) {
+      console.log(e.code);
 
-      console.log(e.message);
-      
+      if (e.code === "auth/email-already-in-use") {
+        setErrorMsg("Utente esistente");
+      } else if (e.code === "auth/invalid-email") {
+        setErrorMsg("Inserisci una email valida.");
+      } else {
+        setErrorMsg("Errore durante la registrazione.");
+      }
     }
   };
 
@@ -32,6 +44,8 @@ const SignupPage = () => {
   return (
     <div className="signin-wrapper">
       <div className="signin-page">
+        {errorMsg && <p className="error">{errorMsg}</p>}
+
         <div className="signin-card">
           <div className="signin-header">
             <h2 className="signin-title">Iscriviti</h2>
@@ -63,7 +77,7 @@ const SignupPage = () => {
                     type="password"
                     placeholder="La tua password"
                     autoComplete="current-password"
-                    onChange={(e) => setPassword (e.target.value)}
+                    onChange={(e) => setPassword(e.target.value)}
                     required
                     className="input"
                   />
