@@ -41,7 +41,7 @@ const CheckoutPage = () => {
 
   const [errorMessage, seterrorMessage] = useState("");
   const [modal, setModalVisible] = useState(false);
-  const[popVisible, setpopVisible] = useState(false);
+  const [popVisible, setpopVisible] = useState(false);
 
   const resetError = () => {
     setpopVisible(false);
@@ -56,7 +56,7 @@ const CheckoutPage = () => {
     });
   }
 
-   useEffect(() => {
+  useEffect(() => {
     if (seconds <= 0) {
       setfinished(true);
       return;
@@ -76,13 +76,15 @@ const CheckoutPage = () => {
   const remainingSeconds = seconds % 60;
   const elapsed = DURATION - seconds;
   const formatTime = useCallback(() => {
-   const minutes = Math.floor(elapsed / 60);
-   const Seconds = elapsed % 60;
-   return `${String(minutes).padStart(2, "0")}:${String(Seconds).padStart(2, "0")}`;
- }, [elapsed]);
+    const minutes = Math.floor(elapsed / 60);
+    const Seconds = elapsed % 60;
+    return `${String(minutes).padStart(2, "0")}:${String(Seconds).padStart(2, "0")}`;
+    const timerState = seconds <= 30 ? "danger" : seconds <= 60 ? "warning" : "ok";
 
-   useEffect(() => {
-       if (user) {
+  }, [elapsed]);
+
+  useEffect(() => {
+    if (user) {
       (async () => {
         await addUser("TravelLevel", user.uid, {
           score,
@@ -92,7 +94,7 @@ const CheckoutPage = () => {
         });
       })();
     }
-  }, [score, clicks, user, seconds,formatTime]);
+  }, [score, clicks, user, seconds, formatTime]);
 
 
   useEffect(() => {
@@ -147,9 +149,18 @@ const CheckoutPage = () => {
 
   return (
     <div className="checkout">
-       <h2>
-          Timer: {minutes}:{remainingSeconds.toString().padStart(2, "0")}
-        </h2>
+      <div
+        className={`timer-badge ${timerState}`}
+        aria-live="polite"
+        title="Tempo rimanente"
+      >
+        <span className="label">Timer</span>
+        <span className="value">
+          {minutes}:{remainingSeconds.toString().padStart(2, "0")}
+        </span>
+        <span className="dot" aria-hidden />
+      </div>
+
       <header className="head">
         <h1>Checkout</h1>
       </header>
@@ -264,7 +275,7 @@ const CheckoutPage = () => {
 
       )}
 
-      {finished && (<EndTimer/>)}
+      {finished && (<EndTimer />)}
 
 
       {popVisible && (

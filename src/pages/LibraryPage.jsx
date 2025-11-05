@@ -187,19 +187,21 @@ export default function LibraryPage() {
         sessionStorage.setItem("timer", next);
         return next;
       });
-      
+
     }, 1000);
     return () => clearInterval(id);
   }, [seconds]);
 
   const minutes = Math.floor(seconds / 60);
   const remainingSeconds = seconds % 60;
- const elapsed = DURATION - seconds;
+  const elapsed = DURATION - seconds;
   const formatTime = useCallback(() => {
-  const minutes = Math.floor(elapsed / 60);
-  const Seconds = elapsed % 60;
-  return `${String(minutes).padStart(2, "0")}:${String(Seconds).padStart(2, "0")}`;
-}, [elapsed]);
+    const minutes = Math.floor(elapsed / 60);
+    const timerState = seconds <= 30 ? "danger" : seconds <= 60 ? "warning" : "ok";
+
+    const Seconds = elapsed % 60;
+    return `${String(minutes).padStart(2, "0")}:${String(Seconds).padStart(2, "0")}`;
+  }, [elapsed]);
   useEffect(() => {
     if (!bugWrongYear) return;
     const alreadyAwarded = sessionStorage.getItem("awardedbugWrongYear");
@@ -360,11 +362,11 @@ export default function LibraryPage() {
           score,
           totalClicks: clicks,
           email: user.email,
-          time : formatTime()
+          time: formatTime()
         });
       })();
     }
-  }, [score, clicks, user,seconds,formatTime]);
+  }, [score, clicks, user, seconds, formatTime]);
 
   useEffect(() => {
     if (user) {
@@ -379,9 +381,18 @@ export default function LibraryPage() {
           <button className="btn-exit" onClick={BackToGame}>
             ⏻ Esci
           </button>
-          <h2>
-            Timer: {minutes}:{remainingSeconds.toString().padStart(2, "0")}
-          </h2>
+          <div
+            className={`timer-badge ${timerState}`}
+            aria-live="polite"
+            title="Tempo rimanente"
+          >
+            <span className="label">Timer</span>
+            <span className="value">
+              {minutes}:{remainingSeconds.toString().padStart(2, "0")}
+            </span>
+            <span className="dot" aria-hidden />
+          </div>
+
 
           <div className="topbar-right">
             <button className="btn-checkout" onClick={handleClickCheckout}>
@@ -452,11 +463,10 @@ export default function LibraryPage() {
                   </p>
                   <button
                     type="button"
-                    className={`btn-book ${
-                      TrasparentButton && libro.id === TRANSPARENT_BTN_BOOK_ID
-                        ? "is-invisible"
-                        : ""
-                    }`}
+                    className={`btn-book ${TrasparentButton && libro.id === TRANSPARENT_BTN_BOOK_ID
+                      ? "is-invisible"
+                      : ""
+                      }`}
                     onClick={() => handlePrenotaClick(libro)}
                   >
                     {libero ? "Prenota" : "Annulla prenotazione"}

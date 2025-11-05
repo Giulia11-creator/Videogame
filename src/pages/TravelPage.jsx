@@ -1,4 +1,4 @@
-import { useState, useEffect,useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserAuth } from "../context/AuthContext";
 import { shootConfetti } from "../ReactComponents/confetti.jsx";
@@ -21,7 +21,7 @@ const TravelPage = () => {
   const [nchildren, setnchildren] = useState(0);
   const [dateIn, setDateIn] = useState("");
   const [dateOut, setDateOut] = useState("");
-   const DURATION = 20 * 60;
+  const DURATION = 20 * 60;
   const [seconds, setseconds] = useState(() => {
     const saved = sessionStorage.getItem("timer");
     return saved ? Number(saved) : DURATION;
@@ -68,30 +68,32 @@ const TravelPage = () => {
 
 
 
-   useEffect(() => {
-      if (seconds <= 0) {
-        setfinished(true);
-        return;
-      }
-      const id = setInterval(() => {
-        setseconds((prev) => {
-          const next = prev - 1;
-          sessionStorage.setItem("timer", next);
-          return next;
-        });
-      }, 1000);
-  
-      return () => clearInterval(id);
-    }, [seconds]);
-  
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    const elapsed = DURATION - seconds;
-    const formatTime = useCallback(() => {
-     const minutes = Math.floor(elapsed / 60);
-     const Seconds = elapsed % 60;
-     return `${String(minutes).padStart(2, "0")}:${String(Seconds).padStart(2, "0")}`;
-   }, [elapsed]);
+  useEffect(() => {
+    if (seconds <= 0) {
+      setfinished(true);
+      return;
+    }
+    const id = setInterval(() => {
+      setseconds((prev) => {
+        const next = prev - 1;
+        sessionStorage.setItem("timer", next);
+        return next;
+      });
+    }, 1000);
+
+    return () => clearInterval(id);
+  }, [seconds]);
+
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = seconds % 60;
+  const elapsed = DURATION - seconds;
+  const timerState = seconds <= 30 ? "danger" : seconds <= 60 ? "warning" : "ok";
+
+  const formatTime = useCallback(() => {
+    const minutes = Math.floor(elapsed / 60);
+    const Seconds = elapsed % 60;
+    return `${String(minutes).padStart(2, "0")}:${String(Seconds).padStart(2, "0")}`;
+  }, [elapsed]);
 
 
   useEffect(() => {
@@ -246,17 +248,17 @@ const TravelPage = () => {
   }
 
   useEffect(() => {
-       if (user) {
+    if (user) {
       (async () => {
         await addUser("TravelLevel", user.uid, {
           score,
           totalClicks: clicks,
           email: user.email,
-          time:formatTime()
+          time: formatTime()
         });
       })();
     }
-  }, [score, clicks, user,seconds,formatTime]);
+  }, [score, clicks, user, seconds, formatTime]);
 
   useEffect(() => {
     if (user) {
@@ -271,9 +273,18 @@ const TravelPage = () => {
         <button className="btn-exit" onClick={BackToGame}>
           ⏻ Esci
         </button>
-         <h2>
-          Timer: {minutes}:{remainingSeconds.toString().padStart(2, "0")}
-        </h2>
+        <div
+          className={`timer-badge ${timerState}`}
+          aria-live="polite"
+          title="Tempo rimanente"
+        >
+          <span className="label">Timer</span>
+          <span className="value">
+            {minutes}:{remainingSeconds.toString().padStart(2, "0")}
+          </span>
+          <span className="dot" aria-hidden />
+        </div>
+
 
         <div className="score-chip" aria-live="polite" title="Punteggio">
           <span onClick={incrementClicks} className="score-label">Punteggio</span>
@@ -486,7 +497,7 @@ const TravelPage = () => {
           <LevelCompleted />
         </div>
       )}
-      {finished && (<EndTimer/>)}
+      {finished && (<EndTimer />)}
 
       {popVisible && (
         <div className="modal-overlay">

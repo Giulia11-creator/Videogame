@@ -1,4 +1,4 @@
-import { useEffect, useState,useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { shootConfetti } from "../ReactComponents/confetti.jsx";
 import { addUser, addPoints } from "../ReactComponents/FirestoreFunction.js";
 import { UserAuth } from "../context/AuthContext";
@@ -82,10 +82,12 @@ export default function EventFormBug() {
   const remainingSeconds = seconds % 60;
   const elapsed = DURATION - seconds;
   const formatTime = useCallback(() => {
-   const minutes = Math.floor(elapsed / 60);
-   const Seconds = elapsed % 60;
-   return `${String(minutes).padStart(2, "0")}:${String(Seconds).padStart(2, "0")}`;
- }, [elapsed]);
+    const minutes = Math.floor(elapsed / 60);
+    const Seconds = elapsed % 60;
+    const timerState = seconds <= 30 ? "danger" : seconds <= 60 ? "warning" : "ok";
+
+    return `${String(minutes).padStart(2, "0")}:${String(Seconds).padStart(2, "0")}`;
+  }, [elapsed]);
   useEffect(() => {
     sessionStorage.setItem("score", JSON.stringify(score));
     sessionStorage.setItem("clicks", JSON.stringify(clicks));
@@ -100,7 +102,7 @@ export default function EventFormBug() {
         });
       }
     })();
-  }, [score, clicks, user,seconds,formatTime]);
+  }, [score, clicks, user, seconds, formatTime]);
 
   useEffect(() => {
     if (score === 100) {
@@ -316,9 +318,18 @@ export default function EventFormBug() {
         <button className="exit-button" onClick={BackToGame}>
           ⏻ Esci
         </button>
-        <h2>
-          Timer: {minutes}:{remainingSeconds.toString().padStart(2, "0")}
-        </h2>
+        <div
+          className={`timer-badge ${timerState}`}
+          aria-live="polite"
+          title="Tempo rimanente"
+        >
+          <span className="label">Timer</span>
+          <span className="value">
+            {minutes}:{remainingSeconds.toString().padStart(2, "0")}
+          </span>
+          <span className="dot" aria-hidden />
+        </div>
+
         <div className="score-chip" aria-live="polite" title="Punteggio">
           <span onClick={incrementClicks} className="score-label">
             Punteggio

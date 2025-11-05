@@ -35,7 +35,7 @@ export default function CheckoutPage() {
 
   const navigate = useNavigate();
 
-    const DURATION = 20 * 60;
+  const DURATION = 20 * 60;
   const [seconds, setseconds] = useState(() => {
     const saved = sessionStorage.getItem("timer");
     return saved ? Number(saved) : DURATION;
@@ -73,7 +73,7 @@ export default function CheckoutPage() {
     });
   }
 
-   useEffect(() => {
+  useEffect(() => {
     if (seconds <= 0) {
       setfinished(true);
       return;
@@ -93,10 +93,12 @@ export default function CheckoutPage() {
   const remainingSeconds = seconds % 60;
   const elapsed = DURATION - seconds;
   const formatTime = useCallback(() => {
-  const minutes = Math.floor(elapsed / 60);
-  const Seconds = elapsed % 60;
-  return `${String(minutes).padStart(2, "0")}:${String(Seconds).padStart(2, "0")}`;
-}, [elapsed]);
+    const minutes = Math.floor(elapsed / 60);
+    const Seconds = elapsed % 60;
+    return `${String(minutes).padStart(2, "0")}:${String(Seconds).padStart(2, "0")}`;
+  }, [elapsed]);
+  const timerState = seconds <= 30 ? "danger" : seconds <= 60 ? "warning" : "ok";
+
 
   useEffect(() => {
     const randomDelay = Math.floor(Math.random() * (10000 - 3000 + 1)) + 3000;
@@ -148,7 +150,7 @@ export default function CheckoutPage() {
         });
       })();
     }
-  }, [score, clicks, user,seconds,formatTime]);
+  }, [score, clicks, user, seconds, formatTime]);
 
   useEffect(() => {
     if (score === 100)
@@ -163,9 +165,18 @@ export default function CheckoutPage() {
           <button className="btn-exit" onClick={handleCheckoutLibrary}>
             Torna alla libreria
           </button>
-          <h2>
-          Timer: {minutes}:{remainingSeconds.toString().padStart(2, "0")}
-        </h2>
+          <div
+            className={`timer-badge ${timerState}`}
+            aria-live="polite"
+            title="Tempo rimanente"
+          >
+            <span className="label">Timer</span>
+            <span className="value">
+              {minutes}:{remainingSeconds.toString().padStart(2, "0")}
+            </span>
+            <span className="dot" aria-hidden />
+          </div>
+
           <div className="topbar-right">
             <span className="score-chip">
               <span onClick={incrementClicks} className="score-label">Libri prenotati</span>
@@ -212,7 +223,7 @@ export default function CheckoutPage() {
         )}
       </div>
       {modal && (<LevelCompleted />)}
-      {finished &&(<EndTimer/>)}
+      {finished && (<EndTimer />)}
       {popVisible && (
         <div className="modal-overlay">
           <div className="modal-box">

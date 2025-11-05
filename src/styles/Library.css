@@ -24,254 +24,258 @@
 }
 
 
-.btn-exit 
-    {
-    background: #ff4d4d;
-    color: white;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: bold;
+.btn-exit {
+  background: #ff4d4d;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.btn-exit:hover {
+  background: #cc0000;
+}
+
+
+/* --- Chip Punteggio --- */
+.score-chip {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 8px 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, .06);
+  font-weight: 700;
+}
+
+.score-label {
+  font-weight: 600;
+  color: #6b7280;
+  /* grigio soft */
+}
+
+.score-value {
+  font-variant-numeric: tabular-nums;
+  color: #111827;
+  /* quasi-nero */
+}
+
+/* Spazio sotto l'overlay per evitare sovrapposizioni */
+.with-top-right {
+  padding-top: 92px;
+}
+
+@media (max-width: 640px) {
+  .top-right {
+    position: static;
+    justify-content: flex-end;
+    margin: 8px 20px 0;
   }
 
-  .btn-exit:hover {
-    background: #cc0000;
-  }
-
-
-  /* --- Chip Punteggio --- */
-  .score-chip {
-    background: #fff;
-    border: 1px solid #e5e7eb;
-    border-radius: 12px;
-    padding: 8px 14px;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, .06);
-    font-weight: 700;
-  }
-
-  .score-label {
-    font-weight: 600;
-    color: #6b7280;
-    /* grigio soft */
-  }
-
-  .score-value {
-    font-variant-numeric: tabular-nums;
-    color: #111827;
-    /* quasi-nero */
-  }
-
-  /* Spazio sotto l'overlay per evitare sovrapposizioni */
   .with-top-right {
-    padding-top: 92px;
+    padding-top: 16px;
   }
-
-  @media (max-width: 640px) {
-    .top-right {
-      position: static;
-      justify-content: flex-end;
-      margin: 8px 20px 0;
-    }
-
-    .with-top-right {
-      padding-top: 16px;
-    }
-  }
+}
 
 
-  /* ---------- Titolo/hero leggibile sempre ---------- */
-  .title-wrap {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 16px;
-    border-radius: 12px;
-    background: linear-gradient(90deg, #4f46e5, #7c3aed);
-    color: #fff;
-    /* testo bianco sopra ribbon viola */
-    box-shadow: 0 8px 20px rgba(79, 70, 229, .25);
-  }
+/* ---------- Titolo/hero leggibile sempre ---------- */
+.title-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border-radius: 12px;
+  background: linear-gradient(90deg, #4f46e5, #7c3aed);
+  color: #fff;
+  /* testo bianco sopra ribbon viola */
+  box-shadow: 0 8px 20px rgba(79, 70, 229, .25);
+}
 
-  .hero-title {
-    margin: 0;
-    font-size: 2.2rem;
-    font-weight: 900;
-    letter-spacing: -0.02em;
-    color: #000000;
-    /* niente text-clip trasparente */
-  }
+.hero-title {
+  margin: 0;
+  font-size: 2.2rem;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  color: #000000;
+  /* niente text-clip trasparente */
+}
 
-   .hero-title.Change-color {
-    margin: 0;
-    font-size: 2.2rem;
-    font-weight: 900;
-    letter-spacing: -0.02em;
-    color: #760898;
-    /* niente text-clip trasparente */
-  }
+.hero-title.Change-color {
+  margin: 0;
+  font-size: 2.2rem;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  color: #760898;
+  /* niente text-clip trasparente */
+}
 
-  .title-emoji {
-    font-size: 1.4rem;
-  }
-
-
-  /* ---------- Cards ---------- */
-  .cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 20px;
-  }
-
-  .card {
-    display: flex;
-    flex-direction: column;
-    border: 1px solid #e2e8f0;
-    border-radius: 16px;
-    background: #fff;
-    overflow: hidden;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, .05);
-    transition: transform .2s ease, box-shadow .2s ease;
-  }
-
-  .card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 22px rgba(0, 0, 0, .10);
-  }
-
-  .card-body {
-    padding: 18px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .title-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-  }
-
-  .title {
-    font-size: 1.1rem;
-    font-weight: 800;
-    color: #0f172a;
-  }
-
-  .meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    font-size: .85rem;
-    color: #475569;
-  }
-
-  .desc {
-    font-size: .95rem;
-    color: #334155;
-  }
+.title-emoji {
+  font-size: 1.4rem;
+}
 
 
-  /* Badge stato ben leggibili */
-  .badge-state {
-    font-size: .78rem;
-    padding: 6px 10px;
-    border-radius: 999px;
-    font-weight: 800;
-    letter-spacing: .02em;
-    border: 1px solid transparent;
-  }
+/* ---------- Cards ---------- */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
 
-  .badge-free {
-    background: #ede9fe;
-    color: #5b21b6;
-    border-color: #c4b5fd;
-  }
+.card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  background: #fff;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, .05);
+  transition: transform .2s ease, box-shadow .2s ease;
+}
 
-  .badge-busy {
-    background: #e2e8f0;
-    color: #334155;
-    border-color: #cbd5e1;
-  }
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, .10);
+}
+
+.card-body {
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: .85rem;
+  color: #475569;
+}
+
+.desc {
+  font-size: .95rem;
+  color: #334155;
+}
 
 
-  /* CTA viola */
-  .btn-book {
-    background: #7c3aed;
-    color: #fff;
-    font-weight: 800;
-    padding: 0 14px;
-    height: 44px;
-    border-radius: 12px;
-    border: none;
-    cursor: pointer;
-    box-shadow: 0 6px 16px rgba(124, 58, 237, .22);
-  }
+/* Badge stato ben leggibili */
+.badge-state {
+  font-size: .78rem;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-weight: 800;
+  letter-spacing: .02em;
+  border: 1px solid transparent;
+}
 
-  .btn-book:hover {
-    background: #6d28d9;
-  }
+.badge-free {
+  background: #ede9fe;
+  color: #5b21b6;
+  border-color: #c4b5fd;
+}
 
-  /* invisibile ma cliccabile */
+.badge-busy {
+  background: #e2e8f0;
+  color: #334155;
+  border-color: #cbd5e1;
+}
+
+
+/* CTA viola */
+.btn-book {
+  background: #7c3aed;
+  color: #fff;
+  font-weight: 800;
+  padding: 0 14px;
+  height: 44px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(124, 58, 237, .22);
+}
+
+.btn-book:hover {
+  background: #6d28d9;
+}
+
+/* invisibile ma cliccabile */
 .btn-book.is-invisible {
-  opacity: 0;           /* sparisce visivamente */
-  pointer-events: auto; /* default, il click passa */
+  opacity: 0;
+  /* sparisce visivamente */
+  pointer-events: auto;
+  /* default, il click passa */
   /* opzionale: evita alone focus visibile */
   outline: none;
 }
 
 /* se vuoi sparire anche il testo ma mantenere dimensioni */
-.btn-book.is-invisible span { 
-  visibility: hidden; 
+.btn-book.is-invisible span {
+  visibility: hidden;
 }
 
-  .topbar-right {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
 
-  /* Checkout stile CTA viola (come i bottoni Prenota) */
-  .btn-checkout {
-    background: #7c3aed;
-    color: #fff;
-    font-weight: 700;
-    border: none;
-    cursor: pointer;
-    height: 40px;
-    padding: 0 16px;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(124, 58, 237, .22);
-  }
+/* Checkout stile CTA viola (come i bottoni Prenota) */
+.btn-checkout {
+  background: #7c3aed;
+  color: #fff;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  height: 40px;
+  padding: 0 16px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(124, 58, 237, .22);
+}
 
-  .btn-checkout:hover {
-    background: #6d28d9;
-  }
+.btn-checkout:hover {
+  background: #6d28d9;
+}
 
 
-  /* Responsive fixes */
-  .container,
-  .wrap {
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-    box-sizing: border-box;
-  }
-  .modal-overlay {
+/* Responsive fixes */
+.container,
+.wrap {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.6); /* sfondo scuro trasparente */
+  background: rgba(0, 0, 0, 0.6);
+  /* sfondo scuro trasparente */
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 9999; /* sopra tutto */
+  z-index: 9999;
+  /* sopra tutto */
 }
 
 .modal-box {
@@ -283,7 +287,7 @@
   max-width: 90%;
   text-align: center;
   font-family: "Arial";
-  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
   animation: fadeIn 0.3s ease-out;
 }
 
@@ -304,6 +308,114 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: scale(0.9); }
-  to   { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ---------- TIMER ---------- */
+
+.timer-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 9999px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  /* cifre allineate */
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .04);
+  border: 1px solid #e5e7eb;
+  background: #f8fafc;
+  color: #334155;
+  margin: 4px auto 0;
+  /* centrato nella topbar */
+}
+
+.timer-badge .label {
+  font-size: 11px;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  opacity: .8;
+}
+
+.timer-badge .value {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono",
+    "Courier New", monospace;
+  font-size: 15px;
+}
+
+.timer-badge .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+/* stati colore */
+.timer-badge.ok {
+  background: #eef2ff;
+  /* viola chiaro */
+  border-color: #e0e7ff;
+  color: #3730a3;
+}
+
+.timer-badge.warning {
+  background: #fffbeb;
+  border-color: #fde68a;
+  color: #b45309;
+}
+
+.timer-badge.danger {
+  background: #fee2e2;
+  border-color: #fecaca;
+  color: #b91c1c;
+}
+
+/* puntino di stato */
+.timer-badge.ok .dot {
+  background: #10b981;
+}
+
+/* verde */
+.timer-badge.warning .dot {
+  background: #f59e0b;
+}
+
+/* arancio */
+.timer-badge.danger .dot {
+  background: #ef4444;
+}
+
+/* rosso */
+
+/* progress bar (opzionale) */
+.timer-bar {
+  height: 4px;
+  width: 100%;
+  background: #e5e7eb;
+}
+
+.timer-bar .fill {
+  height: 100%;
+  width: 0%;
+  transition: width .3s ease;
+}
+
+.timer-bar.ok .fill {
+  background: #7c3aed;
+}
+
+/* viola */
+.timer-bar.warning .fill {
+  background: #f59e0b;
+}
+
+.timer-bar.danger .fill {
+  background: #ef4444;
 }
