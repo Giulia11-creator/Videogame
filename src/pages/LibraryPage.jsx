@@ -194,10 +194,11 @@ export default function LibraryPage() {
 
   const minutes = Math.floor(seconds / 60);
   const remainingSeconds = seconds % 60;
+  const timerState = seconds <= 30 ? "danger" : seconds <= 60 ? "warning" : "ok";
   const elapsed = DURATION - seconds;
   const formatTime = useCallback(() => {
     const minutes = Math.floor(elapsed / 60);
-    const timerState = seconds <= 30 ? "danger" : seconds <= 60 ? "warning" : "ok";
+    
 
     const Seconds = elapsed % 60;
     return `${String(minutes).padStart(2, "0")}:${String(Seconds).padStart(2, "0")}`;
