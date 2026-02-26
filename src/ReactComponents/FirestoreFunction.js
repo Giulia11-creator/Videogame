@@ -17,39 +17,24 @@ import { db } from "../firebase"; // importa la configurazione Firebase
 export async function addUser(collectionName, uid, options = {}) {
   const userRef = doc(db, collectionName, uid);
 
-  try {
-    const docSnap = await getDoc(userRef);
+  await setDoc(
+    userRef,
+    {
+      id: uid,
+      nick: options.email ?? "",
+      score: Number(options.score ?? 0),
+      time: options.time ?? "",
+      Totalclicks: Number(options.Totalclicks ?? 0),
+      lastUpdate: serverTimestamp(),
 
-    if (docSnap.exists()) {
-      await setDoc(
-        userRef,
-        {
-          points: Number(options.score ?? 0),
-          totalClicks: Number(options.totalClicks ?? 0),
-          time: options.time ?? "",
-          lastUpdate: serverTimestamp(),
-        },
-        { merge: true }
-      );
-      console.log(`✅ Utente aggiornato in ${collectionName}`);
-    } else {
-      await setDoc(userRef, {
-        id: uid,
-        nick: options.email ?? "",
-        points: Number(options.score ?? 0),
-        totalClicks: Number(options.totalClicks ?? 0),
-        time: options.time ?? "",
-        createdAt: serverTimestamp(),
-        lastUpdate: serverTimestamp(),
-      });
-      console.log(`🆕 Nuovo utente creato in ${collectionName}`);
-    }
-  } catch (error) {
-    console.error("❌ Errore durante il salvataggio:", error);
-    throw error;
-  }
+      // 👇 scrive solo i bug che passi
+      ...options.bugs,
+    },
+    { merge: true }
+  );
+
+  console.log(`✅ Utente aggiornato in ${collectionName}`);
 }
-
 /**
  * 🔹 Aggiunge punti a un documento in Firestore (o lo crea se non esiste).
  * @param {string} collectionName - Nome della collezione (es. "Leaderboard").

@@ -11,7 +11,6 @@ import h4 from "../images/h4.jpg";
 import LevelCompleted from "../ReactComponents/LevelCompleted.jsx";
 import EndTimer from "../ReactComponents/EndTimer.jsx";
 
-
 const TravelPage = () => {
   const navigate = useNavigate();
   const [errorMessage, seterrorMessage] = useState("");
@@ -60,13 +59,10 @@ const TravelPage = () => {
     });
   }
 
-
   const resetError = () => {
     setpopVisible(false);
-    seterrorMessage('');
+    seterrorMessage("");
   };
-
-
 
   useEffect(() => {
     if (seconds <= 0) {
@@ -87,14 +83,14 @@ const TravelPage = () => {
   const minutes = Math.floor(seconds / 60);
   const remainingSeconds = seconds % 60;
   const elapsed = DURATION - seconds;
-  const timerState = seconds <= 30 ? "danger" : seconds <= 60 ? "warning" : "ok";
+  const timerState =
+    seconds <= 30 ? "danger" : seconds <= 60 ? "warning" : "ok";
 
   const formatTime = useCallback(() => {
     const minutes = Math.floor(elapsed / 60);
     const Seconds = elapsed % 60;
     return `${String(minutes).padStart(2, "0")}:${String(Seconds).padStart(2, "0")}`;
   }, [elapsed]);
-
 
   useEffect(() => {
     const dIn = new Date(dateIn);
@@ -105,7 +101,7 @@ const TravelPage = () => {
   useEffect(() => {
     if (bugDate1) {
       const scoreSetForWrongDate1 = sessionStorage.getItem(
-        "scoreSetForWrongDate1"
+        "scoreSetForWrongDate1",
       );
       if (!scoreSetForWrongDate1) {
         (async () => {
@@ -117,10 +113,13 @@ const TravelPage = () => {
             const next = prev + 25;
             sessionStorage.setItem("score", JSON.stringify(next));
             sessionStorage.setItem("scoreSetForWrongDate1", "true");
+            sessionStorage.setItem("bugDate1", "true");
             return next;
           });
         })();
-        seterrorMessage("Hai trovato un bug di validazione: l’app ti lascia mettere come data di arrivo un giorno dopo la data di partenza. È come prenotare un hotel dal 10 al 5 del mese: chiaramente non ha senso e il sistema dovrebbe impedirlo. Questo tipo di bug si presenta il sistema non controlla correttamente i dati inseriti dall’utente.");
+        seterrorMessage(
+          "Hai trovato un bug di validazione: l’app ti lascia mettere come data di arrivo un giorno dopo la data di partenza. È come prenotare un hotel dal 10 al 5 del mese: chiaramente non ha senso e il sistema dovrebbe impedirlo. Questo tipo di bug si presenta il sistema non controlla correttamente i dati inseriti dall’utente.",
+        );
         setpopVisible(true);
       }
     }
@@ -129,7 +128,7 @@ const TravelPage = () => {
   useEffect(() => {
     if (bugNegativePeople) {
       const scoreSetForbugNegativePeople = sessionStorage.getItem(
-        "scoreSetForbugNegativePeople"
+        "scoreSetForbugNegativePeople",
       );
       if (!scoreSetForbugNegativePeople) {
         (async () => {
@@ -141,10 +140,13 @@ const TravelPage = () => {
             const next = prev + 25;
             sessionStorage.setItem("score", JSON.stringify(next));
             sessionStorage.setItem("scoreSetForbugNegativePeople", "true");
+            sessionStorage.setItem("bugNegativePeople","true");
             return next;
           });
         })();
-        seterrorMessage("Hai trovato un bug di validazione: l’app ti lascia inserire un numero di persone negativo per una prenotazione. È come se potessi prenotare un tavolo per –3 persone: assurdo, ma il sistema non lo controlla. Questo tipo di bug si presenta il sistema non controlla correttamente i dati inseriti dall’utente.");
+        seterrorMessage(
+          "Hai trovato un bug di validazione: l’app ti lascia inserire un numero di persone negativo per una prenotazione. È come se potessi prenotare un tavolo per –3 persone: assurdo, ma il sistema non lo controlla. Questo tipo di bug si presenta il sistema non controlla correttamente i dati inseriti dall’utente.",
+        );
         setpopVisible(true);
       }
     }
@@ -165,7 +167,7 @@ const TravelPage = () => {
   useEffect(() => {
     if (bugNegativeChildren) {
       const scoreSetForbugNegativeChildren = sessionStorage.getItem(
-        "scoreSetForbugNegativeChildren"
+        "scoreSetForbugNegativeChildren",
       );
       if (!scoreSetForbugNegativeChildren) {
         (async () => {
@@ -177,23 +179,27 @@ const TravelPage = () => {
             const next = prev + 25;
             sessionStorage.setItem("score", JSON.stringify(next));
             sessionStorage.setItem("scoreSetForbugNegativeChildren", "true");
+            sessionStorage.setItem("bugNegativeChildren","true");
             return next;
           });
         })();
-        seterrorMessage("Hai trovato un bug di validazione: l’app ti lascia inserire un numero di bambini negativo per una prenotazione. È come se potessi prenotare un tavolo per –3 persone: assurdo, ma il sistema non lo controlla. Questo tipo di bug si presenta il sistema non controlla correttamente i dati inseriti dall’utente.");
+        seterrorMessage(
+          "Hai trovato un bug di validazione: l’app ti lascia inserire un numero di bambini negativo per una prenotazione. È come se potessi prenotare un tavolo per –3 persone: assurdo, ma il sistema non lo controlla. Questo tipo di bug si presenta il sistema non controlla correttamente i dati inseriti dall’utente.",
+        );
         setpopVisible(true);
       }
     }
   }, [bugNegativeChildren, user]);
 
-
   useEffect(() => {
-    if (score == 100) {
-      setModalVisible(true);
+    if (score === 100) {
+      const timer = setTimeout(() => {
+        setModalVisible(true);
+      }, 4000); // 4 secondi
+
+      return () => clearTimeout(timer); // cleanup importante
     }
   }, [score]);
-
-
 
   function handleDateChange(e, type) {
     const value = e.target.value;
@@ -209,15 +215,9 @@ const TravelPage = () => {
       return;
     }
 
-    if (type == "in")
-
-      setDateIn(value);
-    else
-      setDateOut(value);
+    if (type == "in") setDateIn(value);
+    else setDateOut(value);
   }
-
-
-
 
   function BackToGame() {
     incrementClicks();
@@ -252,20 +252,34 @@ const TravelPage = () => {
       (async () => {
         await addUser("TravelLevel", user.uid, {
           score,
-          totalClicks: clicks,
+          Totalclicks: clicks,
           email: user.email,
-          time: formatTime()
+          time: formatTime(),
+          bugs: {
+            bugDate1: bugDate1,
+            bugNegativeChildren: bugNegativeChildren,
+            bugNegativePeople: bugNegativePeople,
+            bugCoupon: sessionStorage.getItem("bugCoupon") === "true",
+          },
         });
       })();
     }
-  }, [score, clicks, user, seconds, formatTime]);
+  }, [
+    score,
+    clicks,
+    user,
+    seconds,
+    formatTime,
+    bugDate1,
+    bugNegativeChildren,
+    bugNegativePeople,
+  ]);
 
   useEffect(() => {
     if (user) {
       sessionStorage.setItem("flag1", true);
     }
   }, [user]);
-
 
   return (
     <div className="container">
@@ -285,15 +299,20 @@ const TravelPage = () => {
           <span className="dot" aria-hidden />
         </div>
 
-
         <div className="score-chip" aria-live="polite" title="Punteggio">
-          <span onClick={incrementClicks} className="score-label">Punteggio</span>
-          <span onClick={incrementClicks} className="score-value">{score}</span>
+          <span onClick={incrementClicks} className="score-label">
+            Punteggio
+          </span>
+          <span onClick={incrementClicks} className="score-value">
+            {score}
+          </span>
         </div>
       </div>
 
       <header className="header">
-        <h1 className="page-title" onClick={incrementClicks}>Trova e prenota il tuo soggiorno✈️🏨</h1>
+        <h1 className="page-title" onClick={incrementClicks}>
+          Trova e prenota il tuo soggiorno✈️🏨
+        </h1>
       </header>
 
       <section
@@ -312,7 +331,6 @@ const TravelPage = () => {
               onChange={(e) => handleDateChange(e, "in")}
               onClick={incrementClicks}
             />
-
           </label>
           <label className="field">
             <span>Check-out</span>
@@ -354,22 +372,40 @@ const TravelPage = () => {
             </div>
             <div className="card-body">
               <div className="title-row">
-                <h2 className="title" onClick={incrementClicks} id="MareAzzurro">
+                <h2
+                  className="title"
+                  onClick={incrementClicks}
+                  id="MareAzzurro"
+                >
                   Hotel Mare Azzurro
                 </h2>
-                <div className="stars" onClick={incrementClicks}>★★★★☆</div>
+                <div className="stars" onClick={incrementClicks}>
+                  ★★★★☆
+                </div>
               </div>
               <div className="meta">
-                <span className="pill" onClick={incrementClicks}>50 m dal mare</span>
-                <span className="pill" onClick={incrementClicks}>Colazione inclusa</span>
-                <span className="pill" onClick={incrementClicks}>Wi‑Fi</span>
+                <span className="pill" onClick={incrementClicks}>
+                  50 m dal mare
+                </span>
+                <span className="pill" onClick={incrementClicks}>
+                  Colazione inclusa
+                </span>
+                <span className="pill" onClick={incrementClicks}>
+                  Wi‑Fi
+                </span>
               </div>
               <div className="price-row">
                 <div>
                   <div className="price" id="priceMa">
-                    € 129<span className="small" onClick={incrementClicks}> / notte</span>
+                    € 129
+                    <span className="small" onClick={incrementClicks}>
+                      {" "}
+                      / notte
+                    </span>
                   </div>
-                  <div className="small" onClick={incrementClicks}>Cancellazione gratuita</div>
+                  <div className="small" onClick={incrementClicks}>
+                    Cancellazione gratuita
+                  </div>
                 </div>
                 <div className="cta">
                   <button
@@ -389,22 +425,40 @@ const TravelPage = () => {
             </div>
             <div className="card-body">
               <div className="title-row">
-                <h2 className="title" onClick={incrementClicks} id="Boutique Centro Storico">
+                <h2
+                  className="title"
+                  onClick={incrementClicks}
+                  id="Boutique Centro Storico"
+                >
                   Boutique Centro Storico
                 </h2>
-                <div className="stars" onClick={incrementClicks}>★★★★★</div>
+                <div className="stars" onClick={incrementClicks}>
+                  ★★★★★
+                </div>
               </div>
               <div className="meta">
-                <span onClick={incrementClicks} className="pill">Centro città</span>
-                <span onClick={incrementClicks} className="pill">Spa &amp; Gym</span>
-                <span onClick={incrementClicks} className="pill">Pet‑friendly</span>
+                <span onClick={incrementClicks} className="pill">
+                  Centro città
+                </span>
+                <span onClick={incrementClicks} className="pill">
+                  Spa &amp; Gym
+                </span>
+                <span onClick={incrementClicks} className="pill">
+                  Pet‑friendly
+                </span>
               </div>
               <div className="price-row">
                 <div>
                   <div className="price" id="priceB">
-                    € 189<span onClick={incrementClicks} className="small"> / notte</span>
+                    € 189
+                    <span onClick={incrementClicks} className="small">
+                      {" "}
+                      / notte
+                    </span>
                   </div>
-                  <div className="small" onClick={incrementClicks}>Pagamento in struttura</div>
+                  <div className="small" onClick={incrementClicks}>
+                    Pagamento in struttura
+                  </div>
                 </div>
                 <div className="cta">
                   <button
@@ -426,22 +480,40 @@ const TravelPage = () => {
             </div>
             <div className="card-body">
               <div className="title-row">
-                <h2 className="title" onClick={incrementClicks} id="Eco Lodge Collina">
+                <h2
+                  className="title"
+                  onClick={incrementClicks}
+                  id="Eco Lodge Collina"
+                >
                   Eco Lodge Collina
                 </h2>
-                <div className="stars" onClick={incrementClicks}>★★★★☆</div>
+                <div className="stars" onClick={incrementClicks}>
+                  ★★★★☆
+                </div>
               </div>
               <div className="meta">
-                <span className="pill" onClick={incrementClicks}>Parcheggio gratuito</span>
-                <span className="pill" onClick={incrementClicks}>Ristorante</span>
-                <span className="pill" onClick={incrementClicks}>Vicino a sentieri</span>
+                <span className="pill" onClick={incrementClicks}>
+                  Parcheggio gratuito
+                </span>
+                <span className="pill" onClick={incrementClicks}>
+                  Ristorante
+                </span>
+                <span className="pill" onClick={incrementClicks}>
+                  Vicino a sentieri
+                </span>
               </div>
               <div className="price-row">
                 <div>
                   <div className="price" id="priceEco">
-                    € 99<span onClick={incrementClicks} className="small"> / notte</span>
+                    € 99
+                    <span onClick={incrementClicks} className="small">
+                      {" "}
+                      / notte
+                    </span>
                   </div>
-                  <div className="small" onClick={incrementClicks}>Offerta limitata</div>
+                  <div className="small" onClick={incrementClicks}>
+                    Offerta limitata
+                  </div>
                 </div>
                 <div className="cta">
                   <button
@@ -461,22 +533,40 @@ const TravelPage = () => {
             </div>
             <div className="card-body">
               <div className="title-row">
-                <h2 className="title" onClick={incrementClicks} id="Resort Lago Sereno">
+                <h2
+                  className="title"
+                  onClick={incrementClicks}
+                  id="Resort Lago Sereno"
+                >
                   Resort Lago Sereno
                 </h2>
-                <div className="stars" onClick={incrementClicks}>★★★★☆</div>
+                <div className="stars" onClick={incrementClicks}>
+                  ★★★★☆
+                </div>
               </div>
               <div className="meta">
-                <span className="pill" onClick={incrementClicks}>Vista lago</span>
-                <span className="pill" onClick={incrementClicks}>Piscina</span>
-                <span className="pill" onClick={incrementClicks}>Colazione inclusa</span>
+                <span className="pill" onClick={incrementClicks}>
+                  Vista lago
+                </span>
+                <span className="pill" onClick={incrementClicks}>
+                  Piscina
+                </span>
+                <span className="pill" onClick={incrementClicks}>
+                  Colazione inclusa
+                </span>
               </div>
               <div className="price-row">
                 <div>
                   <div className="price" id="pricer">
-                    € 149<span className="small" onClick={incrementClicks}> / notte</span>
+                    € 149
+                    <span className="small" onClick={incrementClicks}>
+                      {" "}
+                      / notte
+                    </span>
                   </div>
-                  <div className="small" onClick={incrementClicks}>Cancellazione gratuita</div>
+                  <div className="small" onClick={incrementClicks}>
+                    Cancellazione gratuita
+                  </div>
                 </div>
                 <div className="cta">
                   <button
@@ -497,7 +587,7 @@ const TravelPage = () => {
           <LevelCompleted />
         </div>
       )}
-      {finished && (<EndTimer />)}
+      {finished && <EndTimer />}
 
       {popVisible && (
         <div className="modal-overlay">
@@ -512,8 +602,6 @@ const TravelPage = () => {
       )}
     </div>
   );
-
-
 };
 
 export default TravelPage;

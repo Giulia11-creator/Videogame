@@ -156,8 +156,8 @@ export default function LibraryPage() {
       prev.map((b) =>
         b.id === book.id
           ? { ...b, stato: isLibero ? "prenotato" : "libero" }
-          : b
-      )
+          : b,
+      ),
     );
   }
 
@@ -187,18 +187,17 @@ export default function LibraryPage() {
         sessionStorage.setItem("timer", next);
         return next;
       });
-
     }, 1000);
     return () => clearInterval(id);
   }, [seconds]);
 
   const minutes = Math.floor(seconds / 60);
   const remainingSeconds = seconds % 60;
-  const timerState = seconds <= 30 ? "danger" : seconds <= 60 ? "warning" : "ok";
+  const timerState =
+    seconds <= 30 ? "danger" : seconds <= 60 ? "warning" : "ok";
   const elapsed = DURATION - seconds;
   const formatTime = useCallback(() => {
     const minutes = Math.floor(elapsed / 60);
-    
 
     const Seconds = elapsed % 60;
     return `${String(minutes).padStart(2, "0")}:${String(Seconds).padStart(2, "0")}`;
@@ -219,11 +218,12 @@ export default function LibraryPage() {
         const next = prev + 20;
         sessionStorage.setItem("score", JSON.stringify(next));
         sessionStorage.setItem("awardedbugWrongYear", "true");
+        sessionStorage.setItem("bugWrongYear","true");
         return next;
       });
     })();
     seterrorMessage(
-      "Hai trovato un flaky bug: l’anno di edizione del libro cambia all’improvviso. In certi casi resta quello giusto, in altri si aggiorna in modo casuale. Anche qui il comportamento è incoerente e imprevedibile, tipico dei bug flaky."
+      "Hai trovato un flaky bug: l’anno di edizione del libro cambia all’improvviso. In certi casi resta quello giusto, in altri si aggiorna in modo casuale. Anche qui il comportamento è incoerente e imprevedibile, tipico dei bug flaky.",
     );
     setpopVisible(true);
   }, [bugWrongYear, user]);
@@ -246,11 +246,12 @@ export default function LibraryPage() {
           const next = prev + 20;
           sessionStorage.setItem("score", JSON.stringify(next));
           sessionStorage.setItem("awardedbugTrasparentButton", "true");
+          sessionStorage.setItem("bugTrasparentButton", "true");
           return next;
         });
       })();
       seterrorMessage(
-        "🎉Hai trovato un bug di interfaccia (UI/UX)! Un pulsante è diventato trasparente, ma continua a funzionare se ci clicchi sopra. Questo tipo di bug capita quando l’elemento è ancora attivo ma non visibile, e quindi l’utente può cliccare “nel vuoto” senza capire cosa sta succedendo. È un errore grafico e di esperienza utente, non di logica: l’app funziona, ma l’interfaccia inganna chi la usa."
+        "🎉Hai trovato un bug di interfaccia (UI/UX)! Un pulsante è diventato trasparente, ma continua a funzionare se ci clicchi sopra. Questo tipo di bug capita quando l’elemento è ancora attivo ma non visibile, e quindi l’utente può cliccare “nel vuoto” senza capire cosa sta succedendo. È un errore grafico e di esperienza utente, non di logica: l’app funziona, ma l’interfaccia inganna chi la usa.",
       );
       setpopVisible(true);
     }, Delay);
@@ -277,11 +278,12 @@ export default function LibraryPage() {
         const next = prev + 20;
         sessionStorage.setItem("score", JSON.stringify(next));
         sessionStorage.setItem("awardedbugWrongBooked", "true");
+        sessionStorage.setItem("bugWrongBooked", "true");
         return next;
       });
     })();
     seterrorMessage(
-      "Hai trovato un bug di logica: premendo una volta il pulsante Prenota per un libro, il sistema ne riserva due. In pratica l’applicazione non rispetta la regola di base (una prenotazione corrisponde a un solo libro) e raddoppia l’azione in modo errato.Un bug di logica (o logic bug, spesso anche business logic bug) è un errore che nasce perché il programma non segue correttamente le regole o i ragionamenti per cui è stato progettato."
+      "Hai trovato un bug di logica: premendo una volta il pulsante Prenota per un libro, il sistema ne riserva due. In pratica l’applicazione non rispetta la regola di base (una prenotazione corrisponde a un solo libro) e raddoppia l’azione in modo errato.Un bug di logica (o logic bug, spesso anche business logic bug) è un errore che nasce perché il programma non segue correttamente le regole o i ragionamenti per cui è stato progettato.",
     );
     setpopVisible(true);
   }, [bugWrongBooked, user]);
@@ -301,24 +303,30 @@ export default function LibraryPage() {
         const next = prev + 20;
         sessionStorage.setItem("score", JSON.stringify(next));
         sessionStorage.setItem("awardedbugChangeColor", "true");
+        sessionStorage.setItem("bugChangeColor", "true");
         return next;
       });
     })();
     seterrorMessage(
-      "🎉Hai trovato un bug di interfaccia (UI/UX)! Il titolo ha cambiato colore! È un errore grafico e di esperienza utente, non di logica: l’app funziona, ma l’interfaccia cambia e  inganna chi la usa."
+      "🎉Hai trovato un bug di interfaccia (UI/UX)! Il titolo ha cambiato colore! È un errore grafico e di esperienza utente, non di logica: l’app funziona, ma l’interfaccia cambia e  inganna chi la usa.",
     );
     setpopVisible(true);
   }, [bugChangeColor, user]);
 
   useEffect(() => {
-    if (score === 100) setModalVisible(true);
-  }, [score]);
+    if (score === 100) {
+      const timer = setTimeout(() => {
+        setModalVisible(true);
+      }, 4000); // 4 secondi
 
+      return () => clearTimeout(timer); // cleanup importante
+    }
+  }, [score]);
   useEffect(() => {
     const randomDelay = Math.floor(Math.random() * (10000 - 3000 + 1)) + 3000;
     const timer = setTimeout(() => {
       setLibri((prev) =>
-        prev.map((b) => (b.id === 1 ? { ...b, anno: "2003" } : b))
+        prev.map((b) => (b.id === 1 ? { ...b, anno: "2003" } : b)),
       );
     }, randomDelay);
     return () => clearTimeout(timer);
@@ -361,13 +369,30 @@ export default function LibraryPage() {
       (async () => {
         await addUser("BookLevel", user.uid, {
           score,
-          totalClicks: clicks,
+          Totalclicks: clicks,
           email: user.email,
-          time: formatTime()
+          time: formatTime(),
+          bugs: {
+            bugChangeColor: bugChangeColor,
+            bugTrasparentButton: bugTrasparentButton,
+            bugWrongBooked: bugWrongBooked,
+            bugWrongYear: bugWrongYear,
+            bugWrongAuthor: sessionStorage.getItem("bugWrongAuthor") === "true",
+          },
         });
       })();
     }
-  }, [score, clicks, user, seconds, formatTime]);
+  }, [
+    score,
+    clicks,
+    user,
+    seconds,
+    formatTime,
+    bugChangeColor,
+    bugTrasparentButton,
+    bugWrongBooked,
+    bugWrongYear,
+  ]);
 
   useEffect(() => {
     if (user) {
@@ -393,7 +418,6 @@ export default function LibraryPage() {
             </span>
             <span className="dot" aria-hidden />
           </div>
-
 
           <div className="topbar-right">
             <button className="btn-checkout" onClick={handleClickCheckout}>
@@ -464,10 +488,11 @@ export default function LibraryPage() {
                   </p>
                   <button
                     type="button"
-                    className={`btn-book ${TrasparentButton && libro.id === TRANSPARENT_BTN_BOOK_ID
-                      ? "is-invisible"
-                      : ""
-                      }`}
+                    className={`btn-book ${
+                      TrasparentButton && libro.id === TRANSPARENT_BTN_BOOK_ID
+                        ? "is-invisible"
+                        : ""
+                    }`}
                     onClick={() => handlePrenotaClick(libro)}
                   >
                     {libero ? "Prenota" : "Annulla prenotazione"}

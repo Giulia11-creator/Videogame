@@ -80,12 +80,12 @@ export default function EventFormBug() {
 
   const minutes = Math.floor(seconds / 60);
   const remainingSeconds = seconds % 60;
-  const timerState = seconds <= 30 ? "danger" : seconds <= 60 ? "warning" : "ok";
+  const timerState =
+    seconds <= 30 ? "danger" : seconds <= 60 ? "warning" : "ok";
   const elapsed = DURATION - seconds;
   const formatTime = useCallback(() => {
     const minutes = Math.floor(elapsed / 60);
     const Seconds = elapsed % 60;
-   
 
     return `${String(minutes).padStart(2, "0")}:${String(Seconds).padStart(2, "0")}`;
   }, [elapsed]);
@@ -97,17 +97,39 @@ export default function EventFormBug() {
       if (user) {
         await addUser("EventsLevel", user.uid, {
           score,
-          totalClicks: clicks,
+          Totalclicks: clicks,
           email: user.email,
-          time: formatTime()
+          time: formatTime(),
+          bugs: {
+            bugNegativePeople: bugNegativePeople,
+            bugNoLocation: bugNoLocation,
+            bugNoTitle: bugNoTitle,
+            bugPastDate: bugPastDate,
+            bugWrongDate: bugWrongDate,
+          },
         });
       }
     })();
-  }, [score, clicks, user, seconds, formatTime]);
+  }, [
+    score,
+    clicks,
+    user,
+    seconds,
+    formatTime,
+    bugNegativePeople,
+    bugNoLocation,
+    bugNoTitle,
+    bugPastDate,
+    bugWrongDate,
+  ]);
 
   useEffect(() => {
     if (score === 100) {
-      setModalVisible(true);
+      const timer = setTimeout(() => {
+        setModalVisible(true);
+      }, 4000); // 4 secondi
+
+      return () => clearTimeout(timer); // cleanup importante
     }
   }, [score]);
 
@@ -206,11 +228,14 @@ export default function EventFormBug() {
         const next = prev + 20;
         sessionStorage.setItem("score", JSON.stringify(next));
         sessionStorage.setItem("awardedbugNoLocation", "true");
+        sessionStorage.setItem("bugNoLocation", "true");
+        
+
         return next;
       });
     })();
     seterrorMessage(
-      "Hai trovato un bug di validazione: l’app consente di creare un evento senza specificare il luogo. I bug di validazione si hanno quando il sistema non verifica dati essenziali."
+      "Hai trovato un bug di validazione: l’app consente di creare un evento senza specificare il luogo. I bug di validazione si hanno quando il sistema non verifica dati essenziali.",
     );
     setpopVisible(true);
   }, [bugNoLocation, user]);
@@ -230,11 +255,12 @@ export default function EventFormBug() {
         const next = prev + 20;
         sessionStorage.setItem("score", JSON.stringify(next));
         sessionStorage.setItem("awardedbugNoTitle", "true");
+        sessionStorage.setItem("bugNoTitle", "true");
         return next;
       });
     })();
     seterrorMessage(
-      "Hai trovato un bug di validazione: l’app ti lascia creare un evento senza titolo. I bug di validazione si verificano quando mancano controlli sui campi obbligatori. È come stampare una locandina di un concerto senza scrivere il nome dell’evento."
+      "Hai trovato un bug di validazione: l’app ti lascia creare un evento senza titolo. I bug di validazione si verificano quando mancano controlli sui campi obbligatori. È come stampare una locandina di un concerto senza scrivere il nome dell’evento.",
     );
     setpopVisible(true);
   }, [bugNoTitle, user]);
@@ -254,11 +280,12 @@ export default function EventFormBug() {
         const next = prev + 20;
         sessionStorage.setItem("score", JSON.stringify(next));
         sessionStorage.setItem("awardedbugWrongDate", "true");
+        sessionStorage.setItem("bugWrongDate", "true");
         return next;
       });
     })();
     seterrorMessage(
-      "Hai trovato un flaky bug: ogni tre eventi creati, la data di uno si modifica da sola senza motivo. Un flaky bug è un errore instabile e imprevedibile, che non si manifesta sempre nello stesso modo. È come se la data di un compleanno sul calendario cambiasse da sola ogni tanto."
+      "Hai trovato un flaky bug: ogni tre eventi creati, la data di uno si modifica da sola senza motivo. Un flaky bug è un errore instabile e imprevedibile, che non si manifesta sempre nello stesso modo. È come se la data di un compleanno sul calendario cambiasse da sola ogni tanto.",
     );
     setpopVisible(true);
   }, [bugWrongDate, user]);
@@ -278,11 +305,12 @@ export default function EventFormBug() {
         const next = prev + 20;
         sessionStorage.setItem("score", JSON.stringify(next));
         sessionStorage.setItem("awardedbugPastDate", "true");
+        sessionStorage.setItem("bugPastDate", "true");
         return next;
       });
     })();
     seterrorMessage(
-      "Hai trovato un bug di validazione: l’app permette di creare un evento in una data già passata. I bug di validazione sono errori nei controlli logici sugli input. È come fissare una riunione ieri: non ha senso e il sistema dovrebbe impedirlo."
+      "Hai trovato un bug di validazione: l’app permette di creare un evento in una data già passata. I bug di validazione sono errori nei controlli logici sugli input. È come fissare una riunione ieri: non ha senso e il sistema dovrebbe impedirlo.",
     );
     setpopVisible(true);
   }, [bugPastDate, user]);
@@ -291,7 +319,7 @@ export default function EventFormBug() {
   useEffect(() => {
     if (!bugNegativePeople) return;
     const awardedbugNegativePeople = sessionStorage.getItem(
-      "awardedbugNegativePeople"
+      "awardedbugNegativePeople",
     );
     if (awardedbugNegativePeople) return;
     if (!user?.uid || !user?.email) return;
@@ -304,11 +332,12 @@ export default function EventFormBug() {
         const next = prev + 20;
         sessionStorage.setItem("score", JSON.stringify(next));
         sessionStorage.setItem("awardedbugNegativePeople", "true");
+        sessionStorage.setItem("bugNegativePeople", "true");
         return next;
       });
     })();
     seterrorMessage(
-      "Hai trovato un bug di validazione: l’app ti permette di inserire un numero negativo di persone per un evento. Un bug di validazione è quando il sistema non controlla correttamente i dati inseriti dall’utente. È come organizzare una festa per –5 invitati: assurdo, ma l’app lo accetta."
+      "Hai trovato un bug di validazione: l’app ti permette di inserire un numero negativo di persone per un evento. Un bug di validazione è quando il sistema non controlla correttamente i dati inseriti dall’utente. È come organizzare una festa per –5 invitati: assurdo, ma l’app lo accetta.",
     );
     setpopVisible(true);
   }, [bugNegativePeople, user]);

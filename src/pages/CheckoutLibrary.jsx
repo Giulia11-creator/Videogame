@@ -8,7 +8,6 @@ import LevelCompleted from "../ReactComponents/LevelCompleted.jsx";
 import EndTimer from "../ReactComponents/EndTimer.jsx";
 
 export default function CheckoutPage() {
-
   const [modal, setModalVisible] = useState(false);
   const [popVisible, setpopVisible] = useState(false);
   const [errorMessage, seterrorMessage] = useState("");
@@ -47,7 +46,6 @@ export default function CheckoutPage() {
     seterrorMessage("");
   }
 
-
   function handleCheckout() {
     incrementClicks();
     navigate("/library");
@@ -56,7 +54,6 @@ export default function CheckoutPage() {
     setLibri([]);
     navigate("/library");
   }
-
 
   function handleCheckoutLibrary() {
     incrementClicks();
@@ -97,14 +94,14 @@ export default function CheckoutPage() {
     const Seconds = elapsed % 60;
     return `${String(minutes).padStart(2, "0")}:${String(Seconds).padStart(2, "0")}`;
   }, [elapsed]);
-  const timerState = seconds <= 30 ? "danger" : seconds <= 60 ? "warning" : "ok";
-
+  const timerState =
+    seconds <= 30 ? "danger" : seconds <= 60 ? "warning" : "ok";
 
   useEffect(() => {
     const randomDelay = Math.floor(Math.random() * (10000 - 3000 + 1)) + 3000;
     const timer = setTimeout(() => {
       setLibri((prev) =>
-        prev.map((b) => (b.id === 6 ? { ...b, autore: "G.Bertoli" } : b))
+        prev.map((b) => (b.id === 6 ? { ...b, autore: "G.Bertoli" } : b)),
       );
     }, randomDelay);
     return () => clearTimeout(timer);
@@ -132,10 +129,13 @@ export default function CheckoutPage() {
         const next = prev + 20;
         sessionStorage.setItem("score", JSON.stringify(next));
         sessionStorage.setItem("awardedbugWrongAuthor", "true");
+        sessionStorage.setItem("bugWrongAuthor","true");
         return next;
       });
     })();
-    seterrorMessage("Hai trovato un flaky bug: il nome dell’autore del libro cambia improvvisamente senza motivo. A volte rimane corretto, altre volte si trasforma in un altro nome. Questo è un bug instabile, perché lo stesso scenario può produrre risultati diversi.");
+    seterrorMessage(
+      "Hai trovato un flaky bug: il nome dell’autore del libro cambia improvvisamente senza motivo. A volte rimane corretto, altre volte si trasforma in un altro nome. Questo è un bug instabile, perché lo stesso scenario può produrre risultati diversi.",
+    );
     setpopVisible(true);
   }, [bugWrongAuthor, user]);
 
@@ -144,18 +144,30 @@ export default function CheckoutPage() {
       (async () => {
         await addUser("BookLevel", user.uid, {
           score,
-          totalClicks: clicks,
+          Totalclicks: clicks,
           email: user.email,
-          time: formatTime()
+          time: formatTime(),
+          bugs: {
+            bugChangeColor: sessionStorage.getItem("bugChangeColor") === "true",
+            bugTrasparentButton:
+              sessionStorage.getItem("bugTrasparentButton") === "true",
+            bugWrongBooked: sessionStorage.getItem("bugWrongBooked") === "true",
+            bugWrongYear: sessionStorage.getItem("bugWrongYear") === "true",
+            bugWrongAuthor: bugWrongAuthor,
+          },
         });
       })();
     }
-  }, [score, clicks, user, seconds, formatTime]);
+  }, [score, clicks, user, seconds, formatTime, bugWrongAuthor]);
 
   useEffect(() => {
-    if (score === 100)
-      setModalVisible(true);
+    if (score === 100) {
+      const timer = setTimeout(() => {
+        setModalVisible(true);
+      }, 4000); // 4 secondi
 
+      return () => clearTimeout(timer); // cleanup importante
+    }
   }, [score]);
 
   return (
@@ -179,16 +191,25 @@ export default function CheckoutPage() {
 
           <div className="topbar-right">
             <span className="score-chip">
-              <span onClick={incrementClicks} className="score-label">Libri prenotati</span>
-              <span onClick={incrementClicks} className="score-value">{libri.length}</span>
+              <span onClick={incrementClicks} className="score-label">
+                Libri prenotati
+              </span>
+              <span onClick={incrementClicks} className="score-value">
+                {libri.length}
+              </span>
             </span>
           </div>
         </div>
 
-        <h1 onClick={incrementClicks} className="hero-title">🛒 Checkout</h1>
+        <h1 onClick={incrementClicks} className="hero-title">
+          🛒 Checkout
+        </h1>
 
         {libri.length === 0 ? (
-          <p onClick={incrementClicks} style={{ fontSize: "1.1rem", marginTop: "20px" }}>
+          <p
+            onClick={incrementClicks}
+            style={{ fontSize: "1.1rem", marginTop: "20px" }}
+          >
             Nessun libro prenotato.
           </p>
         ) : (
@@ -198,11 +219,20 @@ export default function CheckoutPage() {
                 <div key={libro.id} className="card">
                   <div className="card-body">
                     <div className="title-row">
-                      <div onClick={incrementClicks} className="title">{libro.titolo}</div>
-                      <span onClick={incrementClicks} className="badge-state badge-busy">PRENOTATO</span>
+                      <div onClick={incrementClicks} className="title">
+                        {libro.titolo}
+                      </div>
+                      <span
+                        onClick={incrementClicks}
+                        className="badge-state badge-busy"
+                      >
+                        PRENOTATO
+                      </span>
                     </div>
                     <div className="meta">
-                      <p onClick={() => handleClickAuthor(libro)}>{libro.autore}</p>
+                      <p onClick={() => handleClickAuthor(libro)}>
+                        {libro.autore}
+                      </p>
                       <p onClick={incrementClicks}>{libro.anno}</p>
                     </div>
                   </div>
@@ -222,8 +252,8 @@ export default function CheckoutPage() {
           </>
         )}
       </div>
-      {modal && (<LevelCompleted />)}
-      {finished && (<EndTimer />)}
+      {modal && <LevelCompleted />}
+      {finished && <EndTimer />}
       {popVisible && (
         <div className="modal-overlay">
           <div className="modal-box">

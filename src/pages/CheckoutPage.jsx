@@ -8,7 +8,6 @@ import LevelCompleted from "../ReactComponents/LevelCompleted.jsx";
 import EndTimer from "../ReactComponents/EndTimer.jsx";
 
 const CheckoutPage = () => {
-
   const DURATION = 20 * 60;
   const [seconds, setseconds] = useState(() => {
     const saved = sessionStorage.getItem("timer");
@@ -17,7 +16,7 @@ const CheckoutPage = () => {
   const [finished, setfinished] = useState(false);
   const storedhotel = sessionStorage.getItem("hotels");
   const [hotel, setHotel] = useState(
-    storedhotel ? JSON.parse(storedhotel) : []
+    storedhotel ? JSON.parse(storedhotel) : [],
   );
   const navigate = useNavigate();
   const today = new Date();
@@ -45,7 +44,7 @@ const CheckoutPage = () => {
 
   const resetError = () => {
     setpopVisible(false);
-    seterrorMessage('');
+    seterrorMessage("");
   };
 
   function incrementClicks() {
@@ -74,14 +73,13 @@ const CheckoutPage = () => {
 
   const minutes = Math.floor(seconds / 60);
   const remainingSeconds = seconds % 60;
-   const timerState = seconds <= 30 ? "danger" : seconds <= 60 ? "warning" : "ok";
+  const timerState =
+    seconds <= 30 ? "danger" : seconds <= 60 ? "warning" : "ok";
   const elapsed = DURATION - seconds;
   const formatTime = useCallback(() => {
     const minutes = Math.floor(elapsed / 60);
     const Seconds = elapsed % 60;
     return `${String(minutes).padStart(2, "0")}:${String(Seconds).padStart(2, "0")}`;
-   
-
   }, [elapsed]);
 
   useEffect(() => {
@@ -89,19 +87,27 @@ const CheckoutPage = () => {
       (async () => {
         await addUser("TravelLevel", user.uid, {
           score,
-          totalClicks: clicks,
+          Totalclicks: clicks,
           email: user.email,
-          time: formatTime()
+          time: formatTime(),
+          bugs: {
+            bugCoupon: bugCoupon,
+            bugNegativeChildren: sessionStorage.getItem("bugNegativeChildren") === "true",
+            bugNegativePeople: sessionStorage.getItem("bugNegativePeople") === "true",
+            bugDate1: sessionStorage.getItem("bugDate1") === "true",
+          },
         });
       })();
     }
-  }, [score, clicks, user, seconds, formatTime]);
-
+  }, [score, clicks, user, seconds, formatTime, bugCoupon]);
 
   useEffect(() => {
     if (score === 100) {
+      const timer = setTimeout(() => {
+        setModalVisible(true);
+      }, 4000); // 4 secondi
 
-      setModalVisible(true);
+      return () => clearTimeout(timer); // cleanup importante
     }
   }, [score]);
 
@@ -126,10 +132,13 @@ const CheckoutPage = () => {
         const next = prev + 25; // calcolo dal valore corrente
         sessionStorage.setItem("score", JSON.stringify(next));
         sessionStorage.setItem("scoreSetForCoupon", "true");
+        sessionStorage.setItem("bugCoupon", "true");
         return next;
       });
     })();
-    seterrorMessage("Hai trovato un bug di validazione, cioè un errore che succede quando il sistema non controlla bene quello che l’utente inserisce. In questo caso l’app ti applica lo sconto anche se scrivi cose a caso nella casella del codice: è come se alla cassa del supermercato dicessi una parola inventata e ti facessero lo stesso lo sconto. Questo non dovrebbe succedere, perché i codici validi dovrebbero essere controllati e accettati solo se corretti.");
+    seterrorMessage(
+      "Hai trovato un bug di validazione, cioè un errore che succede quando il sistema non controlla bene quello che l’utente inserisce. In questo caso l’app ti applica lo sconto anche se scrivi cose a caso nella casella del codice: è come se alla cassa del supermercato dicessi una parola inventata e ti facessero lo stesso lo sconto. Questo non dovrebbe succedere, perché i codici validi dovrebbero essere controllati e accettati solo se corretti.",
+    );
     setpopVisible(true);
   }, [bugCoupon, user]);
 
@@ -146,7 +155,6 @@ const CheckoutPage = () => {
       });
     }
   }, [coupon]);
-
 
   return (
     <div className="checkout">
@@ -171,13 +179,17 @@ const CheckoutPage = () => {
           <section className="card mobile-only">
             <div className="hotel">
               <div className="hotel-info">
-                <h2 onClick={incrementClicks} className="hotel-name">{hotel[0]?.hotel}</h2>
+                <h2 onClick={incrementClicks} className="hotel-name">
+                  {hotel[0]?.hotel}
+                </h2>
               </div>
             </div>
             <div className="stay">
               <div>
                 <span onClick={incrementClicks}>Check-in</span>
-                <strong onClick={incrementClicks}>{hotel[0]?.date1 || today.toLocaleDateString()}</strong>
+                <strong onClick={incrementClicks}>
+                  {hotel[0]?.date1 || today.toLocaleDateString()}
+                </strong>
               </div>
               <div>
                 <span>Check-out</span>
@@ -187,8 +199,12 @@ const CheckoutPage = () => {
               </div>
               <div>
                 <span onClick={incrementClicks}>Ospiti</span>
-                <strong onClick={incrementClicks}>{hotel[0]?.adults || 1} adulti • 1 camera</strong>
-                <strong onClick={incrementClicks}>{hotel[0]?.children || 0} bambini • 1 camera</strong>
+                <strong onClick={incrementClicks}>
+                  {hotel[0]?.adults || 1} adulti • 1 camera
+                </strong>
+                <strong onClick={incrementClicks}>
+                  {hotel[0]?.children || 0} bambini • 1 camera
+                </strong>
               </div>
               <div>
                 <span onClick={incrementClicks}>Prezzo </span>
@@ -202,26 +218,46 @@ const CheckoutPage = () => {
             <div className="grid2">
               <label className="field">
                 <span onClick={incrementClicks}>Nome*</span>
-                <input type="text" placeholder="Mario" onClick={incrementClicks} />
+                <input
+                  type="text"
+                  placeholder="Mario"
+                  onClick={incrementClicks}
+                />
               </label>
               <label className="field">
                 <span onClick={incrementClicks}>Cognome*</span>
-                <input type="text" placeholder="Rossi" onClick={incrementClicks} />
+                <input
+                  type="text"
+                  placeholder="Rossi"
+                  onClick={incrementClicks}
+                />
               </label>
             </div>
             <div className="grid2">
               <label className="field">
                 <span onClick={incrementClicks}>Email*</span>
-                <input type="email" placeholder="mario.rossi@email.com" onClick={incrementClicks} />
+                <input
+                  type="email"
+                  placeholder="mario.rossi@email.com"
+                  onClick={incrementClicks}
+                />
               </label>
               <label className="field">
                 <span onClick={incrementClicks}>Telefono</span>
-                <input type="text" placeholder="+39 ..." onClick={incrementClicks} />
+                <input
+                  type="text"
+                  placeholder="+39 ..."
+                  onClick={incrementClicks}
+                />
               </label>
             </div>
             <label className="field">
               <span onClick={incrementClicks}>Richieste (opz.)</span>
-              <input type="text" placeholder="Es. check-in tardivo" onClick={incrementClicks} />
+              <input
+                type="text"
+                placeholder="Es. check-in tardivo"
+                onClick={incrementClicks}
+              />
             </label>
           </section>
 
@@ -229,20 +265,36 @@ const CheckoutPage = () => {
             <h3 onClick={incrementClicks}>Pagamento</h3>
             <label className="field">
               <span onClick={incrementClicks}>Numero carta</span>
-              <input type="text" placeholder="1234 5678 9012 3456" onClick={incrementClicks} />
+              <input
+                type="text"
+                placeholder="1234 5678 9012 3456"
+                onClick={incrementClicks}
+              />
             </label>
             <div className="grid3">
               <label className="field">
                 <span onClick={incrementClicks}>Nome sulla carta</span>
-                <input type="text" placeholder="MARIO ROSSI" onClick={incrementClicks} />
+                <input
+                  type="text"
+                  placeholder="MARIO ROSSI"
+                  onClick={incrementClicks}
+                />
               </label>
               <label className="field">
                 <span onClick={incrementClicks}>Scadenza</span>
-                <input type="text" placeholder="MM/AA" onClick={incrementClicks} />
+                <input
+                  type="text"
+                  placeholder="MM/AA"
+                  onClick={incrementClicks}
+                />
               </label>
               <label className="field">
                 <span onClick={incrementClicks}>CVV</span>
-                <input type="text" placeholder="123" onClick={incrementClicks} />
+                <input
+                  type="text"
+                  placeholder="123"
+                  onClick={incrementClicks}
+                />
               </label>
             </div>
 
@@ -273,11 +325,9 @@ const CheckoutPage = () => {
         <div>
           <LevelCompleted />
         </div>
-
       )}
 
-      {finished && (<EndTimer />)}
-
+      {finished && <EndTimer />}
 
       {popVisible && (
         <div className="modal-overlay">
@@ -291,7 +341,6 @@ const CheckoutPage = () => {
         </div>
       )}
     </div>
-
   );
 };
 export default CheckoutPage;
