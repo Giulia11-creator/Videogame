@@ -151,7 +151,8 @@ export default function LibraryPage() {
     const isLibero = book.stato === "libero";
     if (isLibero) saveBook(book);
     else removeBook(book.id);
-    if (TrasparentButton) setbugTrasparentButton(true);
+    if (TrasparentButton && book.id === TRANSPARENT_BTN_BOOK_ID)
+      setbugTrasparentButton(true);
     setLibri((prev) =>
       prev.map((b) =>
         b.id === book.id
@@ -218,7 +219,7 @@ export default function LibraryPage() {
         const next = prev + 20;
         sessionStorage.setItem("score", JSON.stringify(next));
         sessionStorage.setItem("awardedbugWrongYear", "true");
-        sessionStorage.setItem("bugWrongYear","true");
+        sessionStorage.setItem("bugWrongYear", "true");
         return next;
       });
     })();
