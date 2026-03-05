@@ -8,6 +8,7 @@ import StartPage from "./pages/StartPage.jsx";
 import GamePage from "./pages/GamePage.jsx";
 import SignupPage from "./pages/SignupPage.jsx";
 import TravelPage from "./pages/TravelPage.jsx";
+import Tutorial from "./pages/Tutorial.jsx";
 import CheckoutPage from "./pages/CheckoutPage.jsx";
 import LeaderboardPage from "./pages/LeaderboardPage.jsx";
 import { AuthContextProvider } from "./context/AuthContext";
@@ -32,6 +33,7 @@ createRoot(document.getElementById("ui")).render(
             <Route path="/checkout" element={<CheckoutPage />} />
             <Route path="/event" element={<EventPage />} />
             <Route path="/leader" element={<LeaderboardPage />} />
+            <Route path="/tutorial" element={<Tutorial />} />
              <Route path="/checkoutL" element={<CheckoutLibraryPage />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>

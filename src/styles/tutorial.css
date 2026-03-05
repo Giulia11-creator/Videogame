@@ -109,7 +109,7 @@
   font-size: 2.2rem;
   font-weight: 900;
   letter-spacing: -0.02em;
-  color: white
+  color: #760898;
   /* niente text-clip trasparente */
 }
 
@@ -418,4 +418,265 @@
 
 .timer-bar.danger .fill {
   background: #ef4444;
+}
+
+/* --- layout verticale --- */
+.tutorial-stack{
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+  max-width: 520px;
+}
+
+.tutorial-row{
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap; /* su mobile va a capo */
+}
+
+.tutorial-field{
+  flex: 1;
+  min-width: 240px;
+}
+
+.tutorial-input{
+  width: 100%;
+  height: 44px;
+  padding: 0 14px;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,.05);
+  font-weight: 700;
+  outline: none;
+}
+
+.tutorial-input:focus{
+  border-color: #c4b5fd;
+  box-shadow: 0 0 0 4px rgba(124, 58, 237, .12);
+}
+
+.tutorial-output{
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  background: #f8fafc;
+  box-shadow: 0 2px 6px rgba(0,0,0,.05);
+  font-weight: 700;
+  color: #0f172a;
+}
+
+/* --- Hint: freccia + pill --- */
+.hint{
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+
+  /* di default nascosto (tutorial step-by-step) */
+  opacity: 0;
+  transform: translateX(-6px);
+  pointer-events: none;
+  transition: opacity .18s ease, transform .18s ease;
+}
+
+.hint.is-on{
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: auto;
+}
+
+/* Freccia "viva" in stile CTA */
+.hint-arrow{
+  font-size: 20px;
+  font-weight: 900;
+  color: #7c3aed;
+  filter: drop-shadow(0 6px 14px rgba(124, 58, 237, .22));
+  animation: hintNudge 1s ease-in-out infinite;
+}
+
+@keyframes hintNudge{
+  0%   { transform: translateX(0); }
+  50%  { transform: translateX(5px); }
+  100% { transform: translateX(0); }
+}
+
+/* Bubble in stile chip/badge */
+.hint-bubble{
+  background: #eef2ff;          /* viola chiaro */
+  border: 1px solid #e0e7ff;
+  color: #3730a3;
+  font-weight: 800;
+  letter-spacing: .01em;
+
+  padding: 8px 12px;
+  border-radius: 9999px;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, .18);
+}
+
+/* controlli */
+.tutorial-controls{
+  margin-top: 18px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* =========================
+   Spaziatura tra sezioni
+   ========================= */
+
+.tutorial-section {
+  margin-top: 18px;
+  margin-bottom: 18px;
+}
+
+.tutorial-divider {
+  border: 0;
+  height: 1px;
+  margin: 26px 0;
+  background: linear-gradient(90deg, transparent, rgba(124, 58, 237, 0.35), transparent);
+}
+
+/* (opzionale) un mini titolo tra i form */
+.section-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 900;
+  letter-spacing: -0.01em;
+  color: #0f172a;
+  margin: 10px 0 12px;
+}
+
+.section-chip {
+  background: #eef2ff;
+  border: 1px solid #e0e7ff;
+  color: #3730a3;
+  padding: 6px 10px;
+  border-radius: 9999px;
+  font-weight: 800;
+  font-size: 12px;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, .12);
+}
+
+
+/* =========================
+   Messaggio carino (card/toast)
+   ========================= */
+
+.tutorial-message {
+  position: relative;
+  margin-top: 14px;
+  padding: 14px 14px 14px 16px;
+  border-radius: 14px;
+
+  background: linear-gradient(180deg, #ffffff, #faf5ff);
+  border: 1px solid rgba(124, 58, 237, 0.22);
+  box-shadow: 0 10px 24px rgba(17, 24, 39, 0.10);
+
+  color: #111827;
+  font-weight: 700;
+
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+
+  animation: msgPop .18s ease-out;
+}
+
+@keyframes msgPop {
+  from { opacity: 0; transform: translateY(-6px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* barretta a sinistra viola */
+.tutorial-message::before {
+  content: "";
+  width: 6px;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #7c3aed, #4f46e5);
+  box-shadow: 0 8px 18px rgba(124, 58, 237, .22);
+  align-self: stretch;
+}
+
+/* icona opzionale */
+.tutorial-message .icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+
+  background: #eef2ff;
+  border: 1px solid #e0e7ff;
+  color: #3730a3;
+  box-shadow: 0 6px 16px rgba(124, 58, 237, .12);
+
+  font-size: 18px;
+}
+
+/* contenuto testo */
+.tutorial-message .content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tutorial-message .title {
+  font-weight: 900;
+  color: #3730a3;
+  letter-spacing: -0.01em;
+}
+
+.tutorial-message .text {
+  font-weight: 700;
+  color: #0f172a;
+  opacity: 0.95;
+  line-height: 1.3;
+}
+
+/* bottone chiudi (niente classi tailwind) */
+.tutorial-message .close {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 10px;
+
+  background: rgba(124, 58, 237, 0.10);
+  color: #6d28d9;
+  cursor: pointer;
+
+  font-weight: 900;
+  font-size: 18px;
+  line-height: 1;
+
+  display: grid;
+  place-items: center;
+
+  transition: transform .15s ease, background .15s ease, color .15s ease;
+}
+
+.tutorial-message .close:hover {
+  background: rgba(239, 68, 68, 0.12);
+  color: #b91c1c;
+  transform: scale(1.06);
+}
+
+.tutorial-message .close:active {
+  transform: scale(0.98);
+}
+
+/* Responsive: la message si adatta bene */
+@media (max-width: 520px) {
+  .tutorial-message {
+    padding-right: 44px; /* spazio per la X */
+  }
 }

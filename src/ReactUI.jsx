@@ -59,6 +59,20 @@ function Overlay({ score }) {
       >
         🏆 Classifica
       </button>
+           <button
+        onClick={() => navigate("/tutorial")}
+        style={{
+          background: "#ffcc00",
+          border: "none",
+          borderRadius: 8,
+          padding: "6px 12px",
+          cursor: "pointer",
+          fontWeight: "bold"
+
+        }}
+      >
+        Tutorial
+      </button>
     </div>,
     document.body
   );
