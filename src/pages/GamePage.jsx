@@ -1,4 +1,4 @@
-import { useEffect, useRef} from "react";
+import { useEffect, useRef } from "react";
 import "../styles/game.css";
 import initGame from "../initGame.js";
 import ReactUI from "../ReactUI.jsx";
@@ -11,6 +11,7 @@ function useViewportScale() {
       const sy = window.innerHeight / 1080;
       document.documentElement.style.setProperty("--scale", Math.min(sx, sy));
     };
+
     setScale();
     window.addEventListener("resize", setScale);
     return () => window.removeEventListener("resize", setScale);
@@ -23,60 +24,83 @@ function wipeAllClientSession() {
 }
 
 function clearSessionStorageExcept(keepKeys = []) {
-  Object.keys(sessionStorage).forEach(key => {
+  Object.keys(sessionStorage).forEach((key) => {
     if (!keepKeys.includes(key)) {
       sessionStorage.removeItem(key);
     }
   });
 }
 
-
-
 export default function GamePage() {
   useViewportScale();
+
   const startedRef = useRef(false);
 
+  // AGGIUNTO:
+  // ref React per il canvas (più sicuro di getElementById)
+  const canvasRef = useRef(null);
+
   useEffect(() => {
+
+    // AGGIUNTO:
+    // blocca eventuale doppia inizializzazione
+    if (startedRef.current) return;
+
     // Disattiva stile Start/Login, attiva stile Game
     document.body.classList.remove("ui-screen");
     document.body.classList.add("in-game");
+
     //wipeAllClientSession();
     clearSessionStorageExcept(["flag1", "flag2", "flag3"]);
 
+    // CAMBIATO:
+    // prima usavi document.getElementById("game")
+    const c = canvasRef.current;
 
-    if (!startedRef.current) {
-      startedRef.current = true;
-      initGame();
-    }
+    if (!c) return;
 
     // Canvas full-screen + focus tastiera
-    const c = document.getElementById("game");
-    if (c) {
-      c.style.position = "fixed";
-      c.style.inset = "0";
-      c.style.width = "100vw";
-      c.style.height = "100vh";
-      c.style.display = "block";
-      c.style.zIndex = "0";
-      c.style.background = "#000";
-      c.setAttribute("tabindex", "0");
+    c.style.position = "fixed";
+    c.style.inset = "0";
+    c.style.width = "100vw";
+    c.style.height = "100vh";
+    c.style.display = "block";
+    c.style.zIndex = "0";
+    c.style.background = "#000";
+
+    // CAMBIATO:
+    // React preferisce tabIndex
+    c.setAttribute("tabIndex", "0");
+
+    // AGGIUNTO:
+    // focus nel frame successivo per sicurezza
+    requestAnimationFrame(() => {
       c.focus();
-    }
+    });
+
+    // CAMBIATO:
+    // initGame parte solo una volta
+    startedRef.current = true;
+    initGame();
 
     // cleanup
     return () => {
       document.body.classList.remove("in-game");
+
       if (c) {
         const ctx = c.getContext("2d");
         if (ctx) ctx.clearRect(0, 0, c.width, c.height);
       }
+
       startedRef.current = false;
     };
   }, []);
 
   return (
     <>
-      <canvas id="game"></canvas>
+      {/* CAMBIATO:
+          aggiunto ref al canvas */}
+      <canvas id="game" ref={canvasRef}></canvas>
 
       {/* Overlay React sopra al canvas:
           - .ui-viewport è il frame 1920×1080 che si scala con --scale

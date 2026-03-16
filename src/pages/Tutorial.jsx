@@ -301,14 +301,17 @@ export default function TutorialForm() {
                 {/* BOTTONI */}
                 <div className="tutorial-row">
 
-                    <button className="btn-book" onClick={clickAdd}>
-                        Aggiungi
-                    </button>
+                   <div className="tutorial-buttons"> {/* AGGIUNTO */}
 
-                    <button className="btn-book" onClick={clickDouble}>
-                        Raddoppia
-                    </button>
+                        <button className="btn-book" onClick={clickAdd}>
+                            Aggiungi
+                        </button>
 
+                        <button className="btn-book" onClick={clickDouble}>
+                            Raddoppia
+                        </button>
+
+                    </div>
                     <div className={`hint ${step3 === 1 ? "is-on" : ""}`}>
                         <span className="hint-arrow">➜</span>
                         <span className="hint-bubble">

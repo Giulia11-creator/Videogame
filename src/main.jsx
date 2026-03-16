@@ -1,6 +1,5 @@
 import { createRoot } from "react-dom/client";
 import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
-import { StrictMode } from "react";
 import { Provider } from "jotai";
 import { store } from "./store.js";
 import LoginPage from "./pages/LoginPage.jsx";
@@ -19,26 +18,24 @@ import CheckoutLibraryPage from "./pages/CheckoutLibrary.jsx";
 import "./styles/base.css";
 
 createRoot(document.getElementById("ui")).render(
-  <StrictMode>
-    <Provider store={store}>
-      <AuthContextProvider>
-        <HashRouter>
-          <Routes>
-            <Route path="/" element={<StartPage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/game" element={<GamePage />} />
-            <Route path="/signup" element={<SignupPage />} />
-            <Route path="/travel" element={<TravelPage />} />
-            <Route path="/library" element={<LibraryPage />} />
-            <Route path="/checkout" element={<CheckoutPage />} />
-            <Route path="/event" element={<EventPage />} />
-            <Route path="/leader" element={<LeaderboardPage />} />
-            <Route path="/tutorial" element={<Tutorial />} />
-             <Route path="/checkoutL" element={<CheckoutLibraryPage />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </HashRouter>
-      </AuthContextProvider>
-    </Provider>
-  </StrictMode>
+  <Provider store={store}>
+    <AuthContextProvider>
+      <HashRouter>
+        <Routes>
+          <Route path="/" element={<StartPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/game" element={<GamePage />} />
+          <Route path="/signup" element={<SignupPage />} />
+          <Route path="/travel" element={<TravelPage />} />
+          <Route path="/library" element={<LibraryPage />} />
+          <Route path="/checkout" element={<CheckoutPage />} />
+          <Route path="/event" element={<EventPage />} />
+          <Route path="/leader" element={<LeaderboardPage />} />
+          <Route path="/tutorial" element={<Tutorial />} />
+          <Route path="/checkoutL" element={<CheckoutLibraryPage />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </HashRouter>
+    </AuthContextProvider>
+  </Provider>
 );
