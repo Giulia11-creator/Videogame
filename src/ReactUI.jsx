@@ -6,11 +6,19 @@ import { db } from "./firebase";
 import { UserAuth } from "./context/AuthContext";
 import TextBox from "./ReactComponents/TextBox";
 
+function refocusGame() {
+  requestAnimationFrame(() => {
+    document.getElementById("game")?.focus();
+  });
+}
+
 function Overlay({ score }) {
   const navigate = useNavigate();
- const { user, logout } = UserAuth();
+  const { logout } = UserAuth();
+
   return createPortal(
     <div
+      className="game-overlay"
       style={{
         position: "fixed",
         top: 20,
@@ -26,10 +34,15 @@ function Overlay({ score }) {
         boxShadow: "0 2px 8px rgba(0,0,0,0.2)"
       }}
     >
-
       <button
+        className="ui-clickable"
         type="button"
-        onClick={() => { sessionStorage.clear(); logout(); navigate("/"); }}
+        onClick={() => {
+          sessionStorage.clear();
+          logout();
+          navigate("/");
+          refocusGame();
+        }}
         style={{
           background: "#ff4d4d",
           color: "white",
@@ -42,11 +55,17 @@ function Overlay({ score }) {
       >
         ⏻ Esci
       </button>
-      <span style={{ fontSize: "16px" }}>
+
+      <span style={{ fontSize: "16px", pointerEvents: "none" }}>
         Punteggio: <span style={{ color: "#333" }}>{score}</span>
       </span>
+
       <button
-        onClick={() => navigate("/leader")}
+        className="ui-clickable"
+        onClick={() => {
+          navigate("/leader");
+          refocusGame();
+        }}
         style={{
           background: "#ffcc00",
           border: "none",
@@ -54,13 +73,17 @@ function Overlay({ score }) {
           padding: "6px 12px",
           cursor: "pointer",
           fontWeight: "bold"
-
         }}
       >
         🏆 Classifica
       </button>
-           <button
-        onClick={() => navigate("/tutorial")}
+
+      <button
+        className="ui-clickable"
+        onClick={() => {
+          navigate("/tutorial");
+          refocusGame();
+        }}
         style={{
           background: "#ffcc00",
           border: "none",
@@ -68,7 +91,6 @@ function Overlay({ score }) {
           padding: "6px 12px",
           cursor: "pointer",
           fontWeight: "bold"
-
         }}
       >
         Tutorial
@@ -78,25 +100,28 @@ function Overlay({ score }) {
   );
 }
 
-
 export default function ReactUI() {
   const [points, setPoints] = useState(0);
   const [loading, setLoading] = useState(true);
   const { user } = UserAuth();
 
-
   useEffect(() => {
     const run = async () => {
-      if (!user) { setLoading(false); return; }
+      if (!user) {
+        setLoading(false);
+        return;
+      }
+
       try {
         const snap = await getDoc(doc(db, "Leaderboard", user.uid));
-        setPoints(snap.exists() ? (snap.data().totalPoints ?? 0) : 0); // points è NUMBER
+        setPoints(snap.exists() ? (snap.data().totalPoints ?? 0) : 0);
       } catch (e) {
         console.error("getDoc error:", e);
       } finally {
         setLoading(false);
       }
     };
+
     run();
   }, [user]);
 

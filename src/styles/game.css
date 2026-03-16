@@ -1,5 +1,4 @@
 /* Vale solo quando il <body> ha la classe .in-game */
-/* Solo il canvas del gioco occupa il viewport */
 .in-game #game {
   position: fixed;
   inset: 0;
@@ -10,24 +9,13 @@
   background: #ffffff;
 }
 
-/* Canvas full-viewport */
-.in-game #game {
-  position: fixed;
-  inset: 0;
-  width: 100vw;
-  height: 100vh;
-  display: block;
-  z-index: 0;
-  background: #ffffff;
-}
-
-/* Overlay React sopra al canvas, di default NON cattura eventi */
+/* Il root React può stare sopra, ma non deve bloccare il gioco */
 .in-game #ui {
   position: fixed;
   inset: 0;
   display: grid;
   place-items: center;
-  pointer-events: none; /* il gioco riceve input */
+  pointer-events: none;
   z-index: 10;
 }
 
@@ -39,9 +27,16 @@
   transform-origin: center;
   position: relative;
   color: var(--font-color);
+  pointer-events: none;
 }
 
-/* Blocchi della UI che DEVONO essere cliccabili in game */
+/* AGGIUNTO:
+   contenitore overlay renderizzato via portal su document.body */
+.game-overlay {
+  pointer-events: none;
+}
+
+/* Solo gli elementi davvero cliccabili ricevono input */
 .ui-clickable {
   pointer-events: auto;
 }
