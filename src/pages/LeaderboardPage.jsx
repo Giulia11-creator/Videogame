@@ -63,7 +63,7 @@ export default function LeaderboardPage() {
       }}>
         <div style={{
           display: "grid",
-          gridTemplateColumns: "64px 1fr 120px 200px",
+          gridTemplateColumns: "80px 1fr 120px",
           padding: "12px 16px",
           background: "#9c3aed",
           fontWeight: 600
@@ -76,7 +76,7 @@ export default function LeaderboardPage() {
         {players.map((p, i) => (
           <div key={p.name} style={{
             display: "grid",
-            gridTemplateColumns: "64px 1fr 120px 200px",
+           gridTemplateColumns: "80px 1fr 120px",
             padding: "12px 16px",
             borderTop: "1px solid #f1f5f9",
             alignItems: "center"
