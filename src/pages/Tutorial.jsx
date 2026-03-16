@@ -244,11 +244,6 @@ export default function TutorialForm() {
                     <p className="tutorial-output">
                         Stampa : <b>{output2 || "—"}</b>
                     </p>
-
-                    <div className={`hint ${step2 === 2 ? "is-on" : ""}`}>
-                        <span className="hint-arrow">➜</span>
-                        <span className="hint-bubble">Prova a cliccare sul risultato</span>
-                    </div>
                 </div>
 
             </div>
