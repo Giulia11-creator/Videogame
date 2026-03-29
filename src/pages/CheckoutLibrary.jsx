@@ -134,7 +134,7 @@ export default function CheckoutPage() {
       });
     })();
     seterrorMessage(
-      "Hai trovato un flaky bug: il nome dell’autore del libro cambia improvvisamente senza motivo. A volte rimane corretto, altre volte si trasforma in un altro nome. Questo è un bug instabile, perché lo stesso scenario può produrre risultati diversi.",
+      "Hai trovato un flaky bug: il nome dell’autore del libro cambia improvvisamente senza motivo. A volte rimane corretto, altre volte si trasforma in un altro nome. Un flaky bug è un bug che non si manifesta in modo stabile: lo stesso test può funzionare alcune volte e fallire altre."
     );
     setpopVisible(true);
   }, [bugWrongAuthor, user]);

@@ -224,7 +224,7 @@ export default function LibraryPage() {
       });
     })();
     seterrorMessage(
-      "Hai trovato un flaky bug: l’anno di edizione del libro cambia all’improvviso. In certi casi resta quello giusto, in altri si aggiorna in modo casuale. Anche qui il comportamento è incoerente e imprevedibile, tipico dei bug flaky.",
+      "Hai trovato un flaky bug: l’anno di edizione del libro cambia all’improvviso. In certi casi resta quello giusto, in altri si aggiorna in modo casuale. Un flaky bug è un bug che non si manifesta in modo stabile: lo stesso test può funzionare alcune volte e fallire altre.",
     );
     setpopVisible(true);
   }, [bugWrongYear, user]);
