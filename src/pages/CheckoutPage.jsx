@@ -137,7 +137,7 @@ const CheckoutPage = () => {
       });
     })();
     seterrorMessage(
-      "Hai trovato un bug di validazione, cioè un errore nel software che avviene quando il programma non controlla correttamente i dati o le condizioni prima di accettarli o usarli. In questo caso l’app ti applica lo sconto anche se scrivi cose a caso nella casella del codice: è come se alla cassa del supermercato dicessi una parola inventata e ti facessero lo stesso lo sconto. Questo non dovrebbe succedere, perché i codici validi dovrebbero essere controllati e accettati solo se corretti.",
+      "Hai trovato un bug di validazione, cioè un errore nel software che avviene quando il programma non controlla correttamente i dati o le condizioni prima di accettarli o usarli. In questo caso l’app ti applica lo sconto anche se scrivi cose a caso nella casella del codice: è come se alla cassa del supermercato dicessi una parola inventata e ti facessero lo stesso lo sconto. Questo non dovrebbe succedere, perché i codici validi dovrebbero essere controllati e accettati solo se corretti."
     );
     setpopVisible(true);
   }, [bugCoupon, user]);

@@ -224,7 +224,7 @@ export default function LibraryPage() {
       });
     })();
     seterrorMessage(
-      "Hai trovato un flaky bug: l’anno di edizione del libro cambia all’improvviso. In certi casi resta quello giusto, in altri si aggiorna in modo casuale. Un flaky bug è un bug che non si manifesta in modo stabile: lo stesso test può funzionare alcune volte e fallire altre.",
+      "Hai trovato un flaky bug: l’anno di edizione del libro cambia all’improvviso. In certi casi resta quello giusto, in altri si aggiorna in modo casuale. Un flaky bug è un bug che non si manifesta in modo stabile: lo stesso test può funzionare alcune volte e fallire altre."
     );
     setpopVisible(true);
   }, [bugWrongYear, user]);
@@ -252,7 +252,7 @@ export default function LibraryPage() {
         });
       })();
       seterrorMessage(
-        "🎉Hai trovato un bug di interfaccia (UI/UX)! Un pulsante è diventato trasparente, ma continua a funzionare se ci clicchi sopra. Questo tipo di bug capita quando l’elemento è ancora attivo ma non visibile, e quindi l’utente può cliccare “nel vuoto” senza capire cosa sta succedendo. È un errore grafico e di esperienza utente, non di logica: l’app funziona, ma l’interfaccia inganna chi la usa.",
+        "🎉Hai trovato un bug di interfaccia (UI/UX)! Un pulsante è diventato trasparente, ma continua a funzionare se ci clicchi sopra. Questo tipo di bug capita quando l’elemento è ancora attivo ma non visibile, e quindi l’utente può cliccare “nel vuoto” senza capire cosa sta succedendo. È un errore grafico e di esperienza utente, non di logica: l’app funziona, ma l’interfaccia inganna chi la usa."
       );
       setpopVisible(true);
     }, Delay);
@@ -284,7 +284,7 @@ export default function LibraryPage() {
       });
     })();
     seterrorMessage(
-      "Hai trovato un bug di logica: premendo una volta il pulsante Prenota per un libro, il sistema ne riserva due. In pratica l’applicazione non rispetta la regola di base (una prenotazione corrisponde a un solo libro) e raddoppia l’azione in modo errato.Un bug di logica (o logic bug, spesso anche business logic bug) è un errore che nasce perché il programma non segue correttamente le regole o i ragionamenti per cui è stato progettato.",
+      "Hai trovato un bug di logica: premendo una volta il pulsante Prenota per un libro, il sistema ne riserva due. In pratica l’applicazione non rispetta la regola di base (una prenotazione corrisponde a un solo libro) e raddoppia l’azione in modo errato.Un bug di logica (o logic bug, spesso anche business logic bug) è un errore che nasce perché il programma non segue correttamente le regole o i ragionamenti per cui è stato progettato."
     );
     setpopVisible(true);
   }, [bugWrongBooked, user]);
@@ -309,7 +309,7 @@ export default function LibraryPage() {
       });
     })();
     seterrorMessage(
-      "🎉Hai trovato un bug di interfaccia (UI/UX)! Il titolo ha cambiato colore! È un errore grafico e di esperienza utente, non di logica: l’app funziona, ma l’interfaccia cambia e  inganna chi la usa.",
+      "🎉Hai trovato un bug di interfaccia (UI/UX)! Il titolo ha cambiato colore! È un errore grafico e di esperienza utente, non di logica: l’app funziona, ma l’interfaccia cambia e  inganna chi la usa."
     );
     setpopVisible(true);
   }, [bugChangeColor, user]);

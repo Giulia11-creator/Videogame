@@ -285,7 +285,7 @@ export default function EventFormBug() {
       });
     })();
     seterrorMessage(
-      "Hai trovato un flaky bug: ogni tre eventi creati, la data di uno si modifica da sola senza motivo. Un flaky bug è un bug che non si manifesta in modo stabile: lo stesso test può funzionare alcune volte e fallire altre. È come se la data di un compleanno sul calendario cambiasse da sola ogni tanto.",
+      "Hai trovato un flaky bug: ogni tre eventi creati, la data di uno si modifica da sola senza motivo. Un flaky bug è un bug che non si manifesta in modo stabile: lo stesso test può funzionare alcune volte e fallire altre. È come se la data di un compleanno sul calendario cambiasse da sola ogni tanto."
     );
     setpopVisible(true);
   }, [bugWrongDate, user]);
@@ -310,7 +310,7 @@ export default function EventFormBug() {
       });
     })();
     seterrorMessage(
-      "Hai trovato un bug di validazione: l’app permette di creare un evento in una data già passata. Un bug di validazione è un errore nel software che avviene quando il programma non controlla correttamente i dati o le condizioni prima di accettarli o usarli. È come fissare una riunione ieri: non ha senso e il sistema dovrebbe impedirlo.",
+      "Hai trovato un bug di validazione: l’app permette di creare un evento in una data già passata. Un bug di validazione è un errore nel software che avviene quando il programma non controlla correttamente i dati o le condizioni prima di accettarli o usarli. È come fissare una riunione ieri: non ha senso e il sistema dovrebbe impedirlo."
     );
     setpopVisible(true);
   }, [bugPastDate, user]);
@@ -337,7 +337,7 @@ export default function EventFormBug() {
       });
     })();
     seterrorMessage(
-      "Hai trovato un bug di validazione: l’app ti permette di inserire un numero negativo di persone per un evento. Un bug di validazione è un errore nel software che avviene quando il programma non controlla correttamente i dati o le condizioni prima di accettarli o usarli. È come organizzare una festa per –5 invitati: assurdo, ma l’app lo accetta.",
+      "Hai trovato un bug di validazione: l’app ti permette di inserire un numero negativo di persone per un evento. Un bug di validazione è un errore nel software che avviene quando il programma non controlla correttamente i dati o le condizioni prima di accettarli o usarli. È come organizzare una festa per –5 invitati: assurdo, ma l’app lo accetta."
     );
     setpopVisible(true);
   }, [bugNegativePeople, user]);
