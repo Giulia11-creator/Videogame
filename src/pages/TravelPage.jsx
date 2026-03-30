@@ -118,7 +118,7 @@ const TravelPage = () => {
           });
         })();
         seterrorMessage(
-          "Hai trovato un bug di validazione: l’app ti lascia mettere come data di arrivo un giorno dopo la data di partenza. È come prenotare un hotel dal 10 al 5 del mese: chiaramente non ha senso e il sistema dovrebbe impedirlo. Un bug di validazione è un errore nel software che avviene quando il programma non controlla correttamente i dati o le condizioni prima di accettarli o usarli."
+          "Hai trovato un bug di validazione: l’app ti lascia mettere come data di arrivo un giorno dopo la data di partenza. È come prenotare un hotel dal 10 al 5 del mese: chiaramente non ha senso e il sistema dovrebbe impedirlo. Un bug di validazione è un errore nel software che avviene quando il programma non controlla correttamente i dati o le condizioni prima di accettarli o usarli.",
         );
         setpopVisible(true);
       }
@@ -140,7 +140,7 @@ const TravelPage = () => {
             const next = prev + 25;
             sessionStorage.setItem("score", JSON.stringify(next));
             sessionStorage.setItem("scoreSetForbugNegativePeople", "true");
-            sessionStorage.setItem("bugNegativePeople","true");
+            sessionStorage.setItem("bugNegativePeople", "true");
             return next;
           });
         })();
@@ -179,12 +179,12 @@ const TravelPage = () => {
             const next = prev + 25;
             sessionStorage.setItem("score", JSON.stringify(next));
             sessionStorage.setItem("scoreSetForbugNegativeChildren", "true");
-            sessionStorage.setItem("bugNegativeChildren","true");
+            sessionStorage.setItem("bugNegativeChildren", "true");
             return next;
           });
         })();
         seterrorMessage(
-          "Hai trovato un bug di validazione: l’app ti lascia inserire un numero di bambini negativo per una prenotazione. È come se potessi prenotare un tavolo per –3 persone: assurdo, ma il sistema non lo controlla. Questo tipo di bug si presenta il sistema non controlla correttamente i dati inseriti dall’utente."
+          "Hai trovato un bug di validazione: l’app ti lascia inserire un numero di bambini negativo per una prenotazione. È come se potessi prenotare un tavolo per –3 persone: assurdo, ma il sistema non lo controlla. Questo tipo di bug si presenta il sistema non controlla correttamente i dati inseriti dall’utente.",
         );
         setpopVisible(true);
       }
@@ -348,6 +348,7 @@ const TravelPage = () => {
             <input
               id="adults"
               type="number"
+              max="40"
               onChange={(e) => setnAdults(Number(e.target.value))}
               onClick={incrementClicks}
             />
@@ -357,6 +358,7 @@ const TravelPage = () => {
             <input
               id="children"
               type="number"
+              max="40"
               onChange={(e) => setnchildren(Number(e.target.value))}
               onClick={incrementClicks}
             />

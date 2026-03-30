@@ -207,7 +207,7 @@ export default async function initGame() {
       store.set(isTextBoxVisibleAtom, true);
     }
     else {
-      store.set(textBoxContentAtom, "Gli ingenui cliccano, i curiosi indagano, i veri sviluppatori scoprono l’errore. Premi barra spazziatrice per accedere al livello oppure esc per chiudere la finestra");
+      store.set(textBoxContentAtom, "Gli ingenui cliccano, i curiosi indagano, i veri sviluppatori scoprono l’errore. Premi barra spaziatrice per accedere al livello oppure esc per chiudere la finestra");
       store.set(isTextBoxVisibleAtom, true);
       store.set(nextpage, "/event");
     }
@@ -224,7 +224,7 @@ export default async function initGame() {
       store.set(isTextBoxVisibleAtom, true);
     }
     else {
-      store.set(textBoxContentAtom, "Solo chi sa dove guardare vede l’inganno. Gli altri? Si limitano a cliccare e sperare. Premi barra spazziatrice per accedere al livello oppure esc per chiudere la finestra");
+      store.set(textBoxContentAtom, "Solo chi sa dove guardare vede l’inganno. Gli altri? Si limitano a cliccare e sperare. Premi barra spaziatrice per accedere al livello oppure esc per chiudere la finestra");
       store.set(isTextBoxVisibleAtom, true);
       store.set(nextpage, "/travel");
 
