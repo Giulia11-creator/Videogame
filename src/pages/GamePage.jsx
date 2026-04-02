@@ -36,7 +36,7 @@ export default function GamePage() {
 
     document.body.classList.remove("ui-screen");
     document.body.classList.add("in-game");
-    clearSessionStorageExcept(["flag1", "flag2", "flag3"]);
+    clearSessionStorageExcept(["flag1", "flag2", "flag3","tutorialDone","TutorialTime","triggerExampleOne","triggerExampleTwo","triggerExampleThree"]);
 
     const c = canvasRef.current;
     if (!c) return;

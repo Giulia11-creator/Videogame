@@ -2,15 +2,12 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserAuth } from "../context/AuthContext";
-import { shootConfetti } from "../ReactComponents/confetti.jsx";
-import { addUser, addPoints } from "../ReactComponents/FirestoreFunction.js";
-import LevelCompleted from "../ReactComponents/LevelCompleted.jsx";
-import EndTimer from "../ReactComponents/EndTimer.jsx";
-
+import { TutorialDone } from "../ReactComponents/FirestoreFunction.js";
 import "../styles/tutorial.css"; // il tuo file
-import { tr } from "framer-motion/m";
 
 export default function TutorialForm() {
+    const { user } = UserAuth();
+
     const [text, setText] = useState("");
     const [text2, setText2] = useState("");
     const [text3, setText3] = useState("");
@@ -29,7 +26,44 @@ export default function TutorialForm() {
     const [double, setDouble] = useState(false);
     const [add, setAdd] = useState(false);
     const [num, setNum] = useState(0);
+    const [triggerExampleOne, setTriggerExampleOne] = useState(() => {
+        const saved = sessionStorage.getItem("triggerExampleOne");
+        return saved ? JSON.parse(saved) : false;
+    });
+    const [triggerExampleTwo, setTriggerExampleTwo] = useState(() => {
+        const saved = sessionStorage.getItem("triggerExampleTwo");
+        return saved ? JSON.parse(saved) : false;
+    });
+    const [triggerExampleThree, setTriggerExampleThree] = useState(() => {
+        const saved = sessionStorage.getItem("triggerExampleThree");
+        return saved ? JSON.parse(saved) : false;
+    });
+    const [seconds, setseconds] = useState(() => {
+        const saved = sessionStorage.getItem("TutorialTime");
+        return saved ? Number(saved) : 0;
+    });
+    const [tutorialDone, settutorialDone] = useState(() => {
+        const saved = sessionStorage.getItem("tutorialDone");
+        return saved ? JSON.parse(saved) : false;
+    });
+
     const navigate = useNavigate();
+
+
+    useEffect(() => {
+
+        const id = setInterval(() => {
+            setseconds((prev) => {
+                const next = prev + 1;
+                sessionStorage.setItem("TutorialTime", next);
+                return next;
+            });
+        }, 1000);
+
+        return () => clearInterval(id);
+    }, []);
+
+
 
     function handleSubmit1(e) {
         e.preventDefault();
@@ -39,18 +73,38 @@ export default function TutorialForm() {
 
 
     function handleSubmit2(e) {
-        e.preventDefault();
-        setOutput2(text2);
-        setStep2(2);
-        setMessage2("Questo è un esempio delle tipologie di bug che dovrai scovare. Come puoi vedere l'applicazione può accettare numeri anche se non dovebbe");
-        setdisplayMessage2(true);
+        if (Number(text2)) {
+            e.preventDefault();
+            setOutput2(text2);
+            setStep2(2);
+            setMessage2("Questo è un esempio delle tipologie di bug che dovrai scovare. Come puoi vedere l'applicazione può accettare numeri anche se non dovebbe");
+            setdisplayMessage2(true);
+            setTriggerExampleTwo(true);
+            sessionStorage.setItem("triggerExampleTwo", "true");
+
+        }
+        else {
+            setMessage2("Dai prova ad inserire un numero :)");
+            setdisplayMessage2(true);
+
+        }
+
+
 
     }
 
     function clickLol() {
-        if (output === "LOL") {
+        if (output === "LOL" && text != "LOL") {
             setMessage("Questo è un esempio delle tipologie di bug che dovrai scovare. Come puoi vedere l'applicazione non si comporta come dovrebbe e mostra un testo diverso da quello che hai scritto");
             setdisplayMessage(true);
+            setTriggerExampleOne(true);
+            sessionStorage.setItem("triggerExampleOne", "true");
+        }
+        else {
+
+            setMessage("In questo caso è andato tutto come ci aspettavamo, ma prova a scrivere un'altra parola :)");
+            setdisplayMessage(true);
+
         }
 
 
@@ -114,8 +168,43 @@ export default function TutorialForm() {
             setMessage3("Questo è un esempio delle tipologie di bug che dovrai scovare. Come puoi vedere l'ordine in cui vengono premuti i pulsanti condiziona il risulato");
 
         setdisplayMessage3(true);
+        setTriggerExampleThree(true);
+        sessionStorage.setItem("triggerExampleThree", "true");
+
 
     }
+
+    useEffect(() => {
+        if (tutorialDone) return;
+
+        if (triggerExampleOne && triggerExampleTwo && triggerExampleThree) {
+            settutorialDone(true);
+            sessionStorage.setItem("tutorialDone", "true")
+        }
+
+
+    }, [triggerExampleOne, triggerExampleTwo, triggerExampleThree]);
+
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+
+    const formattedTime = `${String(minutes).padStart(2, "0")}:${String(remainingSeconds).padStart(2, "0")}`;
+    useEffect(() => {
+
+        (async () => {
+            if (user) {
+                await TutorialDone("users", user.uid, {
+                    email: user.email,
+                    tutorialTimeSeconds: seconds,
+                    tutorialTimeFormatted: formattedTime,
+                    triggerExampleOne,
+                    triggerExampleTwo,
+                    triggerExampleThree,
+                    tutorialDone,
+                });
+            }
+        })();
+    }, [seconds, user, triggerExampleOne, triggerExampleTwo, triggerExampleThree, tutorialDone]);
 
     return (
         <div className="container with-top-right" style={{ padding: 24 }}>
@@ -137,6 +226,7 @@ export default function TutorialForm() {
                                 type="text"
                                 placeholder="Scrivi qualcosa"
                                 value={text}
+                                required
                                 onChange={(e) => {
                                     setText(e.target.value);
                                     setStep(1);
@@ -171,7 +261,7 @@ export default function TutorialForm() {
 
                     <div className={`hint ${step === 2 ? "is-on" : ""}`}>
                         <span className="hint-arrow">➜</span>
-                        <span className="hint-bubble">Prova a cliccare il risultato dato che non è ciò che ti aspettavi!</span>
+                        <span className="hint-bubble">Prova a cliccare il risultato!</span>
                     </div>
                 </div>
 
@@ -216,6 +306,7 @@ export default function TutorialForm() {
                                 type="text"
                                 placeholder="Scrivi il nome di un animale"
                                 value={text2}
+                                required
                                 onChange={(e) => { setText2(e.target.value); setStep2(1); }}
                             />
                         </div>
@@ -282,9 +373,10 @@ export default function TutorialForm() {
                     <div className="tutorial-field">
                         <input
                             className="tutorial-input"
-                            type="text"
+                            type="number"
                             placeholder="Scrivi un numero"
                             value={text3}
+                            required
                             onChange={(e) => {
                                 setText3(e.target.value);
                                 setStep3(1);
@@ -301,7 +393,7 @@ export default function TutorialForm() {
                 {/* BOTTONI */}
                 <div className="tutorial-row">
 
-                   <div className="tutorial-buttons"> {/* AGGIUNTO */}
+                    <div className="tutorial-buttons"> {/* AGGIUNTO */}
 
                         <button className="btn-book" onClick={clickAdd}>
                             Aggiungi

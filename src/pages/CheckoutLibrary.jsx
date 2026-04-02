@@ -34,7 +34,7 @@ export default function CheckoutPage() {
 
   const navigate = useNavigate();
 
-  const DURATION = 20 * 60;
+  const DURATION = 10 * 60;
   const [seconds, setseconds] = useState(() => {
     const saved = sessionStorage.getItem("timer");
     return saved ? Number(saved) : DURATION;
@@ -147,6 +147,7 @@ export default function CheckoutPage() {
           Totalclicks: clicks,
           email: user.email,
           time: formatTime(),
+          seconds : elapsed,
           bugs: {
             bugChangeColor: sessionStorage.getItem("bugChangeColor") === "true",
             bugTrasparentButton:

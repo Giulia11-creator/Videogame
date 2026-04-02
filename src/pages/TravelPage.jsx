@@ -20,7 +20,7 @@ const TravelPage = () => {
   const [nchildren, setnchildren] = useState(0);
   const [dateIn, setDateIn] = useState("");
   const [dateOut, setDateOut] = useState("");
-  const DURATION = 20 * 60;
+  const DURATION = 10 * 60;
   const [seconds, setseconds] = useState(() => {
     const saved = sessionStorage.getItem("timer");
     return saved ? Number(saved) : DURATION;
@@ -255,6 +255,8 @@ const TravelPage = () => {
           Totalclicks: clicks,
           email: user.email,
           time: formatTime(),
+          seconds : elapsed,
+
           bugs: {
             bugDate1: bugDate1,
             bugNegativeChildren: bugNegativeChildren,

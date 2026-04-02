@@ -65,7 +65,7 @@ export default function LibraryPage() {
     },
   ]);
 
-  const DURATION = 20 * 60;
+  const DURATION = 10 * 60;
   const navigate = useNavigate();
   const liberi = libri.filter((l) => l.stato === "libero").length;
   const prenotati = libri.reduce((sum, l) => {
@@ -373,6 +373,8 @@ export default function LibraryPage() {
           Totalclicks: clicks,
           email: user.email,
           time: formatTime(),
+          seconds : elapsed,
+
           bugs: {
             bugChangeColor: bugChangeColor,
             bugTrasparentButton: bugTrasparentButton,

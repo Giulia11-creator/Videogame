@@ -24,6 +24,7 @@ export async function addUser(collectionName, uid, options = {}) {
       nick: options.email ?? "",
       score: Number(options.score ?? 0),
       time: options.time ?? "",
+      seconds : options.seconds ?? "",
       Totalclicks: Number(options.Totalclicks ?? 0),
       lastUpdate: serverTimestamp(),
 
@@ -79,4 +80,21 @@ export async function checkLevel(collectionName, uid) {
   const ref = doc(db, collectionName, uid);
   const docSnap = await getDoc(ref);
   return docSnap.exists(); // true se ha già fatto il livello
+}
+
+
+export async function TutorialDone(collectionName, uid, options = {}) {
+  const userRef = doc(db, collectionName, uid);
+
+  await setDoc(
+    userRef,
+    {
+      id: uid,
+      email: options.email ?? "",
+      ...options
+    },
+    { merge: true }
+  );
+
+  console.log(`✅ Utente aggiornato in ${collectionName}`);
 }
