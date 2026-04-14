@@ -46,8 +46,18 @@ export default function TutorialForm() {
         const saved = sessionStorage.getItem("tutorialDone");
         return saved ? JSON.parse(saved) : false;
     });
+      const [clicks, setClicks] = useState(() => {
+    const saved = sessionStorage.getItem("clicks");
+    return saved ? JSON.parse(saved) : 0;
+  });
 
     const navigate = useNavigate();
+
+    
+  function BackToGame() {
+    incrementClicks();
+    navigate("/game");
+  }
 
 
     useEffect(() => {
@@ -66,6 +76,7 @@ export default function TutorialForm() {
 
 
     function handleSubmit1(e) {
+        incrementClicks();
         e.preventDefault();
         setOutput("LOL");
         setStep(2);
@@ -73,6 +84,7 @@ export default function TutorialForm() {
 
 
     function handleSubmit2(e) {
+        incrementClicks();
         if (Number(text2)) {
             e.preventDefault();
             setOutput2(text2);
@@ -94,6 +106,7 @@ export default function TutorialForm() {
     }
 
     function clickLol() {
+        incrementClicks();
         if (output === "LOL" && text != "LOL") {
             setMessage("Questo è un esempio delle tipologie di bug che dovrai scovare. Come puoi vedere l'applicazione non si comporta come dovrebbe e mostra un testo diverso da quello che hai scritto");
             setdisplayMessage(true);
@@ -133,6 +146,7 @@ export default function TutorialForm() {
     }
 
     function clickAdd() {
+        incrementClicks();
         setAdd(true);
         if (double) {
             setOutput3("77777");
@@ -146,6 +160,7 @@ export default function TutorialForm() {
     }
 
     function clickDouble() {
+        incrementClicks();
 
         setDouble(true);
 
@@ -162,6 +177,7 @@ export default function TutorialForm() {
     }
 
     function clickResult() {
+        incrementClicks();
         if (Number(output3) === num * 2)
             setMessage3("Tutto si è svolto secondo la predizione, prova ad invertire l'ordine dei pulsanti");
         else
@@ -189,12 +205,22 @@ export default function TutorialForm() {
     const remainingSeconds = seconds % 60;
 
     const formattedTime = `${String(minutes).padStart(2, "0")}:${String(remainingSeconds).padStart(2, "0")}`;
-    useEffect(() => {
 
-        (async () => {
-            if (user) {
-                await TutorialDone("users", user.uid, {
+    function incrementClicks() {
+    setClicks((prev) => {
+      const next = prev + 1;
+      sessionStorage.setItem("clicks", JSON.stringify(next));
+      saveProgress(next);
+      return next; // importante restituire il nuovo valore
+    });
+  }
+
+    async function saveProgress(nextClicks) {
+    if (!user) return;
+  
+       await TutorialDone("users", user.uid, {
                     email: user.email,
+                    clicks:nextClicks,
                     tutorialTimeSeconds: seconds,
                     tutorialTimeFormatted: formattedTime,
                     triggerExampleOne,
@@ -202,9 +228,13 @@ export default function TutorialForm() {
                     triggerExampleThree,
                     tutorialDone,
                 });
-            }
-        })();
-    }, [seconds, user, triggerExampleOne, triggerExampleTwo, triggerExampleThree, tutorialDone]);
+  }
+
+  
+  function BackToGame() {
+    incrementClicks();
+    navigate("/game");
+  }
 
     return (
         <div className="container with-top-right" style={{ padding: 24 }}>
@@ -227,6 +257,7 @@ export default function TutorialForm() {
                                 placeholder="Scrivi qualcosa"
                                 value={text}
                                 required
+                                onClick={incrementClicks}
                                 onChange={(e) => {
                                     setText(e.target.value);
                                     setStep(1);
@@ -307,6 +338,7 @@ export default function TutorialForm() {
                                 placeholder="Scrivi il nome di un animale"
                                 value={text2}
                                 required
+                                onClick={incrementClicks}
                                 onChange={(e) => { setText2(e.target.value); setStep2(1); }}
                             />
                         </div>
@@ -377,6 +409,7 @@ export default function TutorialForm() {
                             placeholder="Scrivi un numero"
                             value={text3}
                             required
+                            onClick={incrementClicks}
                             onChange={(e) => {
                                 setText3(e.target.value);
                                 setStep3(1);
@@ -457,7 +490,7 @@ export default function TutorialForm() {
                 <button
                     className="btn-exit"
                     type="button"
-                    onClick={() => navigate("/game")}
+                    onClick={BackToGame}
                 >
                     Torna al gioco
                 </button>

@@ -58,6 +58,8 @@ export default function EventFormBug() {
   function incrementClicks() {
     setClicks((prev) => {
       const next = prev + 1;
+      sessionStorage.setItem("clicks", JSON.stringify(next));
+      saveProgress(next); // salva solo quando cambiano i click
       return next; // importante restituire il nuovo valore
     });
   }
@@ -89,45 +91,30 @@ export default function EventFormBug() {
 
     return `${String(minutes).padStart(2, "0")}:${String(Seconds).padStart(2, "0")}`;
   }, [elapsed]);
-  useEffect(() => {
-    sessionStorage.setItem("score", JSON.stringify(score));
-    sessionStorage.setItem("clicks", JSON.stringify(clicks));
+  
+  async function saveProgress(nextClicks) {
+  if (!user) return;
 
-    (async () => {
-      if (user) {
-        await addUser("EventsLevel", user.uid, {
-          score,
-          Totalclicks: clicks,
-          email: user.email,
-          time: formatTime(),
-          seconds : elapsed,
-
-          bugs: {
+  await addUser("EventsLevel", user.uid, {
+    score,
+    Totalclicks: nextClicks,
+    email: user.email,
+    time: formatTime(),
+    seconds: elapsed,
+     bugs: {
             bugNegativePeople: bugNegativePeople,
             bugNoLocation: bugNoLocation,
             bugNoTitle: bugNoTitle,
             bugPastDate: bugPastDate,
             bugWrongDate: bugWrongDate,
           },
-        });
-      }
-    })();
-  }, [
-    score,
-    clicks,
-    user,
-    seconds,
-    formatTime,
-    bugNegativePeople,
-    bugNoLocation,
-    bugNoTitle,
-    bugPastDate,
-    bugWrongDate,
-  ]);
+  });
+}
 
   useEffect(() => {
     if (score === 100) {
       const timer = setTimeout(() => {
+        incrementClicks();
         setModalVisible(true);
       }, 4000); // 4 secondi
 

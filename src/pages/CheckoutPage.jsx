@@ -51,6 +51,7 @@ const CheckoutPage = () => {
     setClicks((prev) => {
       const next = prev + 1;
       sessionStorage.setItem("clicks", JSON.stringify(next));
+      saveProgress(next);
       return next; // importante restituire il nuovo valore
     });
   }
@@ -82,30 +83,29 @@ const CheckoutPage = () => {
     return `${String(minutes).padStart(2, "0")}:${String(Seconds).padStart(2, "0")}`;
   }, [elapsed]);
 
-  useEffect(() => {
-    if (user) {
-      (async () => {
-        await addUser("TravelLevel", user.uid, {
-          score,
-          Totalclicks: clicks,
-          email: user.email,
-          time: formatTime(),
-          seconds: elapsed,
 
-          bugs: {
+  async function saveProgress(nextClicks) {
+  if (!user) return;
+
+  await addUser("TravelLevel", user.uid, {
+    score,
+    Totalclicks: nextClicks,
+    email: user.email,
+    time: formatTime(),
+    seconds: elapsed,
+      bugs: {
             bugCoupon: bugCoupon,
             bugNegativeChildren: sessionStorage.getItem("bugNegativeChildren") === "true",
             bugNegativePeople: sessionStorage.getItem("bugNegativePeople") === "true",
             bugDate1: sessionStorage.getItem("bugDate1") === "true",
           },
-        });
-      })();
-    }
-  }, [score, clicks, user, seconds, formatTime, bugCoupon]);
+  });
+}
 
   useEffect(() => {
     if (score === 100) {
       const timer = setTimeout(() => {
+        incrementClicks();
         setModalVisible(true);
       }, 4000); // 4 secondi
 

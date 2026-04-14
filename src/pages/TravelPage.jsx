@@ -55,6 +55,7 @@ const TravelPage = () => {
     setClicks((prev) => {
       const next = prev + 1;
       sessionStorage.setItem("clicks", JSON.stringify(next));
+      saveProgress(next); // salva solo quando cambiano i click
       return next; // importante restituire il nuovo valore
     });
   }
@@ -194,6 +195,7 @@ const TravelPage = () => {
   useEffect(() => {
     if (score === 100) {
       const timer = setTimeout(() => {
+      incrementClicks();
         setModalVisible(true);
       }, 4000); // 4 secondi
 
@@ -247,35 +249,25 @@ const TravelPage = () => {
     navigate("/checkout");
   }
 
-  useEffect(() => {
-    if (user) {
-      (async () => {
-        await addUser("TravelLevel", user.uid, {
-          score,
-          Totalclicks: clicks,
-          email: user.email,
-          time: formatTime(),
-          seconds : elapsed,
 
-          bugs: {
-            bugDate1: bugDate1,
-            bugNegativeChildren: bugNegativeChildren,
-            bugNegativePeople: bugNegativePeople,
-            bugCoupon: sessionStorage.getItem("bugCoupon") === "true",
-          },
-        });
-      })();
-    }
-  }, [
+  async function saveProgress(nextClicks) {
+  if (!user) return;
+
+  await addUser("TravelLevel", user.uid, {
     score,
-    clicks,
-    user,
-    seconds,
-    formatTime,
-    bugDate1,
-    bugNegativeChildren,
-    bugNegativePeople,
-  ]);
+    Totalclicks: nextClicks,
+    email: user.email,
+    time: formatTime(),
+    seconds: elapsed,
+    bugs: {
+      bugDate1,
+      bugNegativeChildren,
+      bugNegativePeople,
+      bugCoupon: sessionStorage.getItem("bugCoupon") === "true",
+    },
+  });
+}
+
 
   useEffect(() => {
     if (user) {
