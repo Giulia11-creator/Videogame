@@ -3,15 +3,15 @@ import { getAuth } from "firebase/auth";
 import { getFirestore} from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDil1SceibQAAwoz-5oB1Hq5_kbNYga3tg",
-  authDomain: "gioco1-ed728.firebaseapp.com",
-  projectId: "gioco1-ed728",
-  storageBucket: "gioco1-ed728.firebasestorage.app",
-  messagingSenderId: "268612101865",
-  appId: "1:268612101865:web:46a6cfca7123d24f493278",
-  measurementId: "G-CGVZ9NMEV0"
+  apiKey: "AIzaSyA8JLIncGh6L0xApLxyaOQxnVJeAxHcF-M",
+  authDomain: "gioco-20204.firebaseapp.com",
+  databaseURL: "https://gioco-20204-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "gioco-20204",
+  storageBucket: "gioco-20204.firebasestorage.app",
+  messagingSenderId: "1080127846619",
+  appId: "1:1080127846619:web:2efb0ce437cd605e5e74fe",
+  measurementId: "G-KB17CKGFVE"
 };
-
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
